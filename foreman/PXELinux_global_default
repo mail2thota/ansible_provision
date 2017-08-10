@@ -1,0 +1,11 @@
+DEFAULT menu
+PROMPT 0
+MENU TITLE PXE Menu
+TIMEOUT 50
+TOTALTIMEOUT 6000
+ONTIMEOUT discovery
+
+LABEL discovery
+MENU LABEL Foreman Discovery
+KERNEL boot/CentosOS-7.2-x86_64-vmlinuz
+APPEND rootflags=loop initrd=boot/CentosOS-7.2-x86_64-initrd.img root=live:/foreman.iso rootfstype=auto ro rd.live.image rd.live.check rd.lvm=0 rootflags=ro crashkernel=128M elevator=deadline max_loop=256 rd.luks=0 rd.md=0 rd.dm=0 foreman.ip=10.11.12.12 nomodeset selinux=0 stateless
