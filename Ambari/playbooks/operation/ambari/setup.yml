@@ -1,0 +1,12 @@
+- hosts: "{{ ambarimasters | default('ambari-servers') }}"
+  tasks:
+    - name: setup_ambari
+      shell: /usr/sbin/ambari-server setup -s
+    - name: start_ambari
+      service: name=ambari-server state=started
+    - name : check if ambari-server is up
+      wait_for : host={{ ansible_fqdn }} port=8080 delay=20
+
+  environment:
+        http_proxy : http://10.129.49.21:8080
+        https_proxy : http://10.129.49.21:8080
