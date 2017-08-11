@@ -7,15 +7,17 @@ ANSIBLE_HADOOP_PATH="${FTP_URL}/pub/ansible-hadoop-master/*"
 ANSIBLE_HDP_PATH="${FTP_URL}/pub/blueprints/*"
 FOREMAN_CALLBACK_PATH="${FTP_URL}/pub/foreman_callback.py"
 PROXY_URL="http://10.129.49.21:8080"
-AMBARI_MASTER_ID="ambarimasters"
+AMBARI_SERVER_ID="ambariservers"
 #generate and configure ssh key,thereby create the server groups in ansible hosts 
 if [ ! -f ~/.ssh/bootstrap_rsa.pub ]; then
 	ssh-keygen -f ~/.ssh/bootstrap_rsa -t rsa -N ''
     echo "generated bootstrap key in ~/.ssh"
+	> /etc/ansible/hosts
 else
 	echo "bootstrap key exists in ~/.ssh"
 fi
 server_groups=$(awk '$1=$1' ORS='\\n' /etc/ansible/hosts)
+count=0
 while read -r foreman_config
 do
   host_ip="$(cut -d ' ' -f 2 <<< "${foreman_config}")"
@@ -41,8 +43,8 @@ do
 		server_group_id_groups="$(cut -d '-' -f 2- <<< "$(cut -d '.' -f 1 <<< "${host_domain}")")"
 		for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
 		do
-		    if [ $AMBARI_MASTER_ID == "${server_group_id}" ];then
-				AMBARI_MASTER_IP="${host_ip}"
+		    if [ $AMBARI_SERVER_ID == "${server_group_id}" ];then
+				ambari_server_ips[count++]="${host_ip}"
 			fi
 			server_group_id="[${server_group_id}]"
 			server_list_temp="${server_groups##*"${server_group_id}"}"
@@ -85,10 +87,12 @@ ansible-playbook playbooks/operation/ambari/setup.yml
 ansible-playbook playbooks/conf/ambari/ambari_agent.yml
 cd ../blueprints
 
-curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-blueprint-multinode.json --noproxy master.example.com http://"${AMBARI_MASTER_IP}":8080/api/v1/blueprints/multi-node-hdfs
+for ambari_server_ip in "${ambari_server_ips[@]}"
+do
+	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-blueprint-multinode.json --noproxy "${ambari_server_ip}" http://"${ambari_server_ip}":8080/api/v1/blueprints/multi-node-hdfs
 
-curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-multinode-hostconfig.json --noproxy master.example.com http://"${AMBARI_MASTER_IP}":8080/api/v1/clusters/multi-node-hdfs
-
+	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-multinode-hostconfig.json --noproxy "${ambari_server_ip}" http://"${ambari_server_ip}":8080/api/v1/clusters/multi-node-hdfs
+done
 
 
 
