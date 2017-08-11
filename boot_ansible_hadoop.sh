@@ -8,11 +8,14 @@ ANSIBLE_HDP_PATH="${FTP_URL}/pub/blueprints/*"
 FOREMAN_CALLBACK_PATH="${FTP_URL}/pub/foreman_callback.py"
 PROXY_URL="http://10.129.49.21:8080"
 AMBARI_SERVER_ID="ambariservers"
+AMBARI_AGENT_ID="ambariagents"
 #generate and configure ssh key,thereby create the server groups in ansible hosts 
 if [ ! -f ~/.ssh/bootstrap_rsa.pub ]; then
 	ssh-keygen -f ~/.ssh/bootstrap_rsa -t rsa -N ''
     echo "generated bootstrap key in ~/.ssh"
 	> /etc/ansible/hosts
+	eval "$(ssh-agent -s)"
+	ssh-add ~/.ssh/bootstrap_rsa
 else
 	echo "bootstrap key exists in ~/.ssh"
 fi
@@ -23,8 +26,6 @@ do
   host_ip="$(cut -d ' ' -f 2 <<< "${foreman_config}")"
   if [ $host_ip != $(hostname -i) ] ; then
 		echo "copying shh key into ${host_ip}"
-		eval "$(ssh-agent -s)"
-		ssh-add ~/.ssh/bootstrap_rsa
 		ssh-keyscan "${host_ip}" >>~/.ssh/known_hosts
 		sshpass -p "${HOST_PASSWORD}" ssh-copy-id -i ~/.ssh/bootstrap_rsa.pub "${HOST_USER_NAME}"@"${host_ip}"
 		###configuring proxy
@@ -40,6 +41,7 @@ do
 		ssh "${HOST_USER_NAME}"@"${host_ip}" "source ~/.bashrc"
 		rm -rf .bashrc
 		host_domain="$(cut -d ' ' -f 1 <<< "${foreman_config}")"
+		ssh "${HOST_USER_NAME}"@"${host_ip}" "hostname ${host_domain}"
 		server_group_id_groups="$(cut -d '-' -f 2- <<< "$(cut -d '.' -f 1 <<< "${host_domain}")")"
 		for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
 		do
@@ -82,17 +84,24 @@ echo "executing ansible playbook for hadoop"
 wget -r -np -nH --cut-dirs=1 "${ANSIBLE_HADOOP_PATH}"
 wget -r -np -nH --cut-dirs=1 "${ANSIBLE_HDP_PATH}"
 cd ansible-hadoop-master
+sed -i "s/<AMBARI_SERVER_ID>/${AMBARI_SERVER_ID}/g" playbooks/conf/ambari/ambari_server.yml
+sed -i "s/<AMBARI_SERVER_ID>/${AMBARI_SERVER_ID}/g" playbooks/operation/ambari/setup.yml
+sed -i "s/<AMBARI_SERVER_ID>/${AMBARI_SERVER_ID}/g" roles/ambari_agent/defaults/main.yml
+sed -i "s/<AMBARI_AGENT_ID>/${AMBARI_AGENT_ID}/g" playbooks/conf/ambari/ambari_agent.yml
 ansible-playbook playbooks/conf/ambari/ambari_server.yml
 ansible-playbook playbooks/operation/ambari/setup.yml
 ansible-playbook playbooks/conf/ambari/ambari_agent.yml
-cd ../blueprints
-
+cd ..
+rm -rf ansible-hadoop-master
+cd blueprints
 for ambari_server_ip in "${ambari_server_ips[@]}"
 do
 	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-blueprint-multinode.json --noproxy "${ambari_server_ip}" http://"${ambari_server_ip}":8080/api/v1/blueprints/multi-node-hdfs
 
 	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-multinode-hostconfig.json --noproxy "${ambari_server_ip}" http://"${ambari_server_ip}":8080/api/v1/clusters/multi-node-hdfs
 done
+cd ..
+rm -rf blueprints
 
 
 
