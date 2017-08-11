@@ -70,7 +70,7 @@ sed -i '/callback_plugins/s/^#//g' /etc/ansible/ansible.cfg
 sed -i '/bin_ansible_callbacks/s/^#//g' /etc/ansible/ansible.cfg
 sed -i '/bin_ansible_callbacks/s/False/True/g' /etc/ansible/ansible.cfg
 curl "${FOREMAN_CALLBACK_PATH}" -o /usr/share/ansible/plugins/callback/foreman_callback.py
-sed -i 's/<FOREMAN_URL>/"https:\/\/'$(hostname -f)'"/g' /usr/share/ansible/plugins/callback/foreman_callback.py
+sed -i 's/<FOREMAN_URL>/"https:\/\/localhost"/g' /usr/share/ansible/plugins/callback/foreman_callback.py
 sed -i 's/<FOREMAN_SSL_CERT>/"\/var\/lib\/puppet\/ssl\/certs\/'$(hostname -f)'.pem"/g' /usr/share/ansible/plugins/callback/foreman_callback.py
 sed -i 's/<FOREMAN_SSL_KEY>/"\/var\/lib\/puppet\/ssl\/private_keys\/'$(hostname -f)'.pem"/g' /usr/share/ansible/plugins/callback/foreman_callback.py
 sed -i 's/<FOREMAN_SSL_VERIFY>/"0"/g' /usr/share/ansible/plugins/callback/foreman_callback.py
