@@ -29,10 +29,10 @@ do
 	ssh-keyscan "${host_ip}" >>~/.ssh/known_hosts
 	sshpass -p "${HOST_PASSWORD}" ssh-copy-id -i ~/.ssh/bootstrap_rsa.pub "${HOST_USER_NAME}"@"${host_ip}"
 	###configuring proxy
-	ssh "${HOST_USER_NAME}"@"${host_ip}" "echo proxy=${PROXY_URL} >> /etc/yum.conf"
+	ssh -n "${HOST_USER_NAME}"@"${host_ip}" "echo proxy=${PROXY_URL} >> /etc/yum.conf"
 	hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$host_ip" > temp_hosts
 	scp temp_hosts "${HOST_USER_NAME}"@"${host_ip}":/etc
-	ssh "${HOST_USER_NAME}"@"${host_ip}" "cat /etc/temp_hosts >> /etc/hosts"
+	ssh -n "${HOST_USER_NAME}"@"${host_ip}" "cat /etc/temp_hosts >> /etc/hosts"
 	rm -rf temp_hosts
 	host_domain="$(cut -d ' ' -f 1 <<< "${foreman_config}")"
 	server_group_id_groups="$(cut -d '-' -f 2- <<< "$(cut -d '.' -f 1 <<< "${host_domain}")")"
