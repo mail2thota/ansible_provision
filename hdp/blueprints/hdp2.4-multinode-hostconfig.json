@@ -1,0 +1,18 @@
+{
+  "blueprint" : "multi-node-hdfs",
+"provision_action" : "INSTALL_AND_START", 
+  "host_groups" :[
+    {
+      "name" : "master", 
+      "hosts" : [         
+        {
+          "fqdn" : "master.example.com"
+        }
+      ]
+    },
+    {
+      "name" : "slaves", 
+	"hosts" :[{"fqdn" : "slave1.example.com"}]
+        }
+  ]
+}
