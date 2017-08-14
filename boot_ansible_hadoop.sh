@@ -21,47 +21,39 @@ else
 fi
 server_groups=$(awk '$1=$1' ORS='\\n' /etc/ansible/hosts)
 count=0
+hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$(hostname -i)" >> /etc/hosts
 while read -r foreman_config
 do
-  host_ip="$(cut -d ' ' -f 2 <<< "${foreman_config}")"
-  if [ $host_ip != $(hostname -i) ] ; then
-		echo "copying shh key into ${host_ip}"
-		ssh-keyscan "${host_ip}" >>~/.ssh/known_hosts
-		sshpass -p "${HOST_PASSWORD}" ssh-copy-id -i ~/.ssh/bootstrap_rsa.pub "${HOST_USER_NAME}"@"${host_ip}"
-		###configuring proxy
-		scp "${HOST_USER_NAME}"@"${host_ip}":/etc/yum.conf  ./
-		echo "proxy=${PROXY_URL}" >> yum.conf
-		scp yum.conf "${HOST_USER_NAME}"@"${host_ip}":/etc
-		rm -rf yum.conf
-		scp "${HOST_USER_NAME}"@"${host_ip}":~/.bashrc  ./
-		echo "export no_proxy=$no_proxy" >> ~/.bashrc
-		host_ip_PATH=$(ssh "${HOST_USER_NAME}"@"${host_ip}" "echo $PATH")
-		echo "export PATH=${host_ip_PATH}:$no_proxy" >> .bashrc
-		scp .bashrc "${HOST_USER_NAME}"@"${host_ip}":~/
-		ssh "${HOST_USER_NAME}"@"${host_ip}" "source ~/.bashrc"
-		rm -rf .bashrc
-		host_domain="$(cut -d ' ' -f 1 <<< "${foreman_config}")"
-		ssh "${HOST_USER_NAME}"@"${host_ip}" "hostname ${host_domain}"
-		server_group_id_groups="$(cut -d '-' -f 2- <<< "$(cut -d '.' -f 1 <<< "${host_domain}")")"
-		for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
-		do
-		    if [ $AMBARI_SERVER_ID == "${server_group_id}" ];then
-				ambari_server_ips[count++]="${host_ip}"
+	host_ip="$(cut -d ' ' -f 2 <<< "${foreman_config}")"
+	echo "copying shh key into ${host_ip}"
+	ssh-keyscan "${host_ip}" >>~/.ssh/known_hosts
+	sshpass -p "${HOST_PASSWORD}" ssh-copy-id -i ~/.ssh/bootstrap_rsa.pub "${HOST_USER_NAME}"@"${host_ip}"
+	###configuring proxy
+	ssh "${HOST_USER_NAME}"@"${host_ip}" "echo proxy=${PROXY_URL} >> /etc/yum.conf"
+	hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$host_ip" > temp_hosts
+	scp temp_hosts "${HOST_USER_NAME}"@"${host_ip}":/etc
+	ssh "${HOST_USER_NAME}"@"${host_ip}" "cat /etc/temp_hosts >> /etc/hosts"
+	rm -rf temp_hosts
+	host_domain="$(cut -d ' ' -f 1 <<< "${foreman_config}")"
+	server_group_id_groups="$(cut -d '-' -f 2- <<< "$(cut -d '.' -f 1 <<< "${host_domain}")")"
+	for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
+	do
+		if [ $AMBARI_SERVER_ID == "${server_group_id}" ];then
+			ambari_server_domains[count++]="${host_domain}"
+		fi
+		server_group_id="[${server_group_id}]"
+		server_list_temp="${server_groups##*"${server_group_id}"}"
+		existing_host_domains="$(cut -d '[' -f 1 <<< "${server_list_temp}")"
+		if [[ $existing_host_domains != *"${host_domain}"* ]];then
+			if [[ $server_groups == *"${server_group_id}"* ]]; then
+				server_group_temp="${server_group_id}\n${host_domain}"
+				server_groups="${server_groups/"$server_group_id"/$server_group_temp}"
+			else
+				server_groups+="\n\n${server_group_id}\n${host_domain}"
 			fi
-			server_group_id="[${server_group_id}]"
-			server_list_temp="${server_groups##*"${server_group_id}"}"
-			existing_host_ips="$(cut -d '[' -f 1 <<< "${server_list_temp}")"
-			if [[ $existing_host_ips != *"${host_ip}"* ]];then
-				if [[ $server_groups == *"${server_group_id}"* ]]; then
-					server_group_temp="${server_group_id}\n${host_ip}"
-					server_groups="${server_groups/"$server_group_id"/$server_group_temp}"
-				else
-					server_groups+="\n\n${server_group_id}\n${host_ip}"
-				fi
-			fi
-		done
-    fi
- done < <(hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $2, $5'})
+		fi
+	done
+done < <(hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $2, $5'} | grep -vi "^$(hostname -f)" )
 echo "adding server groups into ansible host"
 echo -e "${server_groups}" > /etc/ansible/hosts
 
@@ -94,11 +86,11 @@ ansible-playbook playbooks/conf/ambari/ambari_agent.yml
 cd ..
 rm -rf ansible-hadoop-master
 cd blueprints
-for ambari_server_ip in "${ambari_server_ips[@]}"
+for ambari_server_domain in "${ambari_server_domains[@]}"
 do
-	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-blueprint-multinode.json --noproxy "${ambari_server_ip}" http://"${ambari_server_ip}":8080/api/v1/blueprints/multi-node-hdfs
+	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-blueprint-multinode.json --noproxy "${ambari_server_domain}" http://"${ambari_server_domain}":8080/api/v1/blueprints/multi-node-hdfs
 
-	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-multinode-hostconfig.json --noproxy "${ambari_server_ip}" http://"${ambari_server_ip}":8080/api/v1/clusters/multi-node-hdfs
+	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-multinode-hostconfig.json --noproxy "${ambari_server_domain}" http://"${ambari_server_domain}":8080/api/v1/clusters/multi-node-hdfs
 done
 cd ..
 rm -rf blueprints
