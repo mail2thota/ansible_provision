@@ -9,6 +9,9 @@ FOREMAN_CALLBACK_PATH="${FTP_URL}/pub/foreman_callback.py"
 PROXY_URL="http://10.129.49.21:8080"
 AMBARI_SERVER_ID="ambariservers"
 AMBARI_AGENT_ID="ambariagents"
+AMBARI_USER_NAME="admin"
+AMBARI_PASSWORD="admin"
+
 #generate and configure ssh key,thereby create the server groups in ansible hosts 
 if [ ! -f ~/.ssh/bootstrap_rsa.pub ]; then
 	ssh-keygen -f ~/.ssh/bootstrap_rsa -t rsa -N ''
@@ -20,7 +23,8 @@ else
 	echo "bootstrap key exists in ~/.ssh"
 fi
 server_groups=$(awk '$1=$1' ORS='\\n' /etc/ansible/hosts)
-count=0
+server_count=0
+agent_count=0
 hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$(hostname -i)" >> /etc/hosts
 while read -r foreman_config
 do
@@ -28,7 +32,6 @@ do
 	echo "copying shh key into ${host_ip}"
 	ssh-keyscan "${host_ip}" >>~/.ssh/known_hosts
 	sshpass -p "${HOST_PASSWORD}" ssh-copy-id -i ~/.ssh/bootstrap_rsa.pub "${HOST_USER_NAME}"@"${host_ip}"
-	###configuring proxy
 	ssh -n "${HOST_USER_NAME}"@"${host_ip}" "echo proxy=${PROXY_URL} >> /etc/yum.conf"
 	hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$host_ip" > temp_hosts
 	scp temp_hosts "${HOST_USER_NAME}"@"${host_ip}":/etc
@@ -39,7 +42,18 @@ do
 	for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
 	do
 		if [ $AMBARI_SERVER_ID == "${server_group_id}" ];then
-			ambari_server_domains[count++]="${host_domain}"
+		    if [ $server_count -gt 0 ];then
+			   ambari_server_hdp+=","
+			fi
+            ambari_server_hdp+="{ \"fqdn\" : \"${host_domain}\" }"			
+			ambari_server_domains[server_count++]="${host_domain}"
+		fi
+		if [ $AMBARI_AGENT_ID == "${server_group_id}" ];then
+		    if [ $agent_count -gt 0 ];then
+				ambari_agent_hdp+=","
+			fi
+			ambari_agent_hdp+="{ \"fqdn\" : \"${host_domain}\" }"
+			ambari_agent_domains[agent_count++]="${host_domain}"
 		fi
 		server_group_id="[${server_group_id}]"
 		server_list_temp="${server_groups##*"${server_group_id}"}"
@@ -86,11 +100,14 @@ ansible-playbook playbooks/conf/ambari/ambari_agent.yml
 cd ..
 rm -rf ansible-hadoop-master
 cd blueprints
+sed -i "s/<AMBARI_SERVER_DOMAINS>/${ambari_server_hdp}/g" hdp2.4-multinode-hostconfig.json
+sed -i "s/<AMBARI_AGENT_DOMAINS>/${ambari_agent_hdp}/g" hdp2.4-multinode-hostconfig.json
+
 for ambari_server_domain in "${ambari_server_domains[@]}"
 do
-	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-blueprint-multinode.json --noproxy "${ambari_server_domain}" http://"${ambari_server_domain}":8080/api/v1/blueprints/multi-node-hdfs
+	curl -v -H "X-Requested-By: ambari" -X POST -u "${AMBARI_USER_NAME}":"${AMBARI_PASSWORD}" -d @hdp2.4-blueprint-multinode.json --noproxy "${ambari_server_domain}" http://"${ambari_server_domain}":8080/api/v1/blueprints/multi-node-hdfs
 
-	curl -v -H "X-Requested-By: ambari" -X POST -u admin:admin -d @hdp2.4-multinode-hostconfig.json --noproxy "${ambari_server_domain}" http://"${ambari_server_domain}":8080/api/v1/clusters/multi-node-hdfs
+	curl -v -H "X-Requested-By: ambari" -X POST -u "${AMBARI_USER_NAME}":"${AMBARI_PASSWORD}" -d @hdp2.4-multinode-hostconfig.json --noproxy "${ambari_server_domain}" http://"${ambari_server_domain}":8080/api/v1/clusters/multi-node-hdfs
 done
 cd ..
 rm -rf blueprints

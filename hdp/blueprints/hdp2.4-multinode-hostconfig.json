@@ -5,14 +5,14 @@
     {
       "name" : "master", 
       "hosts" : [         
-        {
-          "fqdn" : "master.example.com"
-        }
+        <AMBARI_SERVER_DOMAINS>
       ]
     },
     {
       "name" : "slaves", 
-	"hosts" :[{"fqdn" : "slave1.example.com"}]
-        }
+	  "hosts" :[
+		<AMBARI_AGENT_DOMAINS>
+	  ]
+    }
   ]
 }
