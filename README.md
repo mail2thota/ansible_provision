@@ -18,7 +18,7 @@ Assuming that the foreman has provisioned the nodes,thereby run below command
 ./boot_ansible_hadoop.sh
 
 ```
-This will do automatically the needed configuartions for ansible and also executes the playbooks which installs the needed softwares required.
+This will automatically do the needed configurations for ansible and executes the playbooks which installs the needed softwares required.
 
 ## Configuration:
 Following are the configurations 
