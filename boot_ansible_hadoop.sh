@@ -17,8 +17,6 @@ if [ ! -f ~/.ssh/bootstrap_rsa.pub ]; then
 	ssh-keygen -f ~/.ssh/bootstrap_rsa -t rsa -N ''
     echo "generated bootstrap key in ~/.ssh"
 	> /etc/ansible/hosts
-	eval "$(ssh-agent -s)"
-	ssh-add ~/.ssh/bootstrap_rsa
 else
 	echo "bootstrap key exists in ~/.ssh"
 fi
@@ -26,6 +24,8 @@ server_groups=$(awk '$1=$1' ORS='\\n' /etc/ansible/hosts)
 server_count=0
 agent_count=0
 hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$(hostname -i)" >> /etc/hosts
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/bootstrap_rsa
 while read -r foreman_config
 do
 	host_ip="$(cut -d ' ' -f 2 <<< "${foreman_config}")"
