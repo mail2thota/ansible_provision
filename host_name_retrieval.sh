@@ -24,11 +24,11 @@ get_host_name(){
 }
 
 get_host_name
-#prints node1-abariagents
+#prints node1-ambariagents
 get_host_name
-#prints node2-abariagents
+#prints node2-ambariagents
 get_host_name
-#prints node3-abariservers-abariagents
+#prints node3-ambariservers-ambariagents
 get_host_name
 #prints node4
 get_host_name
