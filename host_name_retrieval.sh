@@ -12,27 +12,27 @@ do
 done
 
 
-get_host_name(){
+get_host_name_suffix(){
  if [ $init_server_list_count -gt 1 ];then
 	init_server_list_count=`expr $init_server_list_count - 1`
 	echo  -${init_server_list[$init_server_list_count]}
  fi
 }
 #######so the hostname should be set as ${MACaddress}-ambariagents
-get_host_name
+get_host_name_suffix
 #o/p -ambariagents
-get_host_name
+get_host_name_suffix
 #o/p -ambariagents
 #######
 
 #######so the hostname should be set as ${MACaddress}-ambariservers-ambariagents
-get_host_name
+get_host_name_suffix
 #o/p -ambariservers-ambariagents
 #######
 
 #######so the hostname should be set as ${MACaddress}
-get_host_name
+get_host_name_suffix
 #o/p **nothing**
-get_host_name
+get_host_name_suffix
 #o/p **nothing**
 #######
