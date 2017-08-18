@@ -2,6 +2,8 @@
 
 HOST_USER_NAME="root"
 HOST_PASSWORD="baesystems"
+FOREMAN_USER_NAME="admin"
+FOREMAN_PASSWORD="w4SfFSGpjZamRUe3"
 FTP_URL="ftp://192.168.116.130"
 ANSIBLE_HADOOP_PATH="${FTP_URL}/pub/ansible-hadoop-master/*"
 ANSIBLE_HDP_PATH="${FTP_URL}/pub/blueprints/*"
@@ -39,11 +41,11 @@ fi
 server_groups=$(awk '$1=$1' ORS='\\n' /etc/ansible/hosts)
 server_count=0
 agent_count=0
-hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$(hostname -i)" >> /etc/hosts
+hammer --csv -u "${FOREMAN_USER_NAME}" -p "${FOREMAN_PASSWORD}" host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$(hostname -i)" >> /etc/hosts
 while read -r foreman_config
 do
 	host_ip="$(cut -d ' ' -f 2 <<< "${foreman_config}")"
-	hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$host_ip" > temp_hosts
+	hammer --csv -u "${FOREMAN_USER_NAME}" -p "${FOREMAN_PASSWORD}" host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi "^$host_ip" > temp_hosts
 	host_domain="$(cut -d ' ' -f 1 <<< "${foreman_config}")"
 	echo "copying shh key into ${host_domain} domain"
 	ssh-keyscan "${host_domain}" >>~/.ssh/known_hosts
@@ -87,7 +89,7 @@ do
 			fi
 		fi
 	done
-done < <(hammer --csv -u admin -p w4SfFSGpjZamRUe3 host list | grep -vi '^Id' | awk -F, {'print $2, $5'} | grep -vi "^$(hostname -f)" )
+done < <(hammer --csv -u "${FOREMAN_USER_NAME}" -p "${FOREMAN_PASSWORD}" host list | grep -vi '^Id' | awk -F, {'print $2, $5'} | grep -vi "^$(hostname -f)" )
 echo "adding server groups into ansible host"
 echo -e "${server_groups}" > /etc/ansible/hosts
 
