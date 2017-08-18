@@ -11,6 +11,20 @@ AMBARI_SERVER_ID="ambariservers"
 AMBARI_AGENT_ID="ambariagents"
 AMBARI_USER_NAME="admin"
 AMBARI_PASSWORD="admin"
+INIT_SERVER_NAME_GROUPS="1-ambariservers-ambariagents,1-ambariagents"
+
+#loads the names of server groups needed
+init_server_list_count=1
+for init_server_name_groups in $(echo $INIT_SERVER_NAME_GROUPS | sed "s/,/ /g")
+do
+	init_server_count="$(cut -d '-' -f 1 <<< "${init_server_name_groups}")"
+	init_server_group_name="$(cut -d '-' -f 2- <<< "${init_server_name_groups}")"
+	while [ $init_server_count -gt 0 ]
+		do
+			init_server_list[init_server_list_count++]="${init_server_group_name}"
+			((init_server_count--))
+		done
+done
 
 #generate and configure ssh key,thereby create the server groups in ansible hosts 
 if [ ! -f ~/.ssh/bootstrap_rsa.pub ]; then
@@ -38,7 +52,13 @@ do
 	scp temp_hosts "${HOST_USER_NAME}"@"${host_domain}":/etc
 	ssh -n "${HOST_USER_NAME}"@"${host_domain}" "cat /etc/temp_hosts >> /etc/hosts"
 	rm -rf temp_hosts
-	server_group_id_groups="$(cut -d '-' -f 2- <<< "$(cut -d '.' -f 1 <<< "${host_domain}")")"
+	host_name_suffix=""
+	if [ $init_server_list_count -gt 1 ];then
+		init_server_list_count=`expr $init_server_list_count - 1`
+		host_name_suffix="-${init_server_list[$init_server_list_count]}"
+    fi
+	host_domain_temp="$(cut -d '.' -f 1 <<< "${host_domain}")${host_name_suffix}"
+	server_group_id_groups="$(cut -d '-' -f 2- <<< "${host_domain_temp}")"
 	for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
 	do
 		if [ $AMBARI_SERVER_ID == "${server_group_id}" ];then
