@@ -1,3 +1,4 @@
+#This is test file
 INIT_SERVER_NAME_GROUPS=1-ambariservers-ambariagents,2-ambariagents
 init_server_list_count=1
 for init_server_name_groups in $(echo $INIT_SERVER_NAME_GROUPS | sed "s/,/ /g")
