@@ -12,24 +12,27 @@ do
 done
 
 
-node_count=1
 get_host_name(){
  if [ $init_server_list_count -gt 1 ];then
 	init_server_list_count=`expr $init_server_list_count - 1`
-	echo  node${node_count}-${init_server_list[$init_server_list_count]}
- else
-	echo  node${node_count}
+	echo  -${init_server_list[$init_server_list_count]}
  fi
- node_count=`expr $node_count + 1`
 }
+#######so the hostname should be set as ${MACaddress}-ambariagents
+get_host_name
+#o/p -ambariagents
+get_host_name
+#o/p -ambariagents
+#######
 
+#######so the hostname should be set as ${MACaddress}-ambariservers-ambariagents
 get_host_name
-#prints node1-ambariagents
+#o/p -ambariservers-ambariagents
+#######
+
+#######so the hostname should be set as ${MACaddress}
 get_host_name
-#prints node2-ambariagents
+#o/p **nothing**
 get_host_name
-#prints node3-ambariservers-ambariagents
-get_host_name
-#prints node4
-get_host_name
-#prints node5
+#o/p **nothing**
+#######
