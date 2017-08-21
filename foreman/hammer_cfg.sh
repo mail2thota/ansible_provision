@@ -1,0 +1,38 @@
+#author HERI SUTRISNO
+
+NUMBER_OF_NODES=2
+USERNAME="admin"
+PASSWORD="as123"
+ARCHITECTURE="x86_64"
+DOMAIN="local.domain"
+DNS_ID="bootstrap.local.domain"
+MEDIUM_NAME="CentOS_7_Hery"
+IMAGE_PATH="ftp://10.11.12.5/pub/CentOS_7_x86_64"
+PARTITION_TABLE="Kickstart default"
+OS_NAME="CentOSHery7"
+OS_MAJORVERSION=7
+OS_MINORVERSION=2
+OS_FAMILY="Redhat"
+TEMPLATE_DEFAULT="Kickstart default"
+TEMPLATE_FINISH="Kickstart default finish"
+TEMPLATE_iPXE="Kickstart default iPXE"
+TEMPLATE_PXElINUX="Kickstart default PXELinux"
+TEMPLATE_USERDATA="Kickstart default user data"
+
+SUBNET_NAME="subnet1"
+SUBNET_NETWORK="10.11.12.0"
+SUBNET_MASK="255.255.255.0"
+SUBNET_GATEWAY="10.11.12.1"
+SUBNET_STARTIP="10.11.12.1"
+SUBNET_ENDIP="10.11.12.24"
+TFTP_SERVER="10.11.12.12"
+DHCP_INTERFACE="enp0s3"
+ENVIRONMENT="production"
+HOST_GROUPNAME="Provision from foreman.example.com"
+ROOT_PASS="as12345678"
+
+
+
+
+
+

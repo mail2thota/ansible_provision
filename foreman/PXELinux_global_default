@@ -1,11 +1,13 @@
 DEFAULT menu
 PROMPT 0
 MENU TITLE PXE Menu
-TIMEOUT 50
-TOTALTIMEOUT 6000
+TIMEOUT 5
+TOTALTIMEOUT 20
 ONTIMEOUT discovery
 
 LABEL discovery
-MENU LABEL Foreman Discovery
-KERNEL boot/CentosOS-7.2-x86_64-vmlinuz
-APPEND rootflags=loop initrd=boot/CentosOS-7.2-x86_64-initrd.img root=live:/foreman.iso rootfstype=auto ro rd.live.image rd.live.check rd.lvm=0 rootflags=ro crashkernel=128M elevator=deadline max_loop=256 rd.luks=0 rd.md=0 rd.dm=0 foreman.ip=10.11.12.12 nomodeset selinux=0 stateless
+MENU LABEL Foreman HERY Discovery Image In Progress
+MENU DEFAULT
+KERNEL boot/fdi/vmlinuz0
+APPEND initrd=boot/fdi/initrd0.img rootflags=loop root=live:/fdi.iso rootfstype=auto ro rd.live.image acpi=force rd.luks=0 rd.md=0 rd.dm=0 rd.lvm=0 rd.bootif=0 rd.neednet=0 rd.debug=0 nomodeset proxy.url=<%= foreman_server_url %>:8443 proxy.type=proxy fdi.pxauto=1 fdi.countdown=10
+IPAPPEND 2
