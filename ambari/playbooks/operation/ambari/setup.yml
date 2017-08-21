@@ -1,4 +1,4 @@
-- hosts: "{{ ambarimasters | default('ambari-servers') }}"
+- hosts: "{{ ambarimasters | default('<AMBARI_SERVER_ID>') }}"
   tasks:
     - name: setup_ambari
       shell: /usr/sbin/ambari-server setup -s

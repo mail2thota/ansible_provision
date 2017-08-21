@@ -1,4 +1,4 @@
-- hosts: "{{ ambari_agents | default('ambari-agents') }}"
+- hosts: "{{ ambari_agents | default('<AMBARI_AGENT_ID>') }}"
   roles:
     - { role: common, common_config_hostname: True }
     - epel
