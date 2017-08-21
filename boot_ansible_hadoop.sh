@@ -5,8 +5,8 @@ HOST_PASSWORD="baesystems"
 FOREMAN_USER_NAME="admin"
 FOREMAN_PASSWORD="w4SfFSGpjZamRUe3"
 FTP_URL="ftp://192.168.116.130"
-ANSIBLE_HADOOP_PATH="${FTP_URL}/pub/ansible-hadoop-master/*"
-ANSIBLE_HDP_PATH="${FTP_URL}/pub/blueprints/*"
+ANSIBLE_HADOOP_PATH="${FTP_URL}/pub/ambari/*"
+ANSIBLE_HDP_PATH="${FTP_URL}/pub/hdp/blueprints/*"
 FOREMAN_CALLBACK_PATH="${FTP_URL}/pub/foreman_callback.py"
 PROXY_URL="http://10.129.49.21:8080"
 AMBARI_SERVER_ID="ambariservers"
@@ -111,7 +111,7 @@ sed -i 's/<FOREMAN_SSL_VERIFY>/"0"/g' /usr/share/ansible/plugins/callback/forema
 echo "executing ansible playbook for hadoop"
 wget -r -np -nH --cut-dirs=1 "${ANSIBLE_HADOOP_PATH}"
 wget -r -np -nH --cut-dirs=1 "${ANSIBLE_HDP_PATH}"
-cd ansible-hadoop-master
+cd ambari
 sed -i "s/<AMBARI_SERVER_ID>/${AMBARI_SERVER_ID}/g" playbooks/conf/ambari/ambari_server.yml
 sed -i "s/<AMBARI_SERVER_ID>/${AMBARI_SERVER_ID}/g" playbooks/operation/ambari/setup.yml
 sed -i "s/<AMBARI_SERVER_ID>/${AMBARI_SERVER_ID}/g" roles/ambari_agent/defaults/main.yml
@@ -120,7 +120,7 @@ ansible-playbook playbooks/conf/ambari/ambari_server.yml
 ansible-playbook playbooks/operation/ambari/setup.yml
 ansible-playbook playbooks/conf/ambari/ambari_agent.yml
 cd ..
-rm -rf ansible-hadoop-master
+rm -rf ambari
 cd blueprints
 sed -i "s/<AMBARI_SERVER_DOMAINS>/${ambari_server_hdp}/g" hdp2.4-multinode-hostconfig.json
 sed -i "s/<AMBARI_AGENT_DOMAINS>/${ambari_agent_hdp}/g" hdp2.4-multinode-hostconfig.json
