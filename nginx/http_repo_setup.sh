@@ -1,10 +1,16 @@
 #!/bin/bash
+yum install -y epel-release
+yum install -y nginx
+mkdir -p /usr/share/nginx/html/repo/
+#This must be changed to real repo config or downloads
+touch index.html
+cp index.html /usr/share/nginx/html/repo/
+chown :nginx /usr/share/nginx/html/repo/ 
 
-sudo yum install epel-release
-sudo yum install nginx
 systemctl start nginx
-sudo firewall-cmd --permanent --zone=public --add-service=http 
-sudo firewall-cmd --permanent --zone=public --add-service=https
-sudo firewall-cmd --reload
-sudo systemctl enable nginx
+firewall-cmd --permanent --zone=public --add-service=http 
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --reload
+cp nginx.conf /etc/nginx/
+systemctl enable nginx
 
