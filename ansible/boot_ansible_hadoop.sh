@@ -110,7 +110,7 @@ sed -i 's/<FOREMAN_SSL_VERIFY>/"0"/g' /usr/share/ansible/plugins/callback/forema
 #execution of hadoop playbooks
 echo "executing ansible playbook for hadoop"
 wget -r -np -nH --cut-dirs=1 "${ANSIBLE_HADOOP_PATH}"
-wget -r -np -nH --cut-dirs=1 "${ANSIBLE_HDP_PATH}"
+wget -r -np -nH --cut-dirs=2 "${ANSIBLE_HDP_PATH}"
 cd ambari
 sed -i "s/<AMBARI_SERVER_ID>/${AMBARI_SERVER_ID}/g" playbooks/conf/ambari/ambari_server.yml
 sed -i "s/<AMBARI_SERVER_ID>/${AMBARI_SERVER_ID}/g" playbooks/operation/ambari/setup.yml
