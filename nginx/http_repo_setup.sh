@@ -47,6 +47,7 @@ fi
 chown :nginx /usr/share/nginx/html/repos/ 
 
 #copy the custom nginx conf to enable repo directory listing & start the nginx service
+cp nginx.conf /etc/nginx/
 systemctl start nginx
 
 #firewall config
