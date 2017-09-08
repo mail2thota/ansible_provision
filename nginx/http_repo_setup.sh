@@ -21,12 +21,12 @@ if [[ $1 == N ]]; then
 	createrepo /usr/share/nginx/html/repos/plugins/1.15/el7/x86_64/	# Initialize Foreman  plugins
 
 	#copy all the pre downloaded dependencies from internet to nginx directory
-	sudo rsync -avz --exclude='repo*' rsync://mirror.cisp.com/CentOS/7/os/x86_64/ /usr/share/nginx/html/repos/centos/7/os/x86_64/   # CentOS Base Repo
-	sudo rsync -avz --exclude='repo*' rsync://mirror.cisp.com/CentOS/7/updates/x86_64/ /usr/share/nginx/html/repos/centos/7/updates/x86_64/   # CentOS Update Repo
-	sudo rsync -avz --exclude='repo*' --exclude='debug' rsync://mirrors.rit.edu/epel/7/x86_64/ /usr/share/nginx/html/repos/epel/7/x86_64/   # EPEL 7 Repo
-	sudo rsync -avz --exclude='repo*' rsync://yum.puppetlabs.com/el/7/PC1/x86_64/ /usr/share/nginx/html/repos/el/7/PC1/x86_64/ # Puppet Labs repo
-	sudo rsync -avz --exclude='repo*' rsync://yum.theforeman.org/releases/1.15/el7/x86_64/ /usr/share/nginx/html/repos/releases/1.15/el7/x86_64/ # Foreman Repo
-	sudo rsync -avz --exclude='repo*' rsync://yum.theforeman.org/plugins/1.15/el7/x86_64/ /usr/share/nginx/html/repos/plugins/1.15/el7/x86_64/	# Foreman Plugins
+	rsync -avz --exclude='repo*' rsync://mirror.cisp.com/CentOS/7/os/x86_64/ /usr/share/nginx/html/repos/centos/7/os/x86_64/   # CentOS Base Repo
+	rsync -avz --exclude='repo*' rsync://mirror.cisp.com/CentOS/7/updates/x86_64/ /usr/share/nginx/html/repos/centos/7/updates/x86_64/   # CentOS Update Repo
+	rsync -avz --exclude='repo*' --exclude='debug' rsync://mirrors.rit.edu/epel/7/x86_64/ /usr/share/nginx/html/repos/epel/7/x86_64/   # EPEL 7 Repo
+	rsync -avz --exclude='repo*' rsync://yum.puppetlabs.com/el/7/PC1/x86_64/ /usr/share/nginx/html/repos/el/7/PC1/x86_64/ # Puppet Labs repo
+	rsync -avz --exclude='repo*' rsync://yum.theforeman.org/releases/1.15/el7/x86_64/ /usr/share/nginx/html/repos/releases/1.15/el7/x86_64/ # Foreman Repo
+	rsync -avz --exclude='repo*' rsync://yum.theforeman.org/plugins/1.15/el7/x86_64/ /usr/share/nginx/html/repos/plugins/1.15/el7/x86_64/	# Foreman Plugins
 
 	createrepo --update /usr/share/nginx/html/repos/centos/7/os/x86_64/   # CentOS Base Repo
 	createrepo --update /usr/share/nginx/html/repos/centos/7/updates/x86_64/   # CentOS Update Repo
