@@ -37,8 +37,11 @@ if [[ $1 == N ]]; then
 	createrepo --update /usr/share/nginx/html/repos/releases/1.15/el7/x86_64/ # Foreman Repo
 	createrepo --update /usr/share/nginx/html/repos/plugins/1.15/el7/x86_64/	# Foreman Plugins
 else 
-	# copy downloaded folders to nginx repos
-	mkdir -p /usr/share/nginx/html/repos/
+	
+	if [ ! -d /usr/share/nginx/html/repos/ ]; then
+		# copy downloaded folders to nginx repos
+		mkdir -p /usr/share/nginx/html/repos/
+	fi
 	cp /usr/share/repos/ /usr/share/nginx/html/repos/
 
 fi
