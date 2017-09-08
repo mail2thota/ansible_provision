@@ -2,8 +2,6 @@
 sudo yum -y install createrepo epel-release firewalld rsync && sudo yum -y install nginx
 sudo yum -y update && sudo systemctl reboot
 
-
-
 # Create Repository
 if [[ $1 == N ]]; then
 
@@ -36,6 +34,7 @@ if [[ $1 == N ]]; then
 	sudo createrepo --update /usr/share/nginx/html/repos/el/7/PC1/x86_64/ # Puppet Labs repo
 	sudo createrepo --update /usr/share/nginx/html/repos/releases/1.15/el7/x86_64/ # Foreman Repo
 	sudo createrepo --update /usr/share/nginx/html/repos/plugins/1.15/el7/x86_64/	# Foreman Plugins
+
 else 
 	
 	if [ ! -d /usr/share/nginx/html/repos/ ]; then
