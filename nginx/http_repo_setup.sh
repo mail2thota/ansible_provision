@@ -4,7 +4,7 @@ sudo yum -y install nginx
 sudo yum -y update
 
 # Create Repository
-if [ [ "$1" == N ] ]; then
+if [[ $1 == N ]]; then
 	#create a "repos" directory to be listed
 	mkdir -p /usr/share/nginx/html/repos/centos/7/os/x86_64 	# Base and Update Repos
 	mkdir -p /usr/share/nginx/html/repos/centos/7/updates/x86_64
