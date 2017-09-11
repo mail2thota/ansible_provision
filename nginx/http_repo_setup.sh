@@ -1,5 +1,5 @@
 #!/bin/bash
-yum -y install createrepo epel-release firewalld rsync
+sudo yum -y install createrepo epel-release firewalld rsync
 sudo yum -y install nginx
 sudo yum -y update
 
