@@ -35,8 +35,8 @@ if [[ $1 == N ]]; then
 	createrepo --update /usr/share/nginx/html/repos/el/7/PC1/x86_64/ # Puppet Labs repo
 	createrepo --update /usr/share/nginx/html/repos/releases/1.15/el7/x86_64/ # Foreman Repo
 	createrepo --update /usr/share/nginx/html/repos/plugins/1.15/el7/x86_64/	# Foreman Plugins
-
-else [ ! -d /usr/share/nginx/html/repos/ ]; then
+fi
+if [ ! -d /usr/share/nginx/html/repos/ ]; then
 		# copy downloaded folders to nginx repos
 		mkdir -p /usr/share/nginx/html/repos/
 		cp /usr/share/repos/ /usr/share/nginx/html/repos/
