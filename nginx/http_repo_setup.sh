@@ -34,6 +34,23 @@ if [[ $1 == N ]]; then
 	createrepo --update /usr/share/nginx/html/repos/el/7/PC1/x86_64/ # Puppet Labs repo
 	createrepo --update /usr/share/nginx/html/repos/releases/1.15/el7/x86_64/ # Foreman Repo
 	createrepo --update /usr/share/nginx/html/repos/plugins/1.15/el7/x86_64/	# Foreman Plugins
+	
+	#Download CentOS ISO image
+	wget http://mirror.optus.net/centos/7/isos/x86_64/CentOS-7-x86_64-Everything-1611.iso
+	cp CentOS-* /usr/share/nginx/html/repos/
+	
+	#Download ambari
+	http://public-repo-1.hortonworks.com/ambari/centos6/2.x/updates/2.5.0.3/ambari-2.5.0.3-centos6.tar.gz
+	cp ambari-2.5.0.3-centos6.tar.gz /usr/share/nginx/html/repos/
+	tar -xvf /usr/share/nginx/html/repos/ambari-2.5.0.3-centos6.tar.gz
+	rm -rf /usr/share/nginx/html/repos/ambari-2.5.0.3-centos6.tar.gz
+	
+	#Download HDP
+	wget http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.2.0/HDP-2.6.2.0-centos7-rpm.tar.gz
+	cp HDP-2.6.2.0-centos7-rpm.tar.gz /usr/share/nginx/html/repos/
+	tar -xvf /usr/share/nginx/html/repos/HDP-2.6.2.0-centos7-rpm.tar.gz
+	rm -rf /usr/share/nginx/html/repos/HDP-2.6.2.0-centos7-rpm.tar.gz
+	
 
 elif [ ! -d /usr/share/nginx/html/repos/ ]; then
 	# copy downloaded folders to nginx repos
