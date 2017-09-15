@@ -36,7 +36,7 @@ if [[ $1 == N ]]; then
 	createrepo --update /usr/share/nginx/html/repos/plugins/1.15/el7/x86_64/	# Foreman Plugins
 	
 	#Download CentOS ISO image
-	wget http://mirror.optus.net/centos/7/isos/x86_64/CentOS-7-x86_64-Everything-1611.iso
+	wget http://archive.kernel.org/centos-vault/7.1.1503/isos/x86_64/CentOS-7-x86_64-Everything-1503-01.iso
 	cp CentOS-* /usr/share/nginx/html/repos/
 	
 	#Download ambari
