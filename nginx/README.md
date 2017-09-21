@@ -26,6 +26,8 @@ Following are the required softwares and libraries in repository
 |:------------- |:-------------|
 |Centos Base repo|rsync://mirror.cisp.com/CentOS/7/os/x86_64/|
 |Centos Update repo|rsync://mirror.cisp.com/CentOS/7/updates/x86_64/|
+|RH repo|http://mirror.cisp.com/CentOS/7/sclo/x86_64/rh/|
+|SCLO repo|http://mirror.cisp.com/CentOS/7/sclo/x86_64/sclo/|
 |EPEL 7 repo|rsync://mirrors.rit.edu/epel/7/x86_64/|
 |Puppet Labs repo|rsync://yum.puppetlabs.com/el/7/PC1/x86_64/|
 |Foreman repo|rsync://yum.theforeman.org/releases/1.15/el7/x86_64/|
@@ -34,6 +36,12 @@ Following are the required softwares and libraries in repository
 |Centos 7 iso image|http://mirror.optus.net/centos/7/isos/x86_64/CentOS-7-x86_64-Everything-1611.iso|
 |Ambari repo|http://public-repo-1.hortonworks.com/ambari/centos6/2.x/updates/2.5.0.3/ambari-2.5.0.3-centos6.tar.gz|
 |HDP repo|http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.2.0/HDP-2.6.2.0-centos7-rpm.tar.gz|
+|RPM-GPG-KEY-CentOS-7 key|http://mirror.cisp.com/CentOS/7/os/x86_64/RPM-GPG-KEY-CentOS-7|
+|RPM-GPG-KEY-CentOS-SIG-SCLo key|https://yum.stanford.edu/RPM-GPG-KEY-CentOS-SIG-SCLo|
+|RPM-GPG-KEY-EPEL-7 key|http://mirrors.rit.edu/epel/RPM-GPG-KEY-EPEL-7|
+|RPM-GPG-KEY-foreman key|http://yum.theforeman.org/releases/1.15/RPM-GPG-KEY-foreman|
+|RPM-GPG-KEY-puppet key|https://yum.puppetlabs.com/RPM-GPG-KEY-puppet|
+|RPM-GPG-KEY-puppetlabs key|https://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs|
 
 ##### Note: rsync links required to install rsync package on bootstrap machine and all tars must be unzipped.
 
