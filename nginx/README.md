@@ -26,8 +26,8 @@ Following are the required softwares and libraries in repository
 |:------------- |:-------------|
 |Centos Base repo|rsync://mirror.cisp.com/CentOS/7/os/x86_64/|
 |Centos Update repo|rsync://mirror.cisp.com/CentOS/7/updates/x86_64/|
-|RH repo|http://mirror.cisp.com/CentOS/7/sclo/x86_64/rh/|
-|SCLO repo|http://mirror.cisp.com/CentOS/7/sclo/x86_64/sclo/|
+|RH repo|rsync://mirror.cisp.com/CentOS/7/sclo/x86_64/rh/|
+|SCLO repo|rsync://mirror.cisp.com/CentOS/7/sclo/x86_64/sclo/|
 |EPEL 7 repo|rsync://mirrors.rit.edu/epel/7/x86_64/|
 |Puppet Labs repo|rsync://yum.puppetlabs.com/el/7/PC1/x86_64/|
 |Foreman repo|rsync://yum.theforeman.org/releases/1.15/el7/x86_64/|
