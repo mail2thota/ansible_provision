@@ -1,91 +1,108 @@
-# Project:
-mdr_platform_bare_metal - ansible
 
-## Synopsis: 
-This package allows us to install ansible and run the needed playbooks for installation of softwares in multiple nodes.
+# Foreman, Bare Metal Provisioning
 
-## Motivation: 
-To get the list of host which was provisioned by foreman and install the needed softwares such as ambari and hdp through ansible into the nodes.
+Automated provisioning using foreman configuration as easy as pie.
+This script automatically help you to automate the installation of foreman, bring
+up DHCP server, TFTP server, and DNS local server.
+creating resources such as set up multiple subnet, domain, create host base on
+group, create hosts for provisioning, architecture of machine to be provisioned,
+installation media, set ptable hardisk partition through kick starter script,
+and set the operating system image to be installed.
 
-## Origin Repo: 
-https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/boot_ansible_hadoop.sh
+Prerequisite
+------------
 
+    1. setup SE Linux permissive
+            /etc/sysconfig/selinux
+    2. set-up firewall or disable it
+            - disable
+                sudo systemctl stop firewalld
+                sudo systemctl disable firewalld
+            - allow to go through
+                sudo firewall-cmd --permanent --add-service=http
+                sudo firewall-cmd --permanent --add-service=https
+                sudo firewall-cmd --permanent --add-port=69/tcp
+                sudo firewall-cmd --permanent --add-port=67-69/udp
+                sudo firewall-cmd --permanent --add-port=53/tcp
+                sudo firewall-cmd --permanent --add-port=53/udp
+                sudo firewall-cmd --permanent --add-port=8443/tcp
+                sudo firewall-cmd --permanent --add-port=8140/tcp
 
-## Quickstart:
-Assuming that the foreman has provisioned the nodes,thereby run below command
+Configuration
+-------------
 
-```
-./boot_ansible_hadoop.sh
-
-```
-This will automatically do the needed configurations for ansible and executes the playbooks which installs the needed softwares required.
-
-## Configuration:
-Following are the configurations 
-
-| Environment Variable       |  Example           | Description  |
+| Variable       |  Example           | Description  |
 |:------------- |:-------------|:-----|
-|HOST_USER_NAME|root|User name of the host.|
-|HOST_PASSWORD|baesystems|Password of the host.|
-|FTP_URL|ftp://192.168.116.130|ftp server url|
-|ANSIBLE_HADOOP_PATH|${FTP_URL}/pub/ansible-hadoop-master/*|Path of the hadoop playbooks in ftp server|
-|ANSIBLE_HDP_PATH|${FTP_URL}/pub/blueprints/*|Path of the hdp playbooks in ftp server|
-|FOREMAN_CALLBACK_PATH|${FTP_URL}/pub/foreman_callback.py|Path of foreman_callback.py file in ftp server|
-|PROXY_URL|http://10.129.49.21:8080| Proxy used. |
-|AMBARI_SERVER_ID|ambariservers|This ID will be compared with the hostname to determine whether the host belong to ambari server group. |
-|AMBARI_AGENT_ID|ambariagents|This ID will be compared with the hostname to determine whether the host belong to ambari agent group.|
-|AMBARI_USER_NAME|admin|User name of ambari login.|
-|AMBARI_PASSWORD|admin|Password of ambari login. |
+|username|admin|User name of the foreman|
+|password|as1123|password for the foreman|
+|Architecture|x86_64|The available options are i386 and x86_64|
+|domain|baesystemdemo.com|valid domain name|
+|url_repo|http://10.129.6.142|resolveable url for local repo|
+|dns_name|foreman.baesystemdemo.com|valid dns name|
+|host_ip|10.129.6.189|ip for the host bootstrap machine check by using ifconfig or ip addr|
+|medium_name|CentOSDemo7|name for medium|
+|image_path|ftp://10.11.12.39/pub/CentOS_7_x86_64|address where image reside, you may use ftp or http only|
+|os_name|CentOSDemo7|name of os to be provisioned|
+|os_majorversion|7|max possibility for os version to be installed|
+|os_minorversion|2|minimum possibility os version to be installed|
+|os_family|RedHat|os family such as RedHat or Debian|
+|template_default|Kickstart default|default provisioning template for RedHat|
+|template_finish|Kickstart default finish|default provisioning template for RedHat|
+|template_ipxe|Kickstart default iPXE|default provisioning template for RedHat|
+|template_pxelinux|Kickstart default PXELinux|default provisioning template for RedHat|
+|template_userdata|Kickstart default user data|default provisioning template for RedHat|
+|subnet_name|baesystemSubnet|profile name to set subnet|
+|subnet_network|10.11.12.0|ip address for the subnet|
+|subnet_mask|255.255.255.0|subnet mask|
+|subnet_gateway|10.11.12.1|gateway address|
+|subnetip_start|10.11.12.1|the range of start IP that will be served by subnet|
+|subnetip_end|10.11.12.24|the range of end IP that will be served by subnet|
+|dhcp_interface|enp0s3|it is network interface, you may check by using ifconfig or ip addr|
+|environment|production|labeling environment status, production or development|
+|host_groupname|group_demo.baesystem.com|name for hostgroup|
+|node_pass|as021d90j@|default password to be set on nodes upon OS provisioning|
+|numbers_of_node|4|total number of nodes|
+|host1-n|host1=0800223343434|specify the mac address to be provisioned|
 
 
 
-## Test:
-* Once we launch `./boot_ansible_hadoop.sh` ,ansible hosts file will be configured in the bootstrap machine and the servers will be grouped together as per their hostname.For example if the host name is raul-ambariservers-ambariagents.eng.vmware.com then this means the host will be acting as both ambari server and ambari agent based on the host name.If suppose  
-opal-ambariagents.eng.vmware.com then this host will act only as ambari agent.This will create entry in ansible hosts `/etc/ansible/hosts` as below
+Installation and Provisioning foreman
+-------------------------------------
 
-```
-[ambariagents]
-raul-ambariservers-ambariagents.eng.vmware.com
-opal-ambariagents.eng.vmware.com
+    git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
+    cd foreman
+    ./boot.sh
 
-[ambariservers]
-raul-ambariservers-ambariagents.eng.vmware.com
-```
-
-and boostrap machine hosts `/etc/hosts` as below
-
-```  
-
-192.168.116.137 opal-ambariagents.eng.vmware.com
-192.168.116.134 raul-ambariservers-ambariagents.eng.vmware.com
-
-```
-It also configures all other nodes hosts `/etc/hosts` so that the nodes and the bootstrap machine can recoginise each other through domain name.
-
-* The interaction between the bootstrap machine and nodes happens through ssh where the script takes cares about public key which are added to authorized_keys in the nodes and also the nodes are under the known_hosts of the bootstrap machine which makes the bootstrap machine to access other nodes.
-
-* It also configures the ansible call back plugin for foreman so that the software configuration management interaction between the bootstrap machine and the nodes can be known through foreman.
-
-* It also executes the playbook setup for ambari server and ambari agents which installs the ambari severs and agents according to the host group for the nodes.This can be also verified as below
-
-```
-[root@foreman abbc]# ssh root@raul-ambariservers-ambariagents.eng.vmware.com
-Last login: Wed Aug 16 23:34:41 2017 from foreman.eng.vmware.com
-[root@raul-ambariservers-ambariagents ~]# ps -ef | grep ambari
-root      20941      1  3 Aug15 ?        01:28:22 /usr/jdk64/jdk1.8.0_60/bin/java -server -XX:NewRatio=3 -XX:+UseConcMarkSweepGC -XX:-UseGCOverheadLimit -XX:CMSInitiatingOccupancyFraction=60 -Dsun.zip.disableMemoryMapping=true -Xms512m -Xmx2048m -Djava.security.auth.login.config=/etc/ambari-server/conf/krb5JAASLogin.conf -Djava.security.krb5.conf=/etc/krb5.conf -Djavax.security.auth.useSubjectCredsOnly=false -cp /etc/ambari-server/conf:/usr/lib/ambari-server/*:/usr/share/java/postgresql-jdbc.jar org.apache.ambari.server.controller.AmbariServer
-postgres  20957  20713  0 Aug15 ?        00:00:00 postgres: ambari ambari 127.0.0.1(40233) idle
-
-```
-
-* This script also launches the HDP multi-node configuration dynamically according to host name of the nodes which are grouped as ambari servers and ambari agents .This also forms the HDP cluster which can be viewed through UI in bootstrap machine as below
-
-```
-
-http://raul-ambariservers-ambariagents.eng.vmware.com:8080/#/main/dashboard/metrics
+    noted:when you see provisioning is ready you might turn up the nodes to be provisioned,
+    from bios setting you may choose boot from network and allow boot using PXELinux
 
 
-```
+Log
+---
 
-## Licence:
-mdr_platform_bare_metal - ansible - Copyright (c) 2016 BAE Systems Applied Intelligence.
+    trace log through tail -f /var/log/foreman-installer/foreman.log
 
+Installation of Ansible
+-----------------------
+
+    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible
+
+Installation of Ambari
+----------------------
+
+    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ambari
+
+Installation of Ambari
+----------------------
+
+    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/hdp/blueprints
+
+Installation of Nginx
+----------------------
+
+    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
+
+License
+-------
+
+@BaeSystemsAI
