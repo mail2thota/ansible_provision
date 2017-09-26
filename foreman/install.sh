@@ -1,15 +1,15 @@
 #!/bin/bash
-
-url_repo="http://10.129.6.142"
+thisdir=`dirname $0`
+source ${thisdir}/hammer_cfg.sh
 
 setBaseRepo(){
 
     base_name="CentOS-\$releasever - Base"
     base_url="$url_repo/repos/centos/\$releasever/os/\$basearch"
-    base_gpgkey="$url_repo/repos/centos/\$releasever/os/\$basearch/RPM-GPG-KEY-CentOS-7"
+    base_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-CentOS-7"
     update_name="CentOS-\$releasever - Updates"
     update_url="$url_repo/repos/centos/\$releasever/updates/\$basearch"
-    update_gpgkey="$url_repo/repos/centos/\$releasever/os/\$basearch/RPM-GPG-KEY-CentOS-7"
+    update_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-CentOS-7"
 
 
 tee /etc/yum.repos.d/CentOS-Base.repo <<EOF
@@ -27,11 +27,43 @@ baseurl=$update_url
 EOF
 }
 
+setCentosSCLO(){
+
+    sclo_name="CentOS-7 - SCLo sclo"
+    sclo_url="$url_repo/repos/centos/\$releasever/sclo/\$basearch/sclo"
+    sclo_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-CentOS-SIG-SCLo"
+
+tee /etc/yum.repos.d/CentOS-SCLo-scl.repo <<EOF
+[centos-sclo-sclo]
+name=$sclo_name
+enabled=1
+gpgcheck=1
+gpgkey=$sclo_gpgkey
+baseurl=$sclo_url
+EOF
+}
+
+setCentosSCLORH(){
+
+    sclorh_name="CentOS-7 - SCLo rh"
+    sclorh_url="$url_repo/repos/centos/\$releasever/sclo/\$basearch/rh"
+    sclorh_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-CentOS-SIG-SCLo"
+
+tee /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo <<EOF
+[centos-sclo-rh]
+name=$sclorh_name
+enabled=1
+gpgcheck=1
+gpgkey=$sclorh_gpgkey
+baseurl=$sclorh_url
+EOF
+}
+
 setEpelRepo(){
 
     epel_name="Extra Packages for Enterprise Linux 7 - \$basearch"
     epel_url="$url_repo/repos/epel/\$releasever/\$basearch"
-    epel_gpgkey="file:///foreman_installer/pki/RPM-GPG-KEY-EPEL-7"
+    epel_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-EPEL-7"
 
 tee /etc/yum.repos.d/epel.repo <<EOF
 [epel]
@@ -47,7 +79,7 @@ setForemanRepo(){
 
     foreman_name="Foreman 1.15 - source"
     foreman_url="$url_repo/repos/foreman/1.15/el7/\$basearch"
-    foreman_gpgkey="file:///foreman_installer/pki/RPM-GPG-KEY-foreman"
+    foreman_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-foreman"
 
 tee /etc/yum.repos.d/foreman.repo <<EOF
 [foreman]
@@ -63,7 +95,7 @@ setForemanPluginRepo(){
 
     foreman_plugin_name="Foreman plugins 1.15"
     foreman_plugin_url="$url_repo/repos/foreman_plugin/1.15/el7/\$basearch"
-    foreman_plugin_gpgkey="file:///foreman_installer/pki/RPM-GPG-KEY-foreman"
+    foreman_plugin_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-foreman"
 
 tee /etc/yum.repos.d/foreman-plugins.repo <<EOF
 [foreman-plugins]
@@ -79,8 +111,8 @@ setPuppetRepo(){
 
     puppet_name="Puppet Labs PC1 Repository el 7 - \$basearch"
     puppet_url="$url_repo/repos/puppet/el/7/PC1/\$basearch"
-    puppet_gpgkey1="file:///foreman_installer/pki/RPM-GPG-KEY-puppetlabs-PC1"
-    puppet_gpgkey2="file:///foreman_installer/pki/RPM-GPG-KEY-puppet-PC1"
+    puppet_gpgkey1="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-puppetlabs-PC1"
+    puppet_gpgkey2="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-puppet-PC1"
 
 tee /etc/yum.repos.d/puppetlabs-pc1.repo <<EOF
 [puppetlabs-pc1]
@@ -93,17 +125,28 @@ gpgcheck=1
 EOF
 }
 
+setHostName(){
+
+    echo "$host_ip $dns_id" >> /etc/hosts
+    sudo systemctl restart network
+}
+
 installForeman(){
 
-sudo yum -y install foreman-installer nmap-ncat 
-sudo yum -y install tfm-rubygem-hammer_cli_foreman_discovery
+    sudo yum -y install foreman-installer nmap-ncat
+#sudo yum -y install tfm-rubygem-hammer_cli_foreman_discovery
+#foreman-installer --foreman-configure-epel-repo=false --foreman-configure-scl-repo=false --enable-foreman-plugin-discovery --enable-foreman-proxy-plugin-discovery --enable-foreman-plugin-ansible --enable-foreman-proxy-plugin-ansible
 
 }
+
 setBaseRepo
+setCentosSCLO
+setCentosSCLORH
 setEpelRepo
 setForemanRepo
 setForemanPluginRepo
 setPuppetRepo
-exit 1
+setHostName
 installForeman
 
+exit 0
