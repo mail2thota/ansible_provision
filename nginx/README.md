@@ -22,6 +22,7 @@
   ```
 #### Software listing:
 Following are the required softwares and libraries in repository
+
 | Software/library       |  URL to download           |
 |:------------- |:-------------|
 |Centos Base repo|rsync://mirror.cisp.com/CentOS/7/os/x86_64/|
