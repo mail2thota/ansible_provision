@@ -51,7 +51,7 @@ provisionNodes(){
 until [[ $pmaster -eq $null ]]
 do
    VAR="master$pmaster"
-   hammer -u $username -p $password host create --hostgroup-id $hostgroup_id --name "${!VAR}-ambariservers" --mac ${!VAR}  --interface identifier=$dhcp_interface
+   hammer -u $username -p $password host create --hostgroup-id $hostgroup_id --name "${!VAR}-ambariserver" --mac ${!VAR}  --interface identifier=$dhcp_interface
    check_host=$(hammer -u $username -p $password --csv host list | /usr/bin/grep ${!VAR} | awk -F, {'print $5'}| wc -l)
    if [[ $check_host -eq 1 ]];
    then
