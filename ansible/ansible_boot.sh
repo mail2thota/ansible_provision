@@ -2,7 +2,7 @@
 
 set -e
 
-date
+
 
 HOST_USER_NAME="root"
 HOST_PASSWORD="baesystems"
@@ -132,5 +132,5 @@ do
 done
 cd ..
 
-date
+
 
