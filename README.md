@@ -27,6 +27,9 @@ Prerequisite
                 sudo firewall-cmd --permanent --add-port=53/udp
                 sudo firewall-cmd --permanent --add-port=8443/tcp
                 sudo firewall-cmd --permanent --add-port=8140/tcp
+	3. http repo setup on bootstrap machine
+			- installation of nginx Repo
+				https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
 
 Configuration
 -------------
@@ -35,7 +38,7 @@ Configuration
 |:------------- |:-------------|:-----|
 |username|admin|User name of the foreman|
 |password|as1123|password for the foreman|
-|Architecture|x86_64|The available options are i386 and x86_64|
+|architecture|x86_64|The available options are i386 and x86_64|
 |domain|baesystemdemo.com|valid domain name|
 |url_repo|http://10.129.6.142|resolveable url for local repo|
 |dns_name|foreman.baesystemdemo.com|valid dns name|
@@ -101,10 +104,6 @@ HDP Cluster
 
     https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/hdp/blueprints
 
-Installation Of Nginx Repo
-----------------------
-
-    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
 
 License
 -------
