@@ -1,50 +1,46 @@
+#setup foreman proxy
+#author:Heri Sutrisno
 #!/bin/sh
-
 thisdir=`dirname $0`
 source ${thisdir}/hammer_cfg.sh
-#source ${thisdir}/admin.sh
 
-
-export forwarders=$(for i in $(cat /etc/resolv.conf |grep -v '^#'| grep nameserver|awk '{print $2}'); do echo --foreman-proxy-dns-forwarders $i;done) 
-oauth_key=$(grep auth_consumer_key /etc/foreman/settings.yaml | cut -d ' ' -f 2) 
-oauth_secret=$(grep oauth_consumer_secret /etc/foreman/settings.yaml | cut -d ' ' -f 2)
-virbr=$(ip addr | grep "$dhcp_interface:" | cut -d ':' -f 2 | tr -d '[[:space:]]')
+forwarders=$(for i in $(cat /etc/resolv.conf |grep -v '^#'| grep nameserver|awk '{print $2}'); do echo --foreman-proxy-dns-forwarders $i;done) 
+#oauth_key=$(grep auth_consumer_key /etc/foreman/settings.yaml | cut -d ' ' -f 2) 
+#oauth_secret=$(grep oauth_consumer_secret /etc/foreman/settings.yaml | cut -d ' ' -f 2)
+net_interface=$(ip addr | grep "$dhcp_interface:" | cut -d ':' -f 2 | tr -d '[[:space:]]') #check if empty return false
+dns_rvs=$(echo $subnet_network | awk 'BEGIN{FS="."}{print $3"."$2"."$1".in-addr.arpa"}')
 dns_zone=$(hostname | cut -d '.' -f 2-)
 host_ip=$(hostname -i)
-hnm=$(hostname)
-base_url="https://$hnm"
-dns_rvs=$(echo $subnet_network | awk 'BEGIN{FS="."}{print $3"."$2"."$1".in-addr.arpa"}')
-
+host_name=$(hostname)
+base_url="https://$host_name"
 
 installSmartProxy(){
 
     foreman-installer \
+        --enable-foreman-plugin-discovery \
+        --enable-foreman-proxy-plugin-discovery \
+        --foreman-configure-epel-repo=false \
+        --foreman-configure-scl-repo=false \
+        --enable-foreman-plugin-ansible \
+        --enable-foreman-proxy-plugin-ansible \
+        --foreman-admin-username=$username \
+        --foreman-admin-password=$password \
         --enable-foreman-proxy \
         --foreman-proxy-tftp=true \
-        --foreman-proxy-tftp-servername=$host_ip\
+        --foreman-proxy-tftp-servername=$host_ip \
         --foreman-proxy-dhcp=true \
-        --foreman-proxy-dhcp-interface=$virbr \
+        --foreman-proxy-dhcp-interface=$net_interface \
         --foreman-proxy-dhcp-gateway=$subnet_gateway \
         --foreman-proxy-dhcp-range="$subnetip_start $subnetip_end" \
         --foreman-proxy-dhcp-nameservers=$host_ip \
         --foreman-proxy-dns=true \
-        --foreman-proxy-dns-interface=$virbr \
+        --foreman-proxy-dns-interface=$net_interface \
         --foreman-proxy-dns-zone=$dns_zone \
         --foreman-proxy-dns-reverse=$dns_rvs \
         ${forwarders} \
-        --foreman-proxy-foreman-base-url=$base_url \
-        --foreman-proxy-oauth-consumer-key=$oauth_key \
-        --foreman-proxy-oauth-consumer-secret=$oauth_secret \
-        > ${thisdir}/log/foreman.log
+        --foreman-proxy-foreman-base-url=$base_url
 }
-# --enable-foreman-plugin-discovery \
-#        --enable-foreman-proxy-plugin-discovery \
-#        --enable-foreman-plugin-ansible \
-#        --enable-foreman-proxy-plugin-ansible \
-#        --foreman-configure-epel-repo=false \
-#        --foreman-admin-username=$admin \
-#        --foreman-admin-password=$password \
-#
+
 risetPassword(){
     
     password=$(foreman-rake permissions:reset | grep -i "password" | cut -d ':' -f 3 |  tr -d '[[:space:]]')
@@ -126,8 +122,9 @@ checkFeatures(){
 
 #risetPassword
 installSmartProxy
-checkSmartProxy
-checkFeatures
+changeForemanURL
+#checkSmartProxy
+#checkFeatures
 
 exit 0
 

@@ -133,9 +133,7 @@ setHostName(){
 
 installForeman(){
 
-    sudo yum -y install foreman-installer nmap-ncat
-#sudo yum -y install tfm-rubygem-hammer_cli_foreman_discovery
-#foreman-installer --foreman-configure-epel-repo=false --foreman-configure-scl-repo=false --enable-foreman-plugin-discovery --enable-foreman-proxy-plugin-discovery --enable-foreman-plugin-ansible --enable-foreman-proxy-plugin-ansible
+    sudo yum -y install foreman-installer nmap
 
 }
 
