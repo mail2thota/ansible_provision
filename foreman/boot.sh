@@ -15,5 +15,5 @@ ${REPODIR}/install.sh
 ${REPODIR}/foreman_proxy.sh
 ${REPODIR}/hammer.sh
 ${REPODIR}/foreman_provisioning.sh
-${REPODIR}/ansible_boot2.sh
+${REPODIR}/ansible_boot.sh
 exit 0

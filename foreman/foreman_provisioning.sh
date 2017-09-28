@@ -77,38 +77,6 @@ do
 done
 }
 
-discoveryNodes(){
-   
-    host_groupid=$(hammer --csv -u $username -p $password hostgroup list | /usr/bin/grep -i "$host_groupname" | awk -F, '{print $1}')
-    until [[ $px -eq $null ]]
-    do
-        dcv_nodes=$(hammer --csv -u $username -p $password discovery list | grep -vi '^ID' | awk -F, {'print $2'} | wc -l)
-        remaining_nodes=$((numbers_of_node - dcv_nodes))
-        echo "numbers of node's been discovered: $dcv_nodes"
-        echo "waiting $remaining_nodes remaining of nodes to be discovered from total $numbers_of_node nodes"
-
-        if [ $dcv_nodes -eq $numbers_of_node ];
-        then
-            echo "total $numbers_of_node has been discovered, provisioning will be begin"
-            until [[ $px -eq $null ]]
-            do
-                macaddr=$(hammer --csv -u $username -p $password discovery list | grep -vi '^ID' | awk -F, 'NR=="'"$px"'"{print $2}')
-                nodeid=$(hammer --csv -u $username -p $password discovery list | /usr/bin/grep -i "$macaddr" | awk -F, '{print $1}')
-                dcv_ip=$(hammer -u $username -p $password discovery info --id $nodeid | /usr/bin/grep -i "IP" | awk '{print $2}')
-                sed -i '1i'"$dcv_ip $macaddr"'' $provision_log
-                echo "provision node $macaddr"
-                rm -rf /var/lib/dhcpd/dhcpd.leases~
-                echo "" > /var/lib/dhcpd/dhcpd.leases
-                systemctl restart dhcpd
-                hammer -u $username -p $password discovery provision --id $nodeid --hostgroup-id $host_groupid
-            
-                px=$((px - 1))
-           done
-        fi
-        sleep 1s
-    done
-}
-
 isNodeReady(){
 
     until [[ $numbers_node -eq $null ]]
@@ -130,7 +98,6 @@ isNodeReady(){
 
 setLogFile
 provisionNodes
-#discoveryNodes
 isNodeReady
 
 prov_status="provisioning of nodes has been finished"
