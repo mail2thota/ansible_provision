@@ -1,15 +1,15 @@
 {
-  "blueprint" : "multi-node-hdfs",
+  "blueprint" : "<HDP_BLUEPRINT_NAME>",
 "provision_action" : "INSTALL_AND_START", 
   "host_groups" :[
     {
-      "name" : "master", 
+      "name" : "server", 
       "hosts" : [         
         <AMBARI_SERVER_DOMAINS>
       ]
     },
     {
-      "name" : "slaves", 
+      "name" : "agent", 
 	  "hosts" :[
 		<AMBARI_AGENT_DOMAINS>
 	  ]

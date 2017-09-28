@@ -4,7 +4,6 @@
     - epel
     - openjdk
     - ambari_agent
-  environment:
-        http_proxy : http://10.129.49.21:8080
-        https_proxy : http://10.129.49.21:8080
+
+        
 

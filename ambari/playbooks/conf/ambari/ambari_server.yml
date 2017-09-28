@@ -1,10 +1,7 @@
 - hosts: "{{ ambari_servers | default('<AMBARI_SERVER_ID>') }}"
   roles:
-    - { role: common, common_config_hostname: True }
+    - { role: common,common_config_hostname: True }
     - epel
     - openjdk
     - ambari_server
 
-  environment:
-        http_proxy : http://10.129.49.21:8080
-        https_proxy : http://10.129.49.21:8080

@@ -1,0 +1,21 @@
+- name: changing_ambari.properties
+  lineinfile:
+    dest: "/etc/ambari-server/conf/ambari.properties"
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+    - { regexp: '^jdk1\.8\.url', line: 'jdk1.8.url=http://10.129.6.142/repos/ambari/jdk-8u112-linux-x64.tar.gz' }
+    - { regexp: '^jdk1\.8\.jcpol\-url', line: 'jdk1.8.jcpol-url=http://10.129.6.142/repos/ambari/jce_policy-8.zip' }
+    - { regexp: '^jdk1\.7\.url', line: 'jdk1.7.url=http://10.129.6.142/repos/ambari/jdk-7u67-linux-x64.tar.gz' }
+    - { regexp: '^jdk1\.7\.jcpol\-url', line: 'jdk1.7.jcpol-url=http://10.129.6.142/repos/ambari/UnlimitedJCEPolicyJDK7.zip' }
+
+- name: copy_HDP.repo
+  template: src=repoinfo.xml dest=/var/lib/ambari-server/resources/stacks/HDP/2.6/repos/repoinfo.xml
+
+- name: chmod_HDP.repo
+  file: path=/var/lib/ambari-server/resources/stacks/HDP/2.6/repos/repoinfo.xml mode=777
+
+  
+
+
+

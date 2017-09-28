@@ -4,6 +4,6 @@
   always_run: True
   ignore_errors: True
 
-- name: stop_iptables_for_centos7
+- name: stop_firewalld_for_centos7
   service: name=firewalld state={{ common_firewalld_state }} enabled=no
   when: is_firewalld_installed.rc == 0

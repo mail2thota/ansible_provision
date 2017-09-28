@@ -1,7 +1,7 @@
 {
   "host_groups" : [
     {
-      "name" : "master",
+      "name" : "server",
       "components" : [
         {
           "name" : "NAMENODE"
@@ -20,10 +20,10 @@
         },
 	{"name" : "APP_TIMELINE_SERVER"	}
       ],
-      "cardinality" : "1"
+      "cardinality" : "<SERVER_CARDINALITY>"
     },
     {
-      "name" : "slaves",
+      "name" : "agent",
       "components" : [
         {
           "name" : "DATANODE"
@@ -44,12 +44,12 @@
           "name" : "ZOOKEEPER_CLIENT"
         }
       ],
-      "cardinality" : "1"
+      "cardinality" : "<AGENT_CARDINALITY>"
     }
   ],
   "Blueprints" : {
-    "blueprint_name" : "multi-node-hdfs",
+    "blueprint_name" : "<HDP_BLUEPRINT_NAME>",
     "stack_name" : "HDP",
-    "stack_version" : "2.4"
+    "stack_version" : "2.6"
   }
 }

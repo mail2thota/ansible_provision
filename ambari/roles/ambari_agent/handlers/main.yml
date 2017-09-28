@@ -2,3 +2,8 @@
 # handlers file for roles/ambari_agent
 - name: restart_ambari_agent
   service: name=ambari-agent state=restarted
+  async: 20
+  poll: 0
+
+- name : check_ambari_agent_restarted
+  wait_for : host={{ ansible_fqdn }} port=8670 delay=20
