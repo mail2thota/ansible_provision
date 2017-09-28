@@ -120,11 +120,8 @@ checkFeatures(){
     fi
 }
 
-#risetPassword
 installSmartProxy
 changeForemanURL
-#checkSmartProxy
-#checkFeatures
 
 exit 0
 
