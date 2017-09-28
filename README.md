@@ -1,5 +1,5 @@
 
-# Foreman, Bare Metal Provisioning
+# Foreman And Bare Metal Provisioning
 
 Automated provisioning using foreman configuration as easy as pie.
 This script automatically help you to automate the installation of foreman, bring
@@ -41,7 +41,7 @@ Configuration
 |dns_name|foreman.baesystemdemo.com|valid dns name|
 |host_ip|10.129.6.189|ip for the host bootstrap machine check by using ifconfig or ip addr|
 |medium_name|CentOSDemo7|name for medium|
-|image_path|ftp://10.11.12.39/pub/CentOS_7_x86_64|address where image reside, you may use ftp or http only|
+|image_path|http://10.129.6.142|address where image reside, you may use ftp or http only|
 |os_name|CentOSDemo7|name of os to be provisioned|
 |os_majorversion|7|max possibility for os version to be installed|
 |os_minorversion|2|minimum possibility os version to be installed|
@@ -59,14 +59,18 @@ Configuration
 |subnetip_end|10.11.12.24|the range of end IP that will be served by subnet|
 |dhcp_interface|enp0s3|it is network interface, you may check by using ifconfig or ip addr|
 |environment|production|labeling environment status, production or development|
-|host_groupname|group_demo.baesystem.com|name for hostgroup|
+|host_groupname|ambari_group|name for hostgroup|
 |node_pass|as021d90j@|default password to be set on nodes upon OS provisioning|
 |numbers_of_node|4|total number of nodes|
-|host1-n|host1=0800223343434|specify the mac address to be provisioned|
+|number_of_master|2|specify numbers of node for master|
+|number_of_agent|4|specify numbers of node for agent|
+|master+(1-n)|master1|specify mac address for master node, follow the sequence 1-n in integer format|
+|agent+(1-n)|agent1|specify mac address for master node, follow the sequence 1-n in integer format|
 
 
 
-Installation and Provisioning foreman
+
+Installation and Provisioning Foreman
 -------------------------------------
 
     git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
@@ -82,22 +86,22 @@ Log
 
     trace log through tail -f /var/log/foreman-installer/foreman.log
 
-Installation of Ansible
+Installation Of Ansible
 -----------------------
 
     https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible
 
-Installation of Ambari
+Installation Of Ambari
 ----------------------
 
     https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ambari
 
-Installation of Ambari
+HDP Cluster
 ----------------------
 
     https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/hdp/blueprints
 
-Installation of Nginx
+Installation Of Nginx Repo
 ----------------------
 
     https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
