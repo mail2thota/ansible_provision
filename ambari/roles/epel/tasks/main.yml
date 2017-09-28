@@ -1,1 +1,5 @@
+# install
+- include: repos.yml tags=repos,epel
+
 - include: config.yml tags=config,epel
+  any_errors_fatal: true
