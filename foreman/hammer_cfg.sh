@@ -1,14 +1,16 @@
+#config file for creating foreman resources
+#author:Heri Sutrisno
 
-
-username="admin"
-password=fZ8SLzBZ7ejtscYf
+username=admin
+password=as123
 architecture="x86_64"
 domain=example.com
+url_repo=http://10.129.6.142
 dns_id="foreman.example.com"
+host_ip=10.11.12.66
 
 medium_name="CentOSDemo7"
-image_path="ftp://10.11.12.39/pub/CentOS_7_x86_64"
-#partition_table="Kickstart default"
+image_path="http://10.129.6.142/repos/CentOS7_x86_64/CentOS7/"
 
 os_name="CentOSDemo7"
 os_majorversion=7
@@ -33,7 +35,10 @@ environment="production"
 host_groupname="Provision from foreman.example.com"
 node_pass="as12345678"
 
-numbers_of_node=2
 
+number_of_master=1
+master1=08002777c382
 
+number_of_agent=1
+agent1=08002701786a
 

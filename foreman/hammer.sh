@@ -1,3 +1,6 @@
+#automate foreman resources
+#author:Heri Sutrisno
+
 #!/bin/bash
 
 thisdir=`dirname $0`
@@ -25,7 +28,6 @@ createDomain(){
 }
 
 # Update Domain with DNS-id check this later
-proxy_id=$(hammer -u $username -p $password proxy list | /usr/bin/grep -E "(^|\s)$dns_id($|\s)" | /usr/bin/cut -d' ' -f1)
 #hammer -u $username -p $password domain update --name $domain --dns-id $proxy_id
 
 createInstallMedium(){
@@ -74,7 +76,7 @@ updateTemplate(){
     #update Kickstarter_Default
     echo "Update Kickstart default"
     hammer -u $username -p $password template update --id $template_id_default --file $thisdir/Kickstart_default
-    echo "Update PXELinux global default end"
+    echo "Update Kickstart default end"
 
     echo "Update provisioning template"
     hammer -u $username -p $password template update --id $template_id_default --operatingsystem-ids $os_id
@@ -92,12 +94,12 @@ updateTemplate(){
     hammer -u $username -p $password os set-default-template --id $os_id --config-template-id $template_id_userdata
     echo "end Associate"
 
-    echo "Update PXELinux global default"
+    #echo "Update PXELinux global default"
     # Update PXELinux global default
-    template_id_pxelinux_global_default=$(hammer -u $username -p $password template list --search "PXELinux global default" | /usr/bin/grep -E "(^|\s)PXELinux global default($|\s)" | /usr/bin/cut -d' ' -f1)
-    hammer -u $username -p $password template update --locked false --id $template_id_pxelinux_global_default
-    hammer -u $username -p $password template update --id $template_id_pxelinux_global_default --file $thisdir/PXELinux_global_default
-    echo "Update PXELinux global default end"
+    #template_id_pxelinux_global_default=$(hammer -u $username -p $password template list --search "PXELinux global default" | /usr/bin/grep -E "(^|\s)PXELinux global default($|\s)" | /usr/bin/cut -d' ' -f1)
+    #hammer -u $username -p $password template update --locked false --id $template_id_pxelinux_global_default
+    #hammer -u $username -p $password template update --id $template_id_pxelinux_global_default --file $thisdir/PXELinux_global_default
+    #echo "Update PXELinux global default end"
 }
 # Update Preseed Finish
 #hammer template update --id $template_id_finish --file /home/server/git/foreman-poc/hammer/preseed_default_finish
@@ -109,15 +111,12 @@ updateTemplate(){
 
 # Update Partition Table
 #hammer partition-table update --id $ptable_id --file /home/server/git/foreman-poc/hammer/pTable
-domain_id=$(hammer -u $username -p $password domain list | /usr/bin/grep -E "(^|\s)$domain($|\s)" | /usr/bin/cut -d' ' -f1)
 
 createSubnet(){
 
-    echo "Create subnet"
     # Create Subnet (if not alreay there)
     if [ -z "$(hammer -u $username -p $password subnet list | /usr/bin/grep -E "(^|\s)$subnet_name($|\s)")"  ]; then
         hammer -u $username -p $password subnet create --name $subnet_name --network $subnet_network --mask $subnet_mask --gateway $subnet_gateway --ipam "DHCP" --from $subnetip_start --to $subnetip_end --domain-ids $domain_id --dhcp-id $proxy_id --tftp-id $proxy_id --dns-id $proxy_id 
-    #--discovery-id $proxy_id
     else
         echo "Already created: Subnet $subnet_name"
     fi
@@ -158,15 +157,17 @@ generateTemplate(){
     
     subnet_id=$(hammer -u $username -p $password subnet list | /usr/bin/grep -E "(^|\s)$subnet_name($|\s)" | /usr/bin/cut -d' ' -f1)
     proxy_id=$(hammer -u $username -p $password proxy list | /usr/bin/grep -E "(^|\s)$dns_id($|\s)" | /usr/bin/cut -d' ' -f1)
-    hammer -u $username -p $password subnet update --id $subnet_id --discovery-id $proxy_id
+    #hammer -u $username -p $password subnet update --id $subnet_id --discovery-id $proxy_id
     hammer -u $username -p $password template build-pxe-default
     #HOST_GROUPID=$(hammer -u $username -p $password hostgroup list| /usr/bin/grep -E "(^|\s)$host_groupname($|\s)" | /usr/bin/cut -d' ' -f1)
 }
 setArchitecture
 createDomain
+proxy_id=$(hammer -u $username -p $password proxy list | /usr/bin/grep -E "(^|\s)$dns_id($|\s)" | /usr/bin/cut -d' ' -f1)
 createInstallMedium
 createOS
 updateTemplate
+domain_id=$(hammer -u $username -p $password domain list | /usr/bin/grep -E "(^|\s)$domain($|\s)" | /usr/bin/cut -d' ' -f1)
 createSubnet
 createEnvType
 createHostGroup
