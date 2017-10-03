@@ -1,4 +1,7 @@
 #!/bin/bash
+#setup repo and manage the installation of foreman
+#author:Heri Sutrisno
+#email:herygranding@gmail.com
 set -e
 thisdir=`dirname $0`
 source ${thisdir}/hammer_cfg.sh

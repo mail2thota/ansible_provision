@@ -1,4 +1,8 @@
 #!/bin/bash
+#initialization foreman script
+#author:Heri Sutrisno
+#email:herygranding@gmail.com
+
 REPODIR=`dirname $0`
 set -e
 source ${REPODIR}/hammer_cfg.sh

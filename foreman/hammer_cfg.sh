@@ -1,4 +1,6 @@
-
+#config file for creating foreman resources
+#author:Heri Sutrisno
+#email:herygranding@gmail.com
 
 username=admin
 password=as123
