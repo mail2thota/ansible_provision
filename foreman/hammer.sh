@@ -1,11 +1,8 @@
-#automate foreman resources
-#author:Heri Sutrisno
-
 #!/bin/bash
 
+set -e
 thisdir=`dirname $0`
 source ${thisdir}/hammer_cfg.sh
-#source ${thisdir}/admin.sh
 
 setArchitecture(){
   
@@ -26,9 +23,6 @@ createDomain(){
         echo "set Domain $domain"
     fi
 }
-
-# Update Domain with DNS-id check this later
-#hammer -u $username -p $password domain update --name $domain --dns-id $proxy_id
 
 createInstallMedium(){
 
@@ -94,29 +88,20 @@ updateTemplate(){
     hammer -u $username -p $password os set-default-template --id $os_id --config-template-id $template_id_userdata
     echo "end Associate"
 
-    #echo "Update PXELinux global default"
-    # Update PXELinux global default
-    #template_id_pxelinux_global_default=$(hammer -u $username -p $password template list --search "PXELinux global default" | /usr/bin/grep -E "(^|\s)PXELinux global default($|\s)" | /usr/bin/cut -d' ' -f1)
-    #hammer -u $username -p $password template update --locked false --id $template_id_pxelinux_global_default
-    #hammer -u $username -p $password template update --id $template_id_pxelinux_global_default --file $thisdir/PXELinux_global_default
-    #echo "Update PXELinux global default end"
 }
-# Update Preseed Finish
-#hammer template update --id $template_id_finish --file /home/server/git/foreman-poc/hammer/preseed_default_finish
-
-# Update Puppet.conf
-#template_id_puppetConf=$(hammer template list --search puppet.conf | /usr/bin/grep puppet.conf | /usr/bin/cut -d' ' -f1)
-#hammer template update --id $template_id_puppetConf --file /home/server/git/foreman-poc/hammer/puppet.conf --type snippet
-
-
-# Update Partition Table
-#hammer partition-table update --id $ptable_id --file /home/server/git/foreman-poc/hammer/pTable
 
 createSubnet(){
 
     # Create Subnet (if not alreay there)
     if [ -z "$(hammer -u $username -p $password subnet list | /usr/bin/grep -E "(^|\s)$subnet_name($|\s)")"  ]; then
-        hammer -u $username -p $password subnet create --name $subnet_name --network $subnet_network --mask $subnet_mask --gateway $subnet_gateway --ipam "DHCP" --from $subnetip_start --to $subnetip_end --domain-ids $domain_id --dhcp-id $proxy_id --tftp-id $proxy_id --dns-id $proxy_id 
+       env_label="production"
+       if [ "${environment,,}" = "${env_label,,}" ];
+       then
+           hammer -u $username -p $password subnet create --name $subnet_name --network $subnet_network --mask $subnet_mask --gateway $subnet_gateway --ipam "DHCP" --from $subnetip_start --to $subnetip_end --domain-ids $domain_id --dhcp-id $proxy_id --tftp-id $proxy_id --boot-mode "DHCP"
+          
+       else
+           hammer -u $username -p $password subnet create --name $subnet_name --network $subnet_network --mask $subnet_mask --gateway $subnet_gateway --ipam "DHCP" --from $subnetip_start --to $subnetip_end --domain-ids $domain_id --dhcp-id $proxy_id --tftp-id $proxy_id --boot-mode "Static"
+       fi
     else
         echo "Already created: Subnet $subnet_name"
     fi
@@ -136,6 +121,20 @@ createEnvType(){
 
 }
 
+createParameters(){
+
+    #global parameter
+    echo "set global paramter"
+    hammer -u $username -p $password global-parameter set --name disable-firewall --value true
+    hammer -u $username -p $password global-parameter set --name package_upgrade --value false
+    hammer -u $username -p $password global-parameter set --name enable-epel --value false
+    hammer -u $username -p $password global-parameter set --name selinux-mode --value permissive
+    hammer -u $username -p $password global-parameter set --name enable-puppetlabs-repo --value false
+    hammer -u $username -p $password global-parameter set --name enable-puppetlabs-pc1-repo --value false
+    echo "global parameter end"
+
+}
+
 createHostGroup(){
     
     echo "Create host group"
@@ -149,14 +148,11 @@ createHostGroup(){
     fi
     echo "Create host group end"
 }
-#Create parameter for host group
-#hostgroup_id=$(hammer -u $username -p $password hostgroup list --search "$host_groupname" | /usr/bin/grep "$host_groupname" | /usr/bin/cut -d' ' -f1)
-#hammer -u $username -p $password hostgroup set-parameter --name 'drives' --value '/dev/sdb:/drv/drive01' --hostgroup-id $hostgroup_id
 
 generateTemplate(){
     
     subnet_id=$(hammer -u $username -p $password subnet list | /usr/bin/grep -E "(^|\s)$subnet_name($|\s)" | /usr/bin/cut -d' ' -f1)
-    proxy_id=$(hammer -u $username -p $password proxy list | /usr/bin/grep -E "(^|\s)$dns_id($|\s)" | /usr/bin/cut -d' ' -f1)
+    #proxy_id=$(hammer -u $username -p $password proxy list | /usr/bin/grep -E "(^|\s)$dns_id($|\s)" | /usr/bin/cut -d' ' -f1)
     #hammer -u $username -p $password subnet update --id $subnet_id --discovery-id $proxy_id
     hammer -u $username -p $password template build-pxe-default
     #HOST_GROUPID=$(hammer -u $username -p $password hostgroup list| /usr/bin/grep -E "(^|\s)$host_groupname($|\s)" | /usr/bin/cut -d' ' -f1)
@@ -170,6 +166,7 @@ updateTemplate
 domain_id=$(hammer -u $username -p $password domain list | /usr/bin/grep -E "(^|\s)$domain($|\s)" | /usr/bin/cut -d' ' -f1)
 createSubnet
 createEnvType
+createParameters
 createHostGroup
 generateTemplate
 exit 0

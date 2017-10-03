@@ -1,7 +1,6 @@
-#initialization foreman script
-#author:Heri Sutrisno
 #!/bin/bash
 REPODIR=`dirname $0`
+set -e
 source ${REPODIR}/hammer_cfg.sh
 
 
@@ -15,5 +14,5 @@ ${REPODIR}/install.sh
 ${REPODIR}/foreman_proxy.sh
 ${REPODIR}/hammer.sh
 ${REPODIR}/foreman_provisioning.sh
-${REPODIR}/ansible_boot.sh
+#/root/checkout_contents/ansible/ansible_boot.sh
 exit 0

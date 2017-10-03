@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 thisdir=`dirname $0`
 source ${thisdir}/hammer_cfg.sh
 
@@ -127,12 +128,29 @@ EOF
 
 setHostName(){
 
+    env_label="development"
+    if [ "${environment,,}" = "${env_label,,}" ];
+    then
+
+        systemctl stop firewalld
+        systemctl disable firewalld
+        sudo sed -i 's/enforcing/permissive/g' /etc/sysconfig/selinux 
+        sudo setenforce 0
+        unset http_proxy
+        unset https_proxy
+        unset no_proxy
+        systemctl restart network
+    fi
+    
+    host_ip=$(ip addr show $dhcp_interface | grep -Po 'inet \K[\d.]+')
+    echo "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4" > /etc/hosts
+    echo "::1         localhost localhost.localdomain localhost6 localhost6.localdomain6" >> /etc/hosts
     echo "$host_ip $dns_id" >> /etc/hosts
     sudo systemctl restart network
 }
 
 installForeman(){
-
+    
     sudo yum -y install foreman-installer nmap
 
 }
