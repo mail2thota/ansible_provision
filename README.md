@@ -40,6 +40,8 @@ Prerequisite
             - choose Automatically connect, click space
             - click ok is followed by click back to close the nmtui windows.
             - restart network; systemctl restart network
+    5. making sure that you don't have any DHCP server available which is connection to the subnet network
+
 Configuration
 -------------
 
