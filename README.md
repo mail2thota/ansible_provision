@@ -28,8 +28,8 @@ Prerequisite
                 sudo firewall-cmd --permanent --add-port=8443/tcp
                 sudo firewall-cmd --permanent --add-port=8140/tcp
 	3. http repo setup on bootstrap machine
-			- installation of nginx Repo
-				https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
+	    - installation of nginx Repo
+	        https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
     4. making sure your DNS address is resolved
         - you may check on /etc/resolv.conf
         - if not set yet you may set manually or you may using nmtui,
