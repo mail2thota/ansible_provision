@@ -41,6 +41,7 @@ Prerequisite
             - click ok is followed by click back to close the nmtui windows.
             - restart network; systemctl restart network
     5. making sure that you don't have any DHCP server available which is connected to the subnet network
+    6. making sure that your network device interface or network interface e.g; "enp0s3" is dedicated only for single IP
 
 Configuration
 -------------
