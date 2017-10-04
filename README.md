@@ -38,7 +38,7 @@ Prerequisite
             - choose your ethernet interface, click enter e.g; enp0s3
             - choose IPv4 CONFIGURATION set "Automatic", click enter
             - choose Automatically connect, click space
-            - click ok follow by click back to close the nmtui windows.
+            - click ok is followed by click back to close the nmtui windows.
             - restart network; systemctl restart network
 Configuration
 -------------
