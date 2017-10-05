@@ -8,7 +8,7 @@ This package allows us to install ansible and run the needed playbooks for insta
 To get the list of host which was provisioned by foreman and install the needed softwares such as ambari and hdp through ansible into the nodes.
 
 ## Origin Repo: 
-https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible_boot.sh
+https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ansible_boot.sh
 
 
 ## Quickstart:
