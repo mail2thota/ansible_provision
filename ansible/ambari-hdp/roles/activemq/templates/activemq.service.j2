@@ -1,0 +1,19 @@
+[Unit]
+Description=Apache ActiveMQ
+After=network-online.target
+
+[Service]
+Type=forking
+WorkingDirectory={{ activemq_dir }}/bin
+{% if amq_env_vars is defined %}
+EnvironmentFile=/etc/sysconfig/activemq
+{% endif %}
+PIDFile={{ activemq_dir }}/data/activemq.pid
+ExecStart={{ activemq_dir }}/bin/activemq start
+ExecStop={{ activemq_dir }}/bin/activemq stop
+Restart=on-abort
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

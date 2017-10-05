@@ -1,0 +1,14 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- name: install libselinux python
+  yum:
+    name: libselinux-python
+    state: installed
+  register: result
+  until: result.rc == 0
+  retries: 5
+  delay: 10

@@ -1,0 +1,79 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+# tasks file for ambari_master
+- name: copy ambari repo template
+  template:
+    src: "ambari.repo"
+    dest: "/etc/yum.repos.d/ambari.repo"
+ 
+- name: changing ambari to local repo 
+  replace:
+    dest: "/etc/yum.repos.d/ambari.repo"
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.word }}'
+  with_items:
+    - { regexp: '<AMBARI_VERSION>', word: '{{ ambari_version }}' }
+    - { regexp: '<REPO_URL>', word: '{{ local_ambari_repo_url }}' }
+  
+- name: intsall ambari server
+  yum:
+    name: ambari-server
+    state: present
+    update_cache: yes
+  register: result
+  until: result.rc == 0
+  retries: 5
+  delay: 10
+
+- name: update ambari agent task timeout
+  lineinfile:
+    dest: "/etc/ambari-server/conf/ambari.properties"
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+    - { regexp: '^agent\.task\.timeout', line: 'agent.task.timeout=1800' }
+    - { regexp: '^agent\.package\.install\.task\.timeout', line: 'agent.package.install.task.timeout=3600' }
+
+- name: set ambari server memory
+  replace:
+    dest: /var/lib/ambari-server/ambari-env.sh
+    regexp:  "\ -Xmx2048m\ "
+    replace: " -Xmx{{ ambari_server_mem }}m "
+    backup: no
+
+- name: configuring ambari properties
+  lineinfile:
+    dest: "/etc/ambari-server/conf/ambari.properties"
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+    - { regexp: '^jdk1\.8\.url', line: 'jdk1.8.url={{ ambari_repo_url }}/jdk-8u112-linux-x64.tar.gz' }
+    - { regexp: '^jdk1\.8\.jcpol\-url', line: 'jdk1.8.jcpol-url={{ ambari_repo_url }}/jce_policy-8.zip' }
+    - { regexp: '^jdk1\.7\.url', line: 'jdk1.7.url={{ ambari_repo_url }}/jdk-7u67-linux-x64.tar.gz' }
+    - { regexp: '^jdk1\.7\.jcpol\-url', line: 'jdk1.7.jcpol-url={{ ambari_repo_url }}/UnlimitedJCEPolicyJDK7.zip' }
+
+- name: setup ambari server
+  shell: ambari-server setup -s && touch /etc/ambari-server/configured creates=/etc/ambari-server/configured
+  register: ambari_server_setup
+  failed_when: "(ambari_server_setup.stderr is defined and ambari_server_setup.stderr != '') or 'FATAL' in ambari_server_setup.stdout"
+
+- name: copy HDP repo template
+  template:
+    src: "repoinfo.xml.yml"
+    dest: "/var/lib/ambari-server/resources/stacks/HDP/{{ hdp_stack }}/repos/repoinfo.xml"
+  when: use_local_repository
+
+- name: start ambari server
+  service:
+    name: ambari-server
+    state: restarted
+    enabled: yes
+  async: 20
+  poll: 0
+
+- name : check if ambari server is up
+  wait_for : host={{ ansible_fqdn }} port=8080 delay=20

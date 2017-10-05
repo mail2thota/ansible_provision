@@ -1,0 +1,10 @@
+
+
+[ambariserver]
+node1-ambariserver.eng.vmware.com
+
+[ambari_master]
+node1-ambariserver.eng.vmware.com
+
+[ambari_slave]
+node1-ambariserver.eng.vmware.com

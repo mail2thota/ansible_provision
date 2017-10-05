@@ -1,2 +1,0 @@
-- name: install_ambari_server
-  yum: name=ambari-server state=installed

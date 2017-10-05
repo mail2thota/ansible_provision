@@ -1,7 +1,0 @@
-- hosts: "{{ ambari_servers | default('<AMBARI_SERVER_ID>') }}"
-  roles:
-    - { role: common,common_config_hostname: True }
-    - epel
-    - openjdk
-    - ambari_server
-

@@ -1,0 +1,17 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+activemq_version: apache-activemq-5.15.0
+activemq_tar_location: http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.15.0/apache-activemq-5.15.0-bin.tar.gz&action=download
+activemq_dir: /opt/activemq
+activemq_home_dir:  /var/lib/activemq
+activemq_log_dir: /var/log/activemq
+activemq_group: activemq
+activemq_user: activemq
+
+amq_env_vars:
+  ACTIVEMQ_USER: "{{ activemq_user }}"
+  ACTIVEMQ_BASE: "{{ activemq_dir }}"

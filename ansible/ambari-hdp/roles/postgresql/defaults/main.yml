@@ -1,0 +1,13 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+postgres_jar_location: /code/hdp-ansible
+postgres_jar_filename: pgdg-centos92-9.2-8.noarch
+postgres_data_location: "/var/lib/pgsql/{{ postgresql_version }}/data"
+postgresql_version: 9.2
+postgresql_service_name: "postgresql-{{ postgresql_version }}"
+postgres_url: http://10.129.6.52/files/postgresql/pgdg-centos92-9.2-8.noarch.rpm
+postgresql_short_version: 92

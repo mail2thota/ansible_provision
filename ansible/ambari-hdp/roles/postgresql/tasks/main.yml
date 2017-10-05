@@ -1,0 +1,73 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+  - name: Download Postgresql into {{ groups.ambari_master[0] }}
+    get_url:
+      url: "{{ postgres_url }}"
+      dest: "{{ postgres_jar_location }}/{{ postgres_jar_filename }}.rpm"
+
+  - name: Install Postgresql into {{ groups.ambari_master[0] }}
+    yum: name={{ item }}
+    with_items:
+      - "{{ postgres_jar_location }}/{{ postgres_jar_filename }}.rpm"
+
+    #Dependencies are based on your Postgresql version. E.g: Version 9.2 will have postgresql92-server, Version 9.4 will have postgresql94-server
+  - name: Install New Postgresql Dependencies
+    yum: name={{ item }} state=latest
+    with_items:
+      - postgresql92-server
+      - postgresql92-contrib
+      - pg_repack92
+      - postgresql-jdbc
+
+  - name: Change Postgresql-JDBC Permission
+    file:
+      path: "/usr/share/java/postgresql-jdbc.jar"
+      mode: "0644"
+
+  - name: Remove Postgres Data Folder
+    file:
+      path: "/var/lib/pgsql/{{postgresql_version}}/data"
+      state: absent
+
+  - name: Initiate the Database
+    shell: "/usr/pgsql-{{ postgresql_version }}/bin/postgresql{{ postgresql_short_version }}-setup initdb"
+
+  - name: Copy custom Postgresql.conf to "{{ postgres_data_location }}"
+    template:
+      src: ../conf/postgresql.conf
+      dest: "{{ postgres_data_location }}"
+      mode: "0751"
+
+  - name: Copy Custom pg_hba.conf to "{{ postgres_data_location }}"
+    template:
+      src: ../conf/pg_hba.conf
+      dest: "{{ postgres_data_location }}"
+      mode: "0751"
+
+  - name: Create a Postgres file for Postgres Version < 9.4
+    copy:
+      src: ../conf/postgresql
+      dest: "/etc/sysconfig/pgsql/{{ postgresql_service_name }}"
+      force: no
+      group: sys
+      owner: root
+      mode: "0751"
+
+  - name: Link 'pgsql' to the new Postgres version
+    file:
+      path: /usr/bin/psql
+      src: "/usr/pgsql-{{ postgresql_version }}/bin/psql"
+      state: link
+      force: yes
+
+  - name: Start the Postgres service
+    service:
+      name: "{{ postgresql_service_name }}"
+      state: started
+
+  - name: Configuring Postgresql JDBC Driver
+    command: "ambari-server setup --jdbc-db=postgres --jdbc-driver=/usr/share/java/postgresql-jdbc.jar"

@@ -1,5 +1,0 @@
-- name: setup ambari server
-  command: ambari-server setup -s
-
-
-

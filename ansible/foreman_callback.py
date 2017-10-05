@@ -29,11 +29,11 @@ try:
 except ImportError:
     parent_class = object
 
-FOREMAN_URL = os.getenv('FOREMAN_URL', <FOREMAN_URL>)
+FOREMAN_URL = os.getenv('FOREMAN_URL', "<FOREMAN_URL>")
 # Substitute by a real SSL certificate and key if your Foreman uses HTTPS
-FOREMAN_SSL_CERT = (os.getenv('FOREMAN_SSL_CERT', <FOREMAN_SSL_CERT>),
-                    os.getenv('FOREMAN_SSL_KEY', <FOREMAN_SSL_KEY>))
-FOREMAN_SSL_VERIFY = os.getenv('FOREMAN_SSL_VERIFY', <FOREMAN_SSL_VERIFY>)
+FOREMAN_SSL_CERT = (os.getenv('FOREMAN_SSL_CERT', "<FOREMAN_SSL_CERT>"),
+                    os.getenv('FOREMAN_SSL_KEY', "<FOREMAN_SSL_KEY>"))
+FOREMAN_SSL_VERIFY = os.getenv('FOREMAN_SSL_VERIFY', "<FOREMAN_SSL_VERIFY>")
 FOREMAN_HEADERS = {
     "Content-Type": "application/json",
     "Accept": "application/json"

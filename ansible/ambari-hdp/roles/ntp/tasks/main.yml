@@ -1,0 +1,20 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- name: install ntp
+  yum:
+    name: ntp
+    state: present
+  register: result
+  until:  result is defined and result.rc == 0
+  retries: 10
+  delay: 10
+
+- name: check ntp is running and enabled
+  service:
+    name: ntpd
+    state: started
+    enabled: yes

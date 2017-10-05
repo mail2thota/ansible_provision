@@ -1,0 +1,57 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- include_vars: "{{ cluster_type }}.yml"
+
+- name: install python-requests
+  yum:
+    name: python-requests
+    state: installed
+  register: result
+  until: result.rc == 0
+  retries: 5
+  delay: 10
+
+- name : check if ambari-server is up on {{ ambari_host }}:{{ambari_port}}
+  wait_for :
+    host: "{{ ambari_host }}"
+    port: "{{ ambari_port }}"
+    delay: 0
+    timeout: 300
+
+- name: remove cluster with ambari; http://{{ groups.ambari_master[0] }}:{{ ambari_port }}
+  ambari_cluster_state:
+    host: "{{ groups.ambari_master[0] }}"
+    port: "{{ ambari_port }}"
+    username: "{{ ambari_user }}"
+    password: "{{ ambari_password }}"
+    cluster_name: "{{ cluster_name }}"
+    cluster_state: absent
+    wait_for_complete: True
+
+
+- name: deploy cluster with ambari; http://{{ groups.ambari_master[0] }}:{{ ambari_port }}
+  ambari_cluster_state:
+    host: "{{ groups.ambari_master[0] }}"
+    port: "{{ ambari_port }}"
+    username: "{{ ambari_user }}"
+    password: "{{ ambari_password }}"
+    cluster_name: "{{ cluster_name }}"
+    cluster_state: present
+    blueprint_name: "{{ blueprint_name }}"
+    configurations: "{{ configurations }}"
+    wait_for_complete: True
+    blueprint_var: "{{ blueprint }}"
+    use_local_repository: "{{ use_local_repository }}"
+
+- name: connecting hive with ambari; http://{{ groups.ambari_master[0] }}:{{ ambari_port }}
+  shell: "hdfs dfs {{ item }}"
+  become: True
+  become_user: hdfs
+  with_items:
+    - -mkdir -p /user/admin
+    - -chown admin:hdfs /user/admin
+    - -chmod -R 755 /user/admin

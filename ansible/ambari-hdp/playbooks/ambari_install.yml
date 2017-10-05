@@ -1,0 +1,41 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+
+- hosts: ambari_*
+  become: true
+  roles:
+    - ambari_common
+  tags:
+    - ambari-prereqs
+    - hdp-install
+
+- hosts: ambari_master
+  become: true
+  roles:
+    - ambari_master
+  tags:
+    - ambari-server
+    - hdp-install
+  
+
+
+
+- hosts: ambari_slave
+  become: true
+  roles:
+    - role: ambari_slave
+  tags:
+    - ambari-agent
+    - hdp-install
+
+- hosts: ambari_master
+  become: true
+  roles:
+    - role: ambari_config
+  tags:
+    - hdp-install
+    - hdp-deploy

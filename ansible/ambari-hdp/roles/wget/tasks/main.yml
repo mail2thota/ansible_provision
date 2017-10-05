@@ -1,0 +1,14 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- name: install wget dependency
+  yum:
+    name: wget
+    state: present
+  register: result
+  until:  result is defined and result.rc == 0
+  retries: 10
+  delay: 10

@@ -1,0 +1,102 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+
+- name: "Determine if to use systemd or not (for centos 6 support)"
+  stat:
+    path: /etc/systemd
+  register: systemd
+
+- name: "Set fact if systemd is avail"
+  set_fact:
+    activemq_systemd: true
+  when: systemd.stat.exists
+
+- name: "Add Activemq group"
+  group:
+    name: "{{ activemq_group }}"
+
+- name: "Add Activemq user"
+  user:
+    name: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+    home: "{{ activemq_home_dir }}"
+    comment: "ActiveMQ service account"
+    createhome: no
+    state: present
+    system: yes
+
+- name: "Create requires directories [home/log etc etc]"
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+  with_items:
+  - "{{ activemq_home_dir }}"
+  - "{{ activemq_log_dir }}"
+
+- name: Unarchive {{ activemq_tar }} into /opt
+  unarchive:
+    src: "{{activemq_tar_location}}"
+    dest: "/opt"
+    owner: activemq
+    group: activemq
+    mode: "go-w"
+    copy: no
+
+- name: Create symbolic link for /opt/activemq
+  file:
+    src: "/opt/{{activemq_version}}/"
+    dest: "/opt/activemq"
+    state: link
+
+- name: Update config
+  lineinfile:
+    destfile: /opt/activemq/conf/activemq.xml
+    regexp: '<managementContext createConnector="false"/>'
+    line: '<managementContext createConnector="true"/>'
+
+- name: "Create init script link file"
+  file:
+    src: "{{ activemq_dir }}/bin/linux-x86-{{ ansible_userspace_bits }}/activemq"
+    dest: "/etc/init.d/activemq"
+    owner: root
+    group: root
+    state: link
+  when: activemq_systemd is not defined
+
+- name: "Generate empty log file ..."
+  file:
+    path: "{{ activemq_log_dir }}"
+    state: touch
+    mode: "u=rw,g=r,o=r"
+    owner: root
+    group: root
+
+- name: "Generate /etc/sysconfig/activemq Redhat"
+  template:
+    src: sysconfig_activemq.j2
+    dest: /etc/sysconfig/activemq
+    owner: root
+    group: root
+    mode: 0755
+
+- name: "Generate systemd service file"
+  template:
+    src: activemq.service.j2
+    dest: /etc/systemd/system/activemq.service
+    owner: root
+    group: root
+  when: activemq_systemd is defined
+
+- service: name=activemq enabled=yes state=started
+
+- name: Start activemq
+  service:
+    name: "activemq"
+    state: started

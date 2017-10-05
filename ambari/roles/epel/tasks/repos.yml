@@ -1,3 +1,0 @@
-- name: copy_repo_of_CentOS-Base
-  get_url: url=http://10.129.6.142/repos/epel/temp/epel.repo dest=/etc/yum.repos.d/epel.repo
-

@@ -1,0 +1,94 @@
+#Hadoop HDFS Logs
+/var/log/hadoop/hdfs/*.log* {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}
+
+/var/log/hadoop/hdfs/*.out {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}
+
+/var/log/hadoop/hdfs/*.audit {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}
+
+#Hadoop Yarn Logs
+/var/log/hadoop/yarn/*.log {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}
+
+#Hadoop Mapreduce Logs
+/var/log/hadoop/mapreduce/*.log {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}
+
+#HBase Logs
+/var/log/hbase/*.log* {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}
+
+/var/log/hbase/*.out {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}
+
+/var/log/hbase/*.audit {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}
+
+#Zookeeper Logs
+/var/log/zookeeper/*.log {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}
+
+/var/log/zookeeper/*.out {
+  {{ hadoop_logrotate_frequency }}
+  rotate {{ hadoop_logrotate_retention }}
+  missingok
+  notifempty
+  copytruncate
+  compress
+}

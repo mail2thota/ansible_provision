@@ -1,2 +1,0 @@
-Defaults:root    !requiretty
-root    ALL=(ALL)       NOPASSWD: ALL

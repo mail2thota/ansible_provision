@@ -1,2 +1,0 @@
-- name: install_epel_repo
-  yum: name=epel-release state=installed
