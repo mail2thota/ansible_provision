@@ -12,7 +12,7 @@ https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/a
 
 
 ## Quickstart:
-Assuming that the foreman has provisioned the nodes,thereby run below command
+Assuming that the nodes are provisioned with OS and dependencies using foreman or manually,thereby run below command
 
 ```
 ./ansible_boot.sh
