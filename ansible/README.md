@@ -15,7 +15,7 @@ https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/b
 Assuming that the foreman has provisioned the nodes,thereby run below command
 
 ```
-./boot_ansible_hadoop.sh
+./ansible_boot.sh
 
 ```
 This will automatically do the needed configurations for ansible and executes the playbooks which installs the needed softwares required.
@@ -25,22 +25,27 @@ Following are the configurations
 
 | Environment Variable       |  Example           | Description  |
 |:------------- |:-------------|:-----|
-|HOST_USER_NAME|root|User name of the host.|
-|HOST_PASSWORD|baesystems|Password of the host.|
-|FTP_URL|ftp://192.168.116.130|ftp server url|
-|ANSIBLE_HADOOP_PATH|${FTP_URL}/pub/ansible-hadoop-master/*|Path of the hadoop playbooks in ftp server|
-|ANSIBLE_HDP_PATH|${FTP_URL}/pub/blueprints/*|Path of the hdp playbooks in ftp server|
-|FOREMAN_CALLBACK_PATH|${FTP_URL}/pub/foreman_callback.py|Path of foreman_callback.py file in ftp server|
-|PROXY_URL|http://10.129.49.21:8080| Proxy used. |
-|AMBARI_SERVER_ID|ambariservers|This ID will be compared with the hostname to determine whether the host belong to ambari server group. |
-|AMBARI_AGENT_ID|ambariagents|This ID will be compared with the hostname to determine whether the host belong to ambari agent group.|
-|AMBARI_USER_NAME|admin|User name of ambari login.|
-|AMBARI_PASSWORD|admin|Password of ambari login. |
+|HOST_USER_NAME|root|User name of the node.|
+|HOST_PASSWORD|baesystems|Password of the node.|
+|FOREMAN_USER_NAME|admin|User Name of foreman|
+|FOREMAN_PASSWORD|4HFefKecSjn2i7Z8|Password of foreman|
+|AMBARI_SERVER_HOST_ID|ambariserver|Ambari server will be installed in host containing word ambariserver in its hostname |
+|AMBARI_AGENT_HOST_ID|ambariagent|Ambari agent will be installed in host containing word ambariserver in its hostname|
+|AMBARI_SERVER_ID|ambari_master| Ambari master group ID for ansible hosts |
+|AMBARI_AGENT_ID|ambari_slave|Ambari slave group ID for ansible hosts |
+|HDP_REPO_URL|http://10.129.6.142/repos/HDP/HDP-2.6.2.0/centos7 |This is for HDP repo path|
+|HDP_UTILS_REPO_URL|http://10.129.6.142/repos/HDP/HDP-UTILS-1.1.0.21|This is for HDP utils repo path|
+|AMBARI_REPO_URL|http://10.129.6.142/repos/ambari/ambari-2.5.2.0/centos7 |This is ambari repo path|
+|HDP_STACK_VERSION|2.6| Stack version of HDP |
+|HDP_UTILS_VERSION|1.1.0.21| HDP utils version |
+|HDP_OS_TYPE|redhat7| HDP OS type |
+|ENVIRONMENT|development| Development or production env |
+|AMBARI_VERSION|2.5.2.0| Ambari version |
 
 
 
 ## Test:
-* Once we launch `./boot_ansible_hadoop.sh` ,ansible hosts file will be configured in the bootstrap machine and the servers will be grouped together as per their hostname.For example if the host name is raul-ambariservers-ambariagents.eng.vmware.com then this means the host will be acting as both ambari server and ambari agent based on the host name.If suppose  
+* Once we launch `./ansible_boot.sh` ,ansible hosts file will be configured in the bootstrap machine and the servers will be grouped together as per their hostname.For example if the host name is raul-ambariservers-ambariagents.eng.vmware.com then this means the host will be acting as both ambari server and ambari agent based on the host name.If suppose  
 opal-ambariagents.eng.vmware.com then this host will act only as ambari agent.This will create entry in ansible hosts `/etc/ansible/hosts` as below
 
 ```
