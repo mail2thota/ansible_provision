@@ -26,7 +26,6 @@ if [ -f ~/.ssh/bootstrap_rsa.pub ]; then
 fi
 ssh-keygen -f ~/.ssh/bootstrap_rsa -t rsa -N ''
 echo "generated bootstrap key in ~/.ssh"
-> /root/hdp-ansible/inventory/full-dev-platform/hosts
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/bootstrap_rsa &>/dev/null
 server_count=0
@@ -104,6 +103,7 @@ rm -rf executed_playbooks
 mkdir executed_playbooks
 cp -r  ambari-hdp executed_playbooks/
 cd executed_playbooks/ambari-hdp
+> inventory/full-dev-platform/hosts
 echo -e "${server_groups}" > inventory/full-dev-platform/hosts
 GLOBAL_VAR_LOC="inventory/full-dev-platform/group_vars/all"
 sed -i "s%<HDP_REPO_URL>%${HDP_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
