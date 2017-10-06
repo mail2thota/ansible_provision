@@ -56,7 +56,7 @@ node1-ambariserver.eng.vmware.com
 node2-ambariagent.eng.vmware.com
 ```
 
-and boostrap machine interacts with the nodes with local DNS server.
+and boostrap machine interacts with the nodes through local DNS server.
 
 * The interaction between the bootstrap machine and nodes happens through ssh where the script takes cares about public key which are added to authorized_keys in the nodes and also the nodes are under the known_hosts of the bootstrap machine which makes the bootstrap machine to access other nodes.
 
