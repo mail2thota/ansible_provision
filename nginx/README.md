@@ -14,7 +14,7 @@
    
 ### OPTION 1 - executing script with out any argument
 
-   create repos folder under /usr/share/. Download and copy all required repositories to /usr/share/repos prior to executing the script.
+   create repos folder under /usr/share/. Download and copy all required repositories to /usr/share/repos and set the PROXY_URL param prior to executing the script
    
    
   ```
@@ -47,7 +47,7 @@ Following are the required softwares and libraries in repository
 ##### Note: rsync links required to install rsync package on bootstrap machine and all tars must be unzipped.
 
 ### OPTION 2 - executing script with argument 'N'
-Installs NGINX server and downloads all required repositories from internet.
+PROXY_URL param prior to executing the script which installs NGINX server and downloads all required repositories from internet.
 
 ##### Note: This required internet connection
   ```

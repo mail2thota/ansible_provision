@@ -1,8 +1,8 @@
 #!/bin/bash
-sudo yum -y install createrepo epel-release firewalld rsync
-sudo yum -y install nginx
-sudo yum -y update
+PROXY_URL="http://10.129.49.21:8080"
 
+echo "proxy=${PROXY_URL}" >> /etc/yum.conf
+sudo yum -y install nginx
 # Create Repository
 if [[ $1 == N ]]; then
 	#create a "repos" directory to be listed
@@ -78,7 +78,7 @@ if [[ $1 == N ]]; then
 elif [ ! -d /usr/share/nginx/html/repos/ ]; then
 	# copy downloaded folders to nginx repos
 	mkdir -p /usr/share/nginx/html/repos/
-	cp /usr/share/repos/ /usr/share/nginx/html/repos/
+	mv /usr/share/repos/* /usr/share/nginx/html/repos/
 fi
 
 #provide permissions to nginx
@@ -95,3 +95,4 @@ firewall-cmd --reload
 
 #enable nginx
 systemctl enable nginx
+sed -i "s%proxy=${PROXY_URL}% %g" /etc/yum.conf
