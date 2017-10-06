@@ -47,7 +47,7 @@ do
 	elif [[ $host_domain_temp == *"${AMBARI_AGENT_HOST_ID}"* ]];then
         host_domain_temp="${host_domain_temp}-${AMBARI_AGENT_ID}"	
 	fi	
-    server_group_id_groups="$(cut -d '-' -f 2- <<< "${host_domain_temp}")"
+    server_group_id_groups="$(cut -d '-' -f 3- <<< "${host_domain_temp}")"
 	for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
 	do
 		if [ $AMBARI_SERVER_ID == "${server_group_id}" ];then

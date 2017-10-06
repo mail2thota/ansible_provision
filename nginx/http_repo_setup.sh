@@ -3,6 +3,8 @@ PROXY_URL="http://10.129.49.21:8080"
 
 echo "proxy=${PROXY_URL}" >> /etc/yum.conf
 sudo yum -y install nginx
+sudo yum -y install python-pip
+pip install requests
 # Create Repository
 if [[ $1 == N ]]; then
 	#create a "repos" directory to be listed
