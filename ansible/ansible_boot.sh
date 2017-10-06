@@ -2,22 +2,22 @@
 
 set -e
 
-HOST_USER_NAME="root"
-HOST_PASSWORD="baesystems"
-FOREMAN_USER_NAME="admin"
-FOREMAN_PASSWORD="4HFefKecSjn2i7Z8"
-AMBARI_SERVER_HOST_ID="ambariserver"
-AMBARI_AGENT_HOST_ID="ambariagent"
-AMBARI_SERVER_ID="ambari_master"
-AMBARI_AGENT_ID="ambari_slave"
-HDP_REPO_URL="http://10.129.6.142/repos/HDP/HDP-2.6.2.0/centos7"
-HDP_UTILS_REPO_URL="http://10.129.6.142/repos/HDP/HDP-UTILS-1.1.0.21"
-AMBARI_REPO_URL="http://10.129.6.142/repos/ambari/ambari-2.5.2.0/centos7"
-HDP_STACK_VERSION="2.6"
-HDP_UTILS_VERSION="1.1.0.21"
-HDP_OS_TYPE="redhat7"
-ENVIRONMENT="development"
-AMBARI_VERSION="2.5.2.0"
+HOST_USER_NAME=${node_user:-root}
+HOST_PASSWORD=${node_pass:-baesystems}
+FOREMAN_USER_NAME=${username:-admin}
+FOREMAN_PASSWORD=${password:-4HFefKecSjn2i7Z8}
+AMBARI_SERVER_HOST_ID=${ambari_host_suffix:-ambariserver}
+AMBARI_AGENT_HOST_ID=${ambari_agent_suffix:-ambariagent}
+AMBARI_SERVER_ID=${ambari_master_group:-ambari_master}
+AMBARI_AGENT_ID=${ambari_agent_group:-ambari_slave}
+HDP_REPO_URL=${hdp_repo_url:-http://10.129.6.142/repos/HDP/HDP-2.6.2.0/centos7}
+HDP_UTILS_REPO_URL=${hdp_utils_repo_url:-http://10.129.6.142/repos/HDP/HDP-UTILS-1.1.0.21}
+AMBARI_REPO_URL=${ambari_repo_url:-http://10.129.6.142/repos/ambari/ambari-2.5.2.0/centos7}
+HDP_STACK_VERSION=${hdp_stack_version:-2.6}
+HDP_UTILS_VERSION=${hdp_utils_version:-1.1.0.21}
+HDP_OS_TYPE=${hdp_os_type:-redhat7}
+ENVIRONMENT=${environment:-development}
+AMBARI_VERSION=${ambari_version:-2.5.2.0}
 
 
 #generate and configure ssh key,thereby create the server groups in ansible hosts 
