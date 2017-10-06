@@ -39,7 +39,6 @@ server_cardinality="1"
 agent_cardinality="1"
 while read -r foreman_config
 do
-	host_ip="$(cut -d ' ' -f 2 <<< "${foreman_config}")"
 	host_domain="$(cut -d ' ' -f 1 <<< "${foreman_config}")"
 	echo "copying shh key into ${host_domain} domain"
 	ssh-keyscan "${host_domain}" >>~/.ssh/known_hosts
@@ -92,7 +91,7 @@ do
 			fi
 		fi
 	done
-done < <(hammer --csv -u "${FOREMAN_USER_NAME}" -p "${FOREMAN_PASSWORD}" host list | grep -vi '^Id' | awk -F, {'print $2, $5'} | grep -vi "^$(hostname -f)" )
+done < <(hammer --csv -u "${FOREMAN_USER_NAME}" -p "${FOREMAN_PASSWORD}" host list | grep -vi '^Id' | awk -F, {'print $2'} | grep -vi "^$(hostname -f)" )
 
 #confgure the ansible callback plugin for foreman
 echo "configuring the ansible callback plugin for foreman"
