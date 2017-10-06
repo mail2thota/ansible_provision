@@ -2,7 +2,7 @@
 #author:Heri Sutrisno
 #email:herygranding@gmail.com
 
-username=admin
+username admin
 password=as123
 architecture="x86_64"
 domain=example.com
@@ -37,8 +37,9 @@ node_pass="as12345678"
 
 
 number_of_master=1
-master1=080027BEB2A3
+master1=080027DC7005
+master1ip=10.11.12.10
 
 number_of_agent=0
-agent1=080027C4098D
-
+agent1=08002704E9E5
+agent1ip=10.11.12.11

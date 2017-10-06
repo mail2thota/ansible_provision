@@ -22,12 +22,13 @@ provisionNodes(){
     until [[ $pmaster -eq $null ]]
     do
        VAR="master$pmaster"
-       hammer -u $username -p $password host create --hostgroup-id $hostgroup_id --name "${!VAR}-ambariserver" --mac ${!VAR}  --interface identifier=$dhcp_interface
-       check_host=$(hammer -u $username -p $password --csv host list | /usr/bin/grep -i ${!VAR} | awk -F, {'print $5'}| wc -l)
+       VARIP="${VAR}ip"
+       hammer -u $username -p $password host create --hostgroup-id $hostgroup_id --name "$VAR-ambariserver" --mac ${!VAR}  --interface identifier=$dhcp_interface --ip ${!VARIP}
+       check_host=$(hammer -u $username -p $password --csv host list | /usr/bin/grep -i $VAR | awk -F, {'print $5'}| wc -l)
        if [[ $check_host -eq 1 ]];
        then
            pmaster=$((pmaster - 1))
-           dcv_ip=$(hammer -u $username -p $password --csv host list | /usr/bin/grep -i ${!VAR} | awk -F, {'print $5'})
+           dcv_ip=$(hammer -u $username -p $password --csv host list | /usr/bin/grep -i $VAR | awk -F, {'print $5'})
            sed -i '1i'"$dcv_ip ${!VAR}"'' $provision_log
            echo "provision node ${!VAR}"
        fi
@@ -36,12 +37,13 @@ provisionNodes(){
     until [[ $pagent -eq $null ]]
     do
         VAR="agent$pagent"
-        hammer -u $username -p $password host create --hostgroup-id $hostgroup_id --name "${!VAR}-ambariagent" --mac ${!VAR}  --interface identifier=$dhcp_interface
-        check_host=$(hammer -u $username -p $password --csv host list | /usr/bin/grep -i ${!VAR} | awk -F, {'print $5'}| wc -l)
+        VARIP="${VAR}ip"
+        hammer -u $username -p $password host create --hostgroup-id $hostgroup_id --name "$VAR-ambariagent" --mac ${!VAR}  --interface identifier=$dhcp_interface --ip ${!VARIP}
+        check_host=$(hammer -u $username -p $password --csv host list | /usr/bin/grep -i $VAR | awk -F, {'print $5'}| wc -l)
         if [[ $check_host -eq 1 ]];
         then
             pagent=$((pagent - 1))
-            dcv_ip=$(hammer -u $username -p $password --csv host list | /usr/bin/grep -i ${!VAR} | awk -F, {'print $5'})
+            dcv_ip=$(hammer -u $username -p $password --csv host list | /usr/bin/grep -i $VAR | awk -F, {'print $5'})
             sed -i '1i'"$dcv_ip ${!VAR}"'' $provision_log
             echo "provision node ${!VAR}"
         fi

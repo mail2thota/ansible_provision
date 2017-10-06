@@ -1,7 +1,4 @@
 #!/bin/bash
-#collection fuctions for logging
-#author:Heri Sutrisno
-#email:herygranding@gmail.com
 set -e
 thisdir=`dirname $0`
 provision_log="${thisdir}/log/list_node"
