@@ -16,7 +16,6 @@ AMBARI_REPO_URL=${ambari_repo_url:-http://10.129.6.142/repos/ambari/ambari-2.5.2
 HDP_STACK_VERSION=${hdp_stack_version:-2.6}
 HDP_UTILS_VERSION=${hdp_utils_version:-1.1.0.21}
 HDP_OS_TYPE=${hdp_os_type:-redhat7}
-ENVIRONMENT=${environment:-development}
 AMBARI_VERSION=${ambari_version:-2.5.2.0}
 
 
@@ -27,14 +26,10 @@ if [ -f ~/.ssh/bootstrap_rsa.pub ]; then
 fi
 ssh-keygen -f ~/.ssh/bootstrap_rsa -t rsa -N ''
 echo "generated bootstrap key in ~/.ssh"
-> /root/hdp-ansible/inventory/full-dev-platform/hosts
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/bootstrap_rsa &>/dev/null
 server_count=0
 agent_count=0
-if [ $ENVIRONMENT == "development" ];then
-	hammer --csv -u "${FOREMAN_USER_NAME}" -p "${FOREMAN_PASSWORD}" host list | grep -vi '^Id' | awk -F, {'print $5, $2'} | grep -vi '^$(hostname -i)' >> /etc/hosts
-fi
 server_cardinality="1"
 agent_cardinality="1"
 while read -r foreman_config
@@ -43,12 +38,6 @@ do
 	echo "copying shh key into ${host_domain} domain"
 	ssh-keyscan "${host_domain}" >>~/.ssh/known_hosts
 	sshpass -p "${HOST_PASSWORD}" ssh-copy-id -i ~/.ssh/bootstrap_rsa.pub "${HOST_USER_NAME}"@"${host_domain}"
-	if [ $ENVIRONMENT == "development" ];then
-		hammer --csv -u "${FOREMAN_USER_NAME}" -p "${FOREMAN_PASSWORD}" host list | grep -vi '^Id' | awk -F, {'print $5, $2'}  > temp_hosts
-		scp temp_hosts "${HOST_USER_NAME}"@"${host_domain}":/etc
-		ssh -n "${HOST_USER_NAME}"@"${host_domain}" "cat /etc/temp_hosts >> /etc/hosts"
-		rm -rf temp_hosts
-	fi
 	ssh -n "${HOST_USER_NAME}"@"${host_domain}" "rm -rf /etc/yum.repos.d/*"
 	scp /etc/yum.repos.d/CentOS-Base.repo "${HOST_USER_NAME}"@"${host_domain}":/etc/yum.repos.d
 	scp /etc/yum.repos.d/epel.repo "${HOST_USER_NAME}"@"${host_domain}":/etc/yum.repos.d
@@ -58,7 +47,7 @@ do
 	elif [[ $host_domain_temp == *"${AMBARI_AGENT_HOST_ID}"* ]];then
         host_domain_temp="${host_domain_temp}-${AMBARI_AGENT_ID}"	
 	fi	
-    server_group_id_groups="$(cut -d '-' -f 2- <<< "${host_domain_temp}")"
+    server_group_id_groups="$(cut -d '-' -f 3- <<< "${host_domain_temp}")"
 	for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
 	do
 		if [ $AMBARI_SERVER_ID == "${server_group_id}" ];then
@@ -114,6 +103,7 @@ rm -rf executed_playbooks
 mkdir executed_playbooks
 cp -r  ambari-hdp executed_playbooks/
 cd executed_playbooks/ambari-hdp
+> inventory/full-dev-platform/hosts
 echo -e "${server_groups}" > inventory/full-dev-platform/hosts
 GLOBAL_VAR_LOC="inventory/full-dev-platform/group_vars/all"
 sed -i "s%<HDP_REPO_URL>%${HDP_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
