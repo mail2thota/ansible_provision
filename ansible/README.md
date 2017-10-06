@@ -39,7 +39,6 @@ Following are the configurations
 |HDP_STACK_VERSION|2.6| Stack version of HDP |
 |HDP_UTILS_VERSION|1.1.0.21| HDP utils version |
 |HDP_OS_TYPE|redhat7| HDP OS type |
-|ENVIRONMENT|development| Development or production env |
 |AMBARI_VERSION|2.5.2.0| Ambari version |
 
 
@@ -57,15 +56,7 @@ node1-ambariserver.eng.vmware.com
 node2-ambariagent.eng.vmware.com
 ```
 
-and boostrap machine hosts `/etc/hosts` as below if variable ENVIRONMENT is set as "development" which means DNS server is running through which nodes can recognise each other through FQDN
-
-```  
-
-192.168.116.137 node1-ambariserver.eng.vmware.com
-192.168.116.134 node2-ambariagent.eng.vmware.com
-
-```
-It also configures all other nodes hosts `/etc/hosts` so that the nodes and the bootstrap machine can recoginise each other through domain name.
+and boostrap machine interacts with the nodes with local DNS server running by which nodes can recognise each other through FQDN.
 
 * The interaction between the bootstrap machine and nodes happens through ssh where the script takes cares about public key which are added to authorized_keys in the nodes and also the nodes are under the known_hosts of the bootstrap machine which makes the bootstrap machine to access other nodes.
 
