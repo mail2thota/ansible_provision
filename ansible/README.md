@@ -8,11 +8,11 @@ This package allows us to install ansible and run the needed playbooks for insta
 To get the list of host which was provisioned by foreman and install the needed softwares such as ambari and hdp through ansible into the nodes.
 
 ## Origin Repo: 
-https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ansible_boot.sh
+https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible_boot.sh
 
 
 ## Quickstart:
-Assuming that the nodes are provisioned with OS and dependencies using foreman or manually,thereby run below command
+Assuming that the foreman has provisioned the nodes,thereby run below command
 
 ```
 ./ansible_boot.sh
@@ -45,24 +45,24 @@ Following are the configurations
 
 
 ## Test:
-* Once we launch `./ansible_boot.sh` ,ansible hosts file will be configured in the bootstrap machine and the servers will be grouped together as per their hostname.For example if the host name is raul-ambariservers-ambariagents.eng.vmware.com then this means the host will be acting as both ambari server and ambari agent based on the host name.If suppose  
-opal-ambariagents.eng.vmware.com then this host will act only as ambari agent.This will create entry in ansible hosts `/etc/ansible/hosts` as below
+* Once we launch `./ansible_boot.sh` which is under ansible folder ,there will be a folder named executed_playbooks created under this folder ambari-hdp folder will be copied,under this process there will be substitution of place holder name with which the play book has to be executed,so in general this is the folder which contain all playbooks which will be executed.ansible hosts file will be configured in the bootstrap machine and the servers will be grouped together as per their hostname.For example if the host name is node1-ambariserver.eng.vmware.com then this means the host will be acting as both ambari server and ambari agent based on the host name.If suppose  
+node2-ambariagent.eng.vmware.com then this host will act only as ambari agent.This will create entry in ansible hosts `/executed_playbooks/ambari-hdp/inventory/full-dev-platform/hosts` as below
 
 ```
-[ambariagents]
-raul-ambariservers-ambariagents.eng.vmware.com
-opal-ambariagents.eng.vmware.com
+[ambari_master]
+node1-ambariserver.eng.vmware.com
 
-[ambariservers]
-raul-ambariservers-ambariagents.eng.vmware.com
+[ambari_slave]
+node1-ambariserver.eng.vmware.com
+node2-ambariagent.eng.vmware.com
 ```
 
-and boostrap machine hosts `/etc/hosts` as below
+and boostrap machine hosts `/etc/hosts` as below if variable ENVIRONMENT is set as "development" which means DNS server is running through which nodes can recognise each other through FQDN
 
 ```  
 
-192.168.116.137 opal-ambariagents.eng.vmware.com
-192.168.116.134 raul-ambariservers-ambariagents.eng.vmware.com
+192.168.116.137 node1-ambariserver.eng.vmware.com
+192.168.116.134 node2-ambariagent.eng.vmware.com
 
 ```
 It also configures all other nodes hosts `/etc/hosts` so that the nodes and the bootstrap machine can recoginise each other through domain name.
@@ -71,7 +71,7 @@ It also configures all other nodes hosts `/etc/hosts` so that the nodes and the 
 
 * It also configures the ansible call back plugin for foreman so that the software configuration management interaction between the bootstrap machine and the nodes can be known through foreman.
 
-* It also executes the playbook setup for ambari server and ambari agents which installs the ambari severs and agents according to the host group for the nodes.This can be also verified as below
+* It also executes the playbook setup for ambari which installs the ambari severs and agents according to the host group for the nodes.This can be also verified as below
 
 ```
 [root@foreman abbc]# ssh root@raul-ambariservers-ambariagents.eng.vmware.com
@@ -86,7 +86,7 @@ postgres  20957  20713  0 Aug15 ?        00:00:00 postgres: ambari ambari 127.0.
 
 ```
 
-http://raul-ambariservers-ambariagents.eng.vmware.com:8080/#/main/dashboard/metrics
+http://node1-ambariserver.eng.vmware.com:8080/#/main/dashboard/metrics
 
 
 ```
