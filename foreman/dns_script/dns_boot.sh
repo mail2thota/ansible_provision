@@ -6,10 +6,6 @@ set -e
 thisdir=`dirname $0`
 source  ${thisdir}/../hammer_cfg.sh
 
-filep="${thisdir}/hostlist"
-sed -i "s/ //g" $filep
-sed -i '/^$/d' $filep
-number_hosts=$(wc -l < $filep)
 null=0
 masterip=$(ip addr show enp0s3 | grep -Po 'inet \K[\d.]+')
 masterhost=`hostname|cut -d"." -f1`
@@ -18,20 +14,33 @@ yum -y install bind bind-utils
 systemctl enable named
 systemctl stop named
 
+pmaster=$number_of_master
+pagent=$number_of_agent
+numbers_node=$((pmaster+pagent))
+
 createBind(){
 
     echo ";A record hostname to ip address" >>  /var/named/db.${domain}
-    until [[ $number_hosts -eq $null ]]
+    until [[ $pmaster -eq $null ]]
     do
+       VAR="master$pmaster"
+       VARIP="${VAR}ip"
+       echo "www     IN     A     ${!VARIP} 
+${VAR}-ambariserver     IN     A     ${!VARIP}" >> /var/named/db.${domain}
+       echo "${numbers_node}     IN     PTR     ${VAR}-ambariserver.${domain}." >> /var/named/12.11.10.db
+       pmaster=$((pmaster - 1))
+       numbers_node=$((numbers_node-1))  
+    done
 
-        hostname=$(awk 'NR=="'"$number_hosts"'"' $filep | awk -F"=" '{print $1}')
-        ip_file=$(awk 'NR=="'"$number_hosts"'"' $filep | awk -F"=" '{print $2}')
-        echo "www     IN     A     ${ip_file} 
-${hostname}     IN     A     ${ip_file}" >> /var/named/db.${domain}
-        echo "${number_hosts}     IN     PTR     ${hostname}.${domain}." >> /var/named/12.11.10.db
-         
-            number_hosts=$((number_hosts - 1))
-        sleep 1s
+    until [[ $pagent -eq $null ]]
+    do
+        VAR="agent$pagent"
+        VARIP="${VAR}ip"
+        echo "www     IN     A     ${!VARIP} 
+${VAR}-ambariagent     IN     A     ${!VARIP}" >> /var/named/db.${domain}
+       echo "${numbers_node}     IN     PTR     ${VAR}-ambariagent.${domain}." >> /var/named/12.11.10.db      
+       pagent=$((pagent - 1))
+       numbers_node=$((numbers_node-1))
     done
 }
 
@@ -72,6 +81,7 @@ echo "
 }
 setZone
 createBind
+
 cp -f ${thisdir}/named.conf /etc
 chmod 755 /var/named/db.${domain}
 chmod 755 /var/named/12.11.10.db

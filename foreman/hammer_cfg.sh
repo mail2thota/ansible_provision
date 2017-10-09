@@ -2,15 +2,15 @@
 #author:Heri Sutrisno
 #email:herygranding@gmail.com
 
-username admin
+username=admin
 password=as123
 architecture="x86_64"
 domain=example.com
-url_repo=http://10.129.6.142
+url_repo=http://10.129.6.237
 dns_id="foreman.example.com"
 
 medium_name="CentOSDemo7"
-image_path="http://10.129.6.142/repos/CentOS_7_x86_64"
+image_path="http://10.129.6.237/repos/CentOS_7_x86_64"
 
 os_name="CentOSDemo7"
 os_majorversion=7
@@ -40,6 +40,6 @@ number_of_master=1
 master1=080027DC7005
 master1ip=10.11.12.10
 
-number_of_agent=0
+number_of_agent=1
 agent1=08002704E9E5
 agent1ip=10.11.12.11
