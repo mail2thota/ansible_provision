@@ -1,16 +1,16 @@
 #config file for creating foreman resources
 #author:Heri Sutrisno
+#email:harry.sutrisno@baesystems.com
 
 username=admin
 password=as123
 architecture="x86_64"
 domain=example.com
-url_repo=http://10.129.6.142
+url_repo=http://10.129.6.237
 dns_id="foreman.example.com"
-host_ip=10.11.12.66
 
 medium_name="CentOSDemo7"
-image_path="http://10.129.6.142/repos/CentOS7_x86_64/CentOS7/"
+image_path="http://10.129.6.237/repos/CentOS_7_x86_64"
 
 os_name="CentOSDemo7"
 os_majorversion=7
@@ -31,14 +31,16 @@ subnetip_start=10.11.12.1
 subnetip_end=10.11.12.24
 dhcp_interface="enp0s3"
 
-environment="production"
-host_groupname="Provision from foreman.example.com"
+environment="development"
+host_groupname="groupA.example.com"
 node_pass="as12345678"
 
-
+#master for ambari
 number_of_master=1
-master1=08002777c382
+master1=080027DC7005
+master1ip=10.11.12.10
 
-number_of_agent=1
-agent1=08002701786a
-
+#agent/workers for ambari
+number_of_agent=0
+agent1=08002704E9E5
+agent1ip=10.11.12.11

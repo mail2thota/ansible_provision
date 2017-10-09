@@ -28,8 +28,20 @@ Prerequisite
                 sudo firewall-cmd --permanent --add-port=8443/tcp
                 sudo firewall-cmd --permanent --add-port=8140/tcp
 	3. http repo setup on bootstrap machine
-			- installation of nginx Repo
-				https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
+	    - installation of nginx Repo
+	        https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
+    4. making sure your DNS address is resolved
+        - you may check on /etc/resolv.conf
+        - if not set yet you may set manually or you may using nmtui,
+            - type "nmtui" you may use arrows, space and enter to navigate cursor
+            - choose "Edit a connection", click enter
+            - choose your ethernet interface, click enter e.g; enp0s3
+            - choose IPv4 CONFIGURATION set "Automatic", click enter
+            - choose Automatically connect, click space
+            - click ok is followed by click back to close the nmtui windows.
+            - restart network; systemctl restart network
+    5. making sure that you don't have any DHCP server available which is connected to the subnet network
+    6. making sure that your network device interface or network interface e.g; "enp0s3" is dedicated only for single IP
 
 Configuration
 -------------

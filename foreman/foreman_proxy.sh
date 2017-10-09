@@ -1,15 +1,14 @@
+#!/bin/sh
 #setup foreman proxy
 #author:Heri Sutrisno
-#!/bin/sh
+#email:harry.sutrisno@baesystems.com
+set -e
 thisdir=`dirname $0`
 source ${thisdir}/hammer_cfg.sh
+source ${thisdir}/logtrace.sh
 
-forwarders=$(for i in $(cat /etc/resolv.conf |grep -v '^#'| grep nameserver|awk '{print $2}'); do echo --foreman-proxy-dns-forwarders $i;done) 
-#oauth_key=$(grep auth_consumer_key /etc/foreman/settings.yaml | cut -d ' ' -f 2) 
-#oauth_secret=$(grep oauth_consumer_secret /etc/foreman/settings.yaml | cut -d ' ' -f 2)
-net_interface=$(ip addr | grep "$dhcp_interface:" | cut -d ':' -f 2 | tr -d '[[:space:]]') #check if empty return false
-dns_rvs=$(echo $subnet_network | awk 'BEGIN{FS="."}{print $3"."$2"."$1".in-addr.arpa"}')
-dns_zone=$(hostname | cut -d '.' -f 2-)
+#check if empty return false
+net_interface=$(ip addr | grep "$dhcp_interface:" | cut -d ':' -f 2 | tr -d '[[:space:]]')
 host_ip=$(hostname -i)
 host_name=$(hostname)
 base_url="https://$host_name"
@@ -17,8 +16,6 @@ base_url="https://$host_name"
 installSmartProxy(){
 
     foreman-installer \
-        --enable-foreman-plugin-discovery \
-        --enable-foreman-proxy-plugin-discovery \
         --foreman-configure-epel-repo=false \
         --foreman-configure-scl-repo=false \
         --enable-foreman-plugin-ansible \
@@ -33,19 +30,9 @@ installSmartProxy(){
         --foreman-proxy-dhcp-gateway=$subnet_gateway \
         --foreman-proxy-dhcp-range="$subnetip_start $subnetip_end" \
         --foreman-proxy-dhcp-nameservers=$host_ip \
-        --foreman-proxy-dns=true \
-        --foreman-proxy-dns-interface=$net_interface \
-        --foreman-proxy-dns-zone=$dns_zone \
-        --foreman-proxy-dns-reverse=$dns_rvs \
-        ${forwarders} \
-        --foreman-proxy-foreman-base-url=$base_url
-}
-
-risetPassword(){
-    
-    password=$(foreman-rake permissions:reset | grep -i "password" | cut -d ':' -f 3 |  tr -d '[[:space:]]')
-    echo "export username=\"admin\"" > ${thisdir}/admin.sh
-    echo "export password=$password" >> ${thisdir}/admin.sh
+        --foreman-proxy-dns=false \
+        --foreman-proxy-dns-managed=false \
+        --foreman-proxy-foreman-base-url=$base_url > $node_log
 }
 
 changeForemanURL(){
@@ -56,25 +43,23 @@ changeForemanURL(){
 
 checkSmartProxy(){
     
-    success=$(cat ${thisdir}/log/foreman.log | grep -i -i "Success\!" | wc -l)
+    success=$(cat $node_log | grep -i -i "Success\!" | wc -l)
     if [ $success -eq 0 ];
     then
         #log:foreman is not installed succesfully
         echo "foreman is not installed succesfully"
-        cat ${thisdir}/log/foreman.log
+        cat $node_log
         exit 1
     fi
-    cat ${thisdir}/log/foreman.log
+    cat $node_log
 }
 
 checkFeatures(){
      
     tftp=$(hammer --csv -u $username -p $password proxy list | /usr/bin/grep -i "$dns_id" | awk '{for(i=1;i<=NF;++i)print $i}'| grep -i "TFTP" | wc -l ) 
-    dns=$(hammer --csv -u $username -p $password proxy list | /usr/bin/grep -i "$dns_id" | awk '{for(i=1;i<=NF;++i)print $i}'| grep -i "DNS" | wc -l ) 
     dhcp=$(hammer --csv -u $username -p $password proxy list | /usr/bin/grep -i "$dns_id" | awk '{for(i=1;i<=NF;++i)print $i}'| grep -i "DHCP" | wc -l ) 
     puppet=$(hammer --csv -u $username -p $password proxy list | /usr/bin/grep -i "$dns_id" | awk '{for(i=1;i<=NF;++i)print $i}'| grep -i "Puppet" | wc -l ) 
     ansible=$(hammer --csv -u $username -p $password proxy list | /usr/bin/grep -i "$dns_id" | awk '{for(i=1;i<=NF;++i)print $i}'| grep -i "Ansible" | wc -l ) 
-    discovery=$(hammer --csv -u $username -p $password proxy list | /usr/bin/grep -i "$dns_id" | awk '{for(i=1;i<=NF;++i)print $i}'| grep -i "Discovery" | wc -l ) 
      
     if [ $tftp -eq 0 ];
     then
@@ -82,14 +67,7 @@ checkFeatures(){
         echo "tftp is not installed properly"
         exit 1
     fi
-
-    if [ $dns -eq 0 ];
-    then
-        #log:dns is not installed properly
-        echo "dns is not installed properly"
-        exit 1
-    fi
-
+    
     if [ $dhcp -eq 0 ];
     then
         #log:dhcp is not installed properly
@@ -112,16 +90,14 @@ checkFeatures(){
         exit 1
     fi
 
-    if [ $discovery -eq 0 ];
-    then
-        #log:discovery is not installed properly
-        echo "discovery is not installed properly"
-        exit 1
-    fi
+    echo "DHCP,TFTP,ANSIBLE,PUPPET are installed"
 }
 
+setLogFile
 installSmartProxy
 changeForemanURL
+checkSmartProxy
+checkFeatures
 
 exit 0
 
