@@ -93,8 +93,8 @@ sed -i '/bin_ansible_callbacks/s/^#//g' "${ANSIBLE_CFG}"
 sed -i '/bin_ansible_callbacks/s/False/True/g' "${ANSIBLE_CFG}"
 cp "${FOREMAN_CALLBACK_FILE}" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
 sed -i "s%<FOREMAN_URL>%https://localhost%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
-sed -i "s%<FOREMAN_SSL_CERT>%/var/lib/puppet/ssl/certs/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
-sed -i "s%<FOREMAN_SSL_KEY>%/var/lib/puppet/ssl/private_keys/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
+sed -i "s%<FOREMAN_SSL_CERT>%/etc/puppetlabs/puppet/ssl/certs/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
+sed -i "s%<FOREMAN_SSL_KEY>%/etc/puppetlabs/puppet/ssl/private_keys/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
 sed -i "s%<FOREMAN_SSL_VERIFY>%0%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
 
 # execution of playbooks
