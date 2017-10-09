@@ -1,5 +1,8 @@
 #!/bin/bash
 
+thisdir=`dirname $0`
+source ${thisdir}/../foreman/hammer_cfg.sh
+
 set -e
 
 HOST_USER_NAME=${node_user:-root}

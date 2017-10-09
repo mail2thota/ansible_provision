@@ -1,9 +1,0 @@
-#VERSION_NUMBER={{ ambari_version }}
-
-[Updates-ambari-{{ ambari_version }}]
-name=ambari-{{ ambari_version }} - Updates
-baseurl={{ ambari_repo_base_url }}/centos7/{{ ambari_version }}
-gpgcheck=0
-enabled=1
-priority=1
-proxy=_none_

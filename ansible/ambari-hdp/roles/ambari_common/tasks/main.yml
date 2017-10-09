@@ -9,6 +9,20 @@
   ignore_errors: yes
   service: name=firewalld state=stopped enabled=no
 
+- name: copy ambari repo template
+  template:
+    src: "ambari.repo"
+    dest: "/etc/yum.repos.d/ambari.repo"
+ 
+- name: changing ambari to local repo 
+  replace:
+    dest: "/etc/yum.repos.d/ambari.repo"
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.word }}'
+  with_items:
+    - { regexp: '<AMBARI_VERSION>', word: '{{ ambari_version }}' }
+    - { regexp: '<REPO_URL>', word: '{{ local_ambari_repo_url }}' }
+
 - name: create logrotate script for hadoop services
   template:
     src: "hadoop-logrotate.yml"
