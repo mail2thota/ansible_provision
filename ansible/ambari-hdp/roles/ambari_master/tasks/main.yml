@@ -19,15 +19,10 @@
     - { regexp: '<AMBARI_VERSION>', word: '{{ ambari_version }}' }
     - { regexp: '<REPO_URL>', word: '{{ local_ambari_repo_url }}' }
   
-- name: intsall ambari server
+- name: install ambari server
   yum:
     name: ambari-server
-    state: present
-    update_cache: yes
-  register: result
-  until: result.rc == 0
-  retries: 5
-  delay: 10
+    state: installed
 
 - name: update ambari agent task timeout
   lineinfile:
