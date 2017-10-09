@@ -1,7 +1,7 @@
 #!/bin/bash
 #automate foreman resources
 #author:Heri Sutrisno
-#email:herygranding@gmail.com
+#email:harry.sutrisno@baesystems.com
 set -e
 thisdir=`dirname $0`
 source ${thisdir}/hammer_cfg.sh
@@ -96,15 +96,9 @@ createSubnet(){
 
     # Create Subnet (if not alreay there)
     if [ -z "$(hammer -u $username -p $password subnet list | /usr/bin/grep -E "(^|\s)$subnet_name($|\s)")"  ]; then
-       env_label="production"
-       if [ "${environment,,}" = "${env_label,,}" ];
-       then
-           hammer -u $username -p $password subnet create --name $subnet_name --network $subnet_network --mask $subnet_mask --gateway $subnet_gateway --ipam "None" --from $subnetip_start --to $subnetip_end --domain-ids $domain_id --dhcp-id $proxy_id --tftp-id $proxy_id --boot-mode "Static"
           
-       else
-           host_ip=$(hostname -i)
-           hammer -u $username -p $password subnet create --name $subnet_name --network $subnet_network --mask $subnet_mask --gateway $subnet_gateway --dns-primary $host_ip --ipam "None" --from $subnetip_start --to $subnetip_end --domain-ids $domain_id --dhcp-id $proxy_id --tftp-id $proxy_id --boot-mode "Static"
-       fi
+    host_ip=$(hostname -i)
+    hammer -u $username -p $password subnet create --name $subnet_name --network $subnet_network --mask $subnet_mask --gateway $subnet_gateway --dns-primary $host_ip --ipam "None" --from $subnetip_start --to $subnetip_end --domain-ids $domain_id --dhcp-id $proxy_id --tftp-id $proxy_id --boot-mode "Static"
     else
         echo "Already created: Subnet $subnet_name"
     fi

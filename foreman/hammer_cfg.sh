@@ -1,6 +1,6 @@
 #config file for creating foreman resources
 #author:Heri Sutrisno
-#email:herygranding@gmail.com
+#email:harry.sutrisno@baesystems.com
 
 username=admin
 password=as123
@@ -35,11 +35,12 @@ environment="development"
 host_groupname="groupA.example.com"
 node_pass="as12345678"
 
-
+#master for ambari
 number_of_master=1
 master1=080027DC7005
 master1ip=10.11.12.10
 
-number_of_agent=1
+#agent/workers for ambari
+number_of_agent=0
 agent1=08002704E9E5
 agent1ip=10.11.12.11

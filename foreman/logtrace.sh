@@ -1,4 +1,7 @@
 #!/bin/bash
+#manage logging
+#author:Heri Sutrisno
+#email:harry.sutrisno@baesystems.com
 set -e
 thisdir=`dirname $0`
 provision_log="${thisdir}/log/list_node"

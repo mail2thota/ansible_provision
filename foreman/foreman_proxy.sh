@@ -1,7 +1,7 @@
 #!/bin/sh
 #setup foreman proxy
 #author:Heri Sutrisno
-#email:herygranding@gmail.com
+#email:harry.sutrisno@baesystems.com
 set -e
 thisdir=`dirname $0`
 source ${thisdir}/hammer_cfg.sh
