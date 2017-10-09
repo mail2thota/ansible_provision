@@ -11,6 +11,5 @@ hdp_utils_version: "{{ hdp_utils_version }}"
 hdp_stack_version: "{{ hdp_stack_version }}"
 local_hdp_utils_repository_url: "{{ hdp_utils_repo_url }}"
 hdp_os_type: "{{ hdp_os_type }}"
-ambari_version: "{{ ambari_version }}"
-local_ambari_repo_url: "{{ ambari_repo_url }}"
+
 

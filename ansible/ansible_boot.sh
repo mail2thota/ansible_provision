@@ -1,5 +1,8 @@
 #!/bin/bash
 
+thisdir=`dirname $0`
+source ${thisdir}/../foreman/hammer_cfg.sh
+
 set -e
 
 HOST_USER_NAME=${node_user:-root}
@@ -10,9 +13,9 @@ AMBARI_SERVER_HOST_ID=${ambari_host_suffix:-ambariserver}
 AMBARI_AGENT_HOST_ID=${ambari_agent_suffix:-ambariagent}
 AMBARI_SERVER_ID=${ambari_master_group:-ambari_master}
 AMBARI_AGENT_ID=${ambari_agent_group:-ambari_slave}
-HDP_REPO_URL=${hdp_repo_url:-http://10.129.6.142/repos/HDP/HDP-2.6.2.0/centos7}
-HDP_UTILS_REPO_URL=${hdp_utils_repo_url:-http://10.129.6.142/repos/HDP/HDP-UTILS-1.1.0.21}
-AMBARI_REPO_URL=${ambari_repo_url:-http://10.129.6.142/repos/ambari/ambari-2.5.2.0/centos7}
+HDP_REPO_URL=${hdp_repo_url:-http://10.129.6.237/repos/HDP/HDP-2.6.2.0/centos7}
+HDP_UTILS_REPO_URL=${hdp_utils_repo_url:-http://10.129.6.237/repos/HDP/HDP-UTILS-1.1.0.21}
+AMBARI_REPO_URL=${ambari_repo_url:-http://10.129.6.237/repos/ambari/ambari-2.5.2.0/centos7}
 HDP_STACK_VERSION=${hdp_stack_version:-2.6}
 HDP_UTILS_VERSION=${hdp_utils_version:-1.1.0.21}
 HDP_OS_TYPE=${hdp_os_type:-redhat7}
@@ -93,8 +96,8 @@ sed -i '/bin_ansible_callbacks/s/^#//g' "${ANSIBLE_CFG}"
 sed -i '/bin_ansible_callbacks/s/False/True/g' "${ANSIBLE_CFG}"
 cp "${FOREMAN_CALLBACK_FILE}" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
 sed -i "s%<FOREMAN_URL>%https://localhost%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
-sed -i "s%<FOREMAN_SSL_CERT>%/var/lib/puppet/ssl/certs/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
-sed -i "s%<FOREMAN_SSL_KEY>%/var/lib/puppet/ssl/private_keys/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
+sed -i "s%<FOREMAN_SSL_CERT>%/etc/puppetlabs/puppet/ssl/certs/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
+sed -i "s%<FOREMAN_SSL_KEY>%/etc/puppetlabs/puppet/ssl/private_keys/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
 sed -i "s%<FOREMAN_SSL_VERIFY>%0%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
 
 # execution of playbooks

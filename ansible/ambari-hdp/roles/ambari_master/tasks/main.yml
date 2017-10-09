@@ -5,29 +5,10 @@
 #
 ---
 # tasks file for ambari_master
-- name: copy ambari repo template
-  template:
-    src: "ambari.repo"
-    dest: "/etc/yum.repos.d/ambari.repo"
- 
-- name: changing ambari to local repo 
-  replace:
-    dest: "/etc/yum.repos.d/ambari.repo"
-    regexp: '{{ item.regexp }}'
-    replace: '{{ item.word }}'
-  with_items:
-    - { regexp: '<AMBARI_VERSION>', word: '{{ ambari_version }}' }
-    - { regexp: '<REPO_URL>', word: '{{ local_ambari_repo_url }}' }
-  
-- name: intsall ambari server
+- name: install ambari server
   yum:
     name: ambari-server
-    state: present
-    update_cache: yes
-  register: result
-  until: result.rc == 0
-  retries: 5
-  delay: 10
+    state: installed
 
 - name: update ambari agent task timeout
   lineinfile:

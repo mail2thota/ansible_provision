@@ -8,11 +8,7 @@
   yum:
     name: ambari-agent
     state: installed
-  register: result
-  until: result.rc == 0
-  retries: 5
-  delay: 10
-
+  
 - name: create ambari agent hostname script
   template:
     src: "../roles/ambari_slave/files/hostname.sh"
