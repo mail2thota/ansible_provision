@@ -36,11 +36,32 @@
     blueprint_var: "{{ blueprint }}"
     use_local_repository: "{{ use_local_repository }}"
 
-- name: connecting hive with ambari; http://{{ groups.ambari_master[0] }}:{{ ambari_port }}
-  shell: "hdfs dfs {{ item }}"
+- name: run test for hdfs
   become: True
   become_user: hdfs
-  with_items:
-    - -mkdir -p /user/admin
-    - -chown admin:hdfs /user/admin
-    - -chmod -R 755 /user/admin
+  script: hdfs_test.sh
+  register: hdfs_test
+  
+
+- debug: msg="{{ hdfs_test.stdout }}"
+- debug: msg="{{ hdfs_test.stderr }}"
+
+- name: run test for yarn
+  become: True
+  become_user: hdfs
+  script: yarn_test.sh
+  register: yarn_test
+
+- debug: msg="{{ yarn_test.stdout }}"
+- debug: msg="{{ yarn_test.stderr }}"
+
+  
+
+#- name: connecting hive with ambari; http://{{ groups.ambari_master[0] }}:{{ ambari_port }}
+#  shell: "hdfs dfs {{ item }}"
+#  become: True
+#  become_user: hdfs
+#  with_items:
+#    - -mkdir -p /user/admin
+#    - -chown admin:hdfs /user/admin
+#    - -chmod -R 755 /user/admin
