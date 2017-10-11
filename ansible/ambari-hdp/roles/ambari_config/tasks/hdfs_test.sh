@@ -20,9 +20,11 @@ su hdfs /usr/hdp/2.6.2.0-205/hadoop/bin/hadoop dfs -cat /wordcount/output/wordco
 
 head /tmp/wordcountfile-output 
 
+echo "$(cat /tmp/wordcountfile-output | tr -d " \t\n\r")" > /tmp/wordcountfile-output
+
 wordcountfile_output=$(awk '$1=$1' ORS='\\n' /tmp/wordcountfile-output)
 
-if [[ $wordcountfile_output == "test 2" ]];then
+if [[ $wordcountfile_output == "test2" ]];then
 	echo "hdfs is working fine as expected"
 else
 	echo "hdfs is not working as expected"
