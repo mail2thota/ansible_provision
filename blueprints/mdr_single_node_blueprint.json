@@ -1,0 +1,108 @@
+{
+	"Blueprints": {
+		"blueprint_name": "mdr-single-node-blueprint",
+		"stack_name": "HDP",
+		"stack_version": "2.6"
+	},
+	"settings": [{
+			"deployment_settings": [{
+				"skip_failure": "false"
+			}]
+		},
+		{
+			"recovery_settings": [{
+				"recovery_enabled": "true"
+			}]
+		}
+	],
+	"host_groups": [{
+		"name": "master_1",
+		"configurations": [],
+		"components": [{
+				"name": "PIG"
+			},
+			{
+				"name": "HISTORYSERVER"
+			},
+			{
+				"name": "OOZIE_CLIENT"
+			},
+			{
+				"name": "HBASE_CLIENT"
+			},
+			{
+				"name": "NAMENODE"
+			},
+			{
+				"name": "SUPERVISOR"
+			},
+			{
+				"name": "SPARK_JOBHISTORYSERVER"
+			},
+			{
+				"name": "METRICS_MONITOR"
+			},
+			{
+				"name": "SPARK_CLIENT"
+			},
+			{
+				"name": "APP_TIMELINE_SERVER"
+			},
+			{
+				"name": "HIVE_CLIENT"
+			},
+			{
+				"name": "HDFS_CLIENT"
+			},
+			{
+				"name": "NODEMANAGER"
+			},
+			{
+				"name": "METRICS_COLLECTOR"
+			},
+			{
+				"name": "DATANODE"
+			},
+			{
+				"name": "WEBHCAT_SERVER"
+			},
+			{
+				"name": "RESOURCEMANAGER"
+			},
+			{
+				"name": "ZOOKEEPER_SERVER"
+			},
+			{
+				"name": "ZOOKEEPER_CLIENT"
+			},
+			{
+				"name": "STORM_UI_SERVER"
+			},
+			{
+				"name": "HIVE_SERVER"
+			},
+			{
+				"name": "OOZIE_SERVER"
+			},
+			{
+				"name": "SECONDARY_NAMENODE"
+			},
+			{
+				"name": "TEZ_CLIENT"
+			},
+			{
+				"name": "HIVE_METASTORE"
+			},
+			{
+				"name": "YARN_CLIENT"
+			},
+			{
+				"name": "MAPREDUCE2_CLIENT"
+			},
+			{
+				"name": "MYSQL_SERVER"
+			}
+		],
+		"cardinality": "1"
+	}]
+}

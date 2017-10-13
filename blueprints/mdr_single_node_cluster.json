@@ -1,0 +1,11 @@
+{
+	"blueprint": "mdr-single-node-blueprint",
+	"default_password": "admin",
+	"host_groups": [{
+		"hosts": [{
+			"fqdn": "ambari-server-1"
+		}],
+		"name": "master_1",
+		"configurations": []
+	}]
+}

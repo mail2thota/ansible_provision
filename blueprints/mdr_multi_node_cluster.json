@@ -1,0 +1,62 @@
+{
+	"blueprint": "mdr-ha-blueprint",
+	"default_password": "admin",
+	"host_groups": [{
+			"hosts": [{
+				"fqdn": "master1-ambariagent.example.com"
+			}],
+			"name": "master_1",
+			"configurations": []
+		},
+		{
+			"hosts": [{
+				"fqdn": "master2-ambariagent.example.com"
+			}],
+			"name": "master_2",
+			"configurations": []
+		},
+		{
+			"hosts": [{
+				"fqdn": "master3-ambariagent.example.com"
+			}],
+			"name": "master_3",
+			"configurations": []
+		},
+		{
+			"hosts": [{
+				"fqdn": "zk1-ambariagent.example.com"
+			}],
+			"name": "zk_1",
+			"configurations": []
+		},
+		{
+			"hosts": [{
+				"fqdn": "zk2-ambariagent.example.com"
+			}],
+			"name": "zk_2",
+			"configurations": []
+		},
+		{
+			"hosts": [{
+				"fqdn": "edge1-ambariserver.example.com"
+			}],
+			"name": "edge_1",
+			"configurations": []
+		},
+		{
+			"hosts": [{
+					"fqdn": "edge3-ambariagent.example.com"
+				}
+			],
+			"name": "edge_3",
+			"configurations": []
+		},
+		{
+			"hosts": [{
+				"fqdn": "worker1-ambariagent.example.com"
+			}],
+			"name": "worker_1",
+			"configurations": []
+		}
+	]
+}
