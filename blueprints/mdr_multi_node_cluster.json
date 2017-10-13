@@ -24,6 +24,13 @@
 		},
 		{
 			"hosts": [{
+				"fqdn": "master4-ambariagent.example.com"
+			}],
+			"name": "master_4",
+			"configurations": []
+		},
+		{
+			"hosts": [{
 				"fqdn": "zk1-ambariagent.example.com"
 			}],
 			"name": "zk_1",

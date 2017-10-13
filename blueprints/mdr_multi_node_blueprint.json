@@ -93,6 +93,17 @@
 			"cardinality": "1"
 		},
 		{
+			"name": "master_4",
+			"components": [{
+					"name": "OOZIE_SERVER"
+				},
+				{
+					"name": "METRICS_MONITOR"
+				}
+			],
+			"cardinality": "1"
+		},
+		{
 			"name": "zk_1",
 			"components": [{
 					"name": "ZOOKEEPER_SERVER"
