@@ -42,6 +42,9 @@
 					"name": "ZOOKEEPER_CLIENT"
 				},
 				{
+					"name": "OOZIE_CLIENT"
+				},
+				{
 					"name": "METRICS_MONITOR"
 				}
 			],
