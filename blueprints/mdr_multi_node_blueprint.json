@@ -87,6 +87,24 @@
 					"name": "SECONDARY_NAMENODE"
 				},
 				{
+					"name": "HCAT"
+				},
+				{
+					"name": "HIVE_METASTORE"
+				},
+				{
+					"name": "HIVE_SERVER"
+				},
+				{
+					"name": "HIVE_CLIENT"
+				},
+				{
+					"name": "WEBHCAT_SERVER"
+				},
+				{
+					"name": "MYSQL_SERVER"
+				},
+				{
 					"name": "METRICS_MONITOR"
 				}
 			],
