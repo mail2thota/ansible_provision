@@ -17,8 +17,7 @@
 	],
 	"host_groups": [{
 			"name": "edge_1",
-			"components": [
-				{
+			"components": [{
 					"name": "METRICS_MONITOR"
 				},
 				{
@@ -29,86 +28,67 @@
 		},
 		{
 			"name": "edge_3",
-			"components": [
-				{
-				  "name" : "ZOOKEEPER_CLIENT"
+			"components": [{
+					"name": "ZOOKEEPER_CLIENT"
 				},
 				{
-				  "name" : "METRICS_MONITOR"
+					"name": "METRICS_MONITOR"
 				},
 				{
-				  "name" : "MAPREDUCE2_CLIENT"
+					"name": "MAPREDUCE2_CLIENT"
 				},
 				{
-				  "name" : "YARN_CLIENT"
+					"name": "YARN_CLIENT"
 				},
 				{
-				  "name" : "HDFS_CLIENT"
+					"name": "HDFS_CLIENT"
 				},
 				{
-				  "name" : "SPARK_CLIENT"
+					"name": "SPARK_CLIENT"
 				}
 			],
 			"cardinality": "1"
 		},
 		{
 			"name": "master_1",
-			"components": [
-                                {
+			"components": [{
 					"name": "JOURNALNODE"
 				},
-                                {
+				{
 					"name": "NAMENODE"
 				},
-                                {
+				{
 					"name": "METRICS_MONITOR"
 				},
 				{
 					"name": "HISTORYSERVER"
-				},
-                                {
-                                         "name" : "HDFS_CLIENT"
-                                }
+				}
 			],
 			"cardinality": "1"
 		},
 		{
 			"name": "master_2",
-			"components": [
-			        {
-				  "name" : "SPARK_CLIENT"
+			"components": [{
+					"name": "JOURNALNODE"
 				},
 				{
-				  "name" : "JOURNALNODE"
+					"name": "APP_TIMELINE_SERVER"
 				},
 				{
-				  "name" : "APP_TIMELINE_SERVER"
+					"name": "RESOURCEMANAGER"
 				},
 				{
-				  "name" : "RESOURCEMANAGER"
+					"name": "SPARK_JOBHISTORYSERVER"
 				},
 				{
-				  "name" : "MAPREDUCE2_CLIENT"
-				},
-				{
-				  "name" : "YARN_CLIENT"
-				},
-				{
-				  "name" : "HDFS_CLIENT"
-				},
-				{
-				  "name" : "SPARK_JOBHISTORYSERVER"
-				},
-				{
-				  "name" : "METRICS_MONITOR"
+					"name": "METRICS_MONITOR"
 				}
 			],
 			"cardinality": "1"
 		},
 		{
 			"name": "master_3",
-			"components": [
-                                {
+			"components": [{
 					"name": "SECONDARY_NAMENODE"
 				},
 				{
@@ -119,12 +99,11 @@
 		},
 		{
 			"name": "zk_1",
-			"components": [
-			        {
-				  "name" : "METRICS_MONITOR"
+			"components": [{
+					"name": "METRICS_MONITOR"
 				},
 				{
-				  "name" : "ZOOKEEPER_SERVER"
+					"name": "ZOOKEEPER_SERVER"
 				}
 			],
 			"cardinality": "1"
@@ -142,15 +121,14 @@
 		},
 		{
 			"name": "worker_1",
-			"components": [
-				{
-				  "name" : "NODEMANAGER"
+			"components": [{
+					"name": "NODEMANAGER"
 				},
 				{
-				  "name" : "DATANODE"
+					"name": "DATANODE"
 				},
 				{
-				  "name" : "METRICS_MONITOR"
+					"name": "METRICS_MONITOR"
 				}
 			],
 			"cardinality": "6"
