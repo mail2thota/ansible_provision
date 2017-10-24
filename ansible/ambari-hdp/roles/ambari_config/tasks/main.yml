@@ -38,7 +38,7 @@
 
 - name: run test for hdfs
   become: True
-  become_user: hdfs
+  become_user: root
   script: hdfs_test.sh
   register: hdfs_test
   

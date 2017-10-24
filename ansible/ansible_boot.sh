@@ -6,9 +6,9 @@ source ${thisdir}/../foreman/hammer_cfg.sh
 set -e
 
 HOST_USER_NAME=${node_user:-root}
-HOST_PASSWORD=${node_pass:-baesystems}
+HOST_PASSWORD=${node_pass:-as12345678}
 FOREMAN_USER_NAME=${username:-admin}
-FOREMAN_PASSWORD=${password:-4HFefKecSjn2i7Z8}
+FOREMAN_PASSWORD=${password:-as123}
 AMBARI_SERVER_HOST_ID=${ambari_host_suffix:-ambariserver}
 AMBARI_AGENT_HOST_ID=${ambari_agent_suffix:-ambariagent}
 AMBARI_SERVER_ID=${ambari_master_group:-ambari_master}
@@ -21,6 +21,7 @@ HDP_UTILS_VERSION=${hdp_utils_version:-1.1.0.21}
 HDP_OS_TYPE=${hdp_os_type:-redhat7}
 AMBARI_VERSION=${ambari_version:-2.5.2.0}
 
+MYSQL_REPO_URL=${mysql_repo_url:-http://10.129.6.237/repos/mysql}
 
 #generate and configure ssh key,thereby create the server groups in ansible hosts 
 if [ -f ~/.ssh/bootstrap_rsa.pub ]; then
@@ -33,6 +34,7 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/bootstrap_rsa &>/dev/null
 server_count=0
 agent_count=0
+
 server_cardinality="1"
 agent_cardinality="1"
 while read -r foreman_config
@@ -41,6 +43,7 @@ do
 	echo "copying shh key into ${host_domain} domain"
 	ssh-keyscan "${host_domain}" >>~/.ssh/known_hosts
 	sshpass -p "${HOST_PASSWORD}" ssh-copy-id -i ~/.ssh/bootstrap_rsa.pub "${HOST_USER_NAME}"@"${host_domain}"
+
 	ssh -n "${HOST_USER_NAME}"@"${host_domain}" "rm -rf /etc/yum.repos.d/*"
 	scp /etc/yum.repos.d/CentOS-Base.repo "${HOST_USER_NAME}"@"${host_domain}":/etc/yum.repos.d
 	scp /etc/yum.repos.d/epel.repo "${HOST_USER_NAME}"@"${host_domain}":/etc/yum.repos.d
@@ -116,5 +119,7 @@ sed -i "s%<AMBARI_VERSION>%${AMBARI_VERSION}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<HDP_STACK_VERSION>%${HDP_STACK_VERSION}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<HDP_UTILS_VERSION>%${HDP_UTILS_VERSION}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<HDP_OS_TYPE>%${HDP_OS_TYPE}%g" "${GLOBAL_VAR_LOC}"
+sed -i "s%<MYSQL_REPO_URL>%${MYSQL_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
+
 ansible-playbook playbooks/ambari_install.yml
 

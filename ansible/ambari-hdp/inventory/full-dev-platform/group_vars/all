@@ -19,6 +19,7 @@ hdp_utils_version: <HDP_UTILS_VERSION>
 hdp_stack_version: <HDP_STACK_VERSION>
 hdp_os_type: <HDP_OS_TYPE>
 ambari_version: <AMBARI_VERSION>
+mysql_repo_url: <MYSQL_REPO_URL>
 
 # data directories - only required to override defaults
 zookeeper_data_dir: "/data1/hadoop/zookeeper"
