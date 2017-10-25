@@ -138,29 +138,7 @@
 					"name": "ZOOKEEPER_SERVER"
 				}
 			],
-			"cardinality": "1"
-		},
-		{
-			"name": "zk_2",
-			"components": [{
-					"name": "METRICS_MONITOR"
-				},
-				{
-					"name": "ZOOKEEPER_SERVER"
-				}
-			],
-			"cardinality": "1"
-		},
-		{
-			"name": "zk_3",
-			"components": [{
-					"name": "METRICS_MONITOR"
-				},
-				{
-					"name": "ZOOKEEPER_SERVER"
-				}
-			],
-			"cardinality": "1"
+			"cardinality": "3"
 		},
 		{
 			"name": "worker_1",
