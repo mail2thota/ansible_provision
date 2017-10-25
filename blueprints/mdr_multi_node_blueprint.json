@@ -32,7 +32,7 @@
 					"name": "ZOOKEEPER_CLIENT"
 				},
 				{
-					"name": "METRICS_MONITOR"
+					"name": "SPARK_CLIENT"
 				},
 				{
 					"name": "MAPREDUCE2_CLIENT"
@@ -44,10 +44,13 @@
 					"name": "HDFS_CLIENT"
 				},
 				{
-					"name": "SPARK_CLIENT"
+					"name": "OOZIE_CLIENT"
+				},
+				{
+					"name": "METRICS_MONITOR"
 				}
 			],
-			"cardinality": "1"
+			"cardinality": "2"
 		},
 		{
 			"name": "master_1",
@@ -98,6 +101,17 @@
 			"cardinality": "1"
 		},
 		{
+			"name": "master_4",
+			"components": [{
+					"name": "OOZIE_SERVER"
+				},
+				{
+					"name": "METRICS_MONITOR"
+				}
+			],
+			"cardinality": "1"
+		},
+		{
 			"name": "zk_1",
 			"components": [{
 					"name": "METRICS_MONITOR"
@@ -106,18 +120,7 @@
 					"name": "ZOOKEEPER_SERVER"
 				}
 			],
-			"cardinality": "1"
-		},
-		{
-			"name": "zk_2",
-			"components": [{
-					"name": "ZOOKEEPER_SERVER"
-				},
-				{
-					"name": "METRICS_MONITOR"
-				}
-			],
-			"cardinality": "1"
+			"cardinality": "3"
 		},
 		{
 			"name": "worker_1",
