@@ -31,13 +31,16 @@
 		},
 		{
 			"hosts": [{
-					"fqdn": "agent5-ambariagent.example.com"
-				},
-				{
-					"fqdn": "agent6-ambariagent.example.com"
-				}
-			],
+				"fqdn": "agent5-ambariagent.example.com"
+			}],
 			"name": "zk_1",
+			"configurations": []
+		},
+		{
+			"hosts": [{
+				"fqdn": "agent6-ambariagent.example.com"
+			}],
+			"name": "zk_2",
 			"configurations": []
 		},
 		{
