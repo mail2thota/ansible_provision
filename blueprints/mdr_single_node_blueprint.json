@@ -28,13 +28,7 @@
 				"name": "OOZIE_CLIENT"
 			},
 			{
-				"name": "HBASE_CLIENT"
-			},
-			{
 				"name": "NAMENODE"
-			},
-			{
-				"name": "SUPERVISOR"
 			},
 			{
 				"name": "SPARK_JOBHISTORYSERVER"
@@ -74,9 +68,6 @@
 			},
 			{
 				"name": "ZOOKEEPER_CLIENT"
-			},
-			{
-				"name": "STORM_UI_SERVER"
 			},
 			{
 				"name": "HIVE_SERVER"
