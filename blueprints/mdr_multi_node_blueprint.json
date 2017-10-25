@@ -17,8 +17,7 @@
 	],
 	"host_groups": [{
 			"name": "edge_1",
-			"components": [
-				{
+			"components": [{
 					"name": "METRICS_MONITOR"
 				},
 				{
@@ -30,7 +29,10 @@
 		{
 			"name": "edge_3",
 			"components": [{
-					"name": "HDFS_CLIENT"
+					"name": "ZOOKEEPER_CLIENT"
+				},
+				{
+					"name": "METRICS_MONITOR"
 				},
 				{
 					"name": "MAPREDUCE2_CLIENT"
@@ -39,10 +41,10 @@
 					"name": "YARN_CLIENT"
 				},
 				{
-					"name": "ZOOKEEPER_CLIENT"
+					"name": "HDFS_CLIENT"
 				},
 				{
-					"name": "METRICS_MONITOR"
+					"name": "SPARK_CLIENT"
 				}
 			],
 			"cardinality": "1"
@@ -50,16 +52,16 @@
 		{
 			"name": "master_1",
 			"components": [{
-					"name": "NAMENODE"
-				},
-				{
-					"name": "HISTORYSERVER"
-				},
-				{
 					"name": "JOURNALNODE"
 				},
 				{
+					"name": "NAMENODE"
+				},
+				{
 					"name": "METRICS_MONITOR"
+				},
+				{
+					"name": "HISTORYSERVER"
 				}
 			],
 			"cardinality": "1"
@@ -67,13 +69,16 @@
 		{
 			"name": "master_2",
 			"components": [{
-					"name": "RESOURCEMANAGER"
+					"name": "JOURNALNODE"
 				},
 				{
 					"name": "APP_TIMELINE_SERVER"
 				},
 				{
-					"name": "JOURNALNODE"
+					"name": "RESOURCEMANAGER"
+				},
+				{
+					"name": "SPARK_JOBHISTORYSERVER"
 				},
 				{
 					"name": "METRICS_MONITOR"
@@ -95,10 +100,10 @@
 		{
 			"name": "zk_1",
 			"components": [{
-					"name": "ZOOKEEPER_SERVER"
+					"name": "METRICS_MONITOR"
 				},
 				{
-					"name": "METRICS_MONITOR"
+					"name": "ZOOKEEPER_SERVER"
 				}
 			],
 			"cardinality": "1"
@@ -117,10 +122,10 @@
 		{
 			"name": "worker_1",
 			"components": [{
-					"name": "DATANODE"
+					"name": "NODEMANAGER"
 				},
 				{
-					"name": "NODEMANAGER"
+					"name": "DATANODE"
 				},
 				{
 					"name": "METRICS_MONITOR"
