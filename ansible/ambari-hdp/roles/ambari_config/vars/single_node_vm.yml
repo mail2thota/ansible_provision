@@ -10,10 +10,10 @@ hive_components: [HIVE_METASTORE,HIVE_SERVER,HCAT,WEBHCAT_SERVER,HIVE_CLIENT,MYS
 hadoop_components: [APP_TIMELINE_SERVER,NODEMANAGER,SECONDARY_NAMENODE,MAPREDUCE2_CLIENT,DATANODE,NAMENODE,HDFS_CLIENT,HISTORYSERVER,YARN_CLIENT,RESOURCEMANAGER]
 oozie_components: [OOZIE_CLIENT,OOZIE_SERVER]
 zookeeper_components: [ZOOKEEPER_SERVER,ZOOKEEPER_CLIENT]
-other_components: [TEZ_CLIENT,STROM_UI_SERVER]
+other_components: [TEZ_CLIENT]
 metric_components: [METRICS_COLLECTOR,METRICS_MONITOR]
 spark_components: [SPARK_JOBHISTORYSERVER,SPARK_CLIENT]
-cr_components: "{{ hadoop_components | union (zookeeper_components) | union(oozie_components) | union(hive_components) | union(metric_components) | union(spark_components)}}"
+cr_components: "{{ hadoop_components | union (zookeeper_components) | union(oozie_components) | union(hive_components) | union(metric_components) | union(spark_components) | union(other_components)}}"
 
 cluster_name: "mdr"
 blueprint_name: "mdr_blueprint"
