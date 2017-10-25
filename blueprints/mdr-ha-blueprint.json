@@ -1,0 +1,133 @@
+{
+	"Blueprints": {
+		"blueprint_name": "mdr-ha-blueprint",
+		"stack_name": "HDP",
+		"stack_version": "2.6"
+	},
+	"settings": [{
+			"deployment_settings": [{
+				"skip_failure": "false"
+			}]
+		},
+		{
+			"recovery_settings": [{
+				"recovery_enabled": "true"
+			}]
+		}
+	],
+	"host_groups": [{
+			"name": "edge_1",
+			"components": [
+				{
+					"name": "METRICS_MONITOR"
+				},
+				{
+					"name": "METRICS_COLLECTOR"
+				}
+			],
+			"cardinality": "1"
+		},
+		{
+			"name": "edge_3",
+			"components": [{
+					"name": "HDFS_CLIENT"
+				},
+				{
+					"name": "MAPREDUCE2_CLIENT"
+				},
+				{
+					"name": "YARN_CLIENT"
+				},
+				{
+					"name": "ZOOKEEPER_CLIENT"
+				},
+				{
+					"name": "METRICS_MONITOR"
+				}
+			],
+			"cardinality": "1"
+		},
+		{
+			"name": "master_1",
+			"components": [{
+					"name": "NAMENODE"
+				},
+				{
+					"name": "HISTORYSERVER"
+				},
+				{
+					"name": "JOURNALNODE"
+				},
+				{
+					"name": "METRICS_MONITOR"
+				}
+			],
+			"cardinality": "1"
+		},
+		{
+			"name": "master_2",
+			"components": [{
+					"name": "RESOURCEMANAGER"
+				},
+				{
+					"name": "APP_TIMELINE_SERVER"
+				},
+				{
+					"name": "JOURNALNODE"
+				},
+				{
+					"name": "METRICS_MONITOR"
+				}
+			],
+			"cardinality": "1"
+		},
+		{
+			"name": "master_3",
+			"components": [{
+					"name": "SECONDARY_NAMENODE"
+				},
+				{
+					"name": "METRICS_MONITOR"
+				}
+			],
+			"cardinality": "1"
+		},
+		{
+			"name": "zk_1",
+			"components": [{
+					"name": "ZOOKEEPER_SERVER"
+				},
+				{
+					"name": "METRICS_MONITOR"
+				}
+			],
+			"cardinality": "1"
+		},
+		{
+			"name": "zk_2",
+			"components": [{
+					"name": "ZOOKEEPER_SERVER"
+				},
+				{
+					"name": "METRICS_MONITOR"
+				}
+			],
+			"cardinality": "1"
+		},
+		{
+			"name": "worker_1",
+			"components": [{
+					"name": "DATANODE"
+				},
+				{
+					"name": "NODEMANAGER"
+				},
+				{
+					"name": "METRICS_MONITOR"
+				}
+			],
+			"cardinality": "6"
+		}
+	],
+	"configurations": []
+}
