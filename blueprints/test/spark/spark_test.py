@@ -25,6 +25,6 @@ if __name__ == "__main__":
 
   list = charCounts.collect()
   print repr(list)[1:-1]
-  f = open('/home/hdfs/output/outputfile.txt', 'w+')
-  f.write('output is= ' + repr(list)[1:-1] + '\n')
+  f = open('./output/outputfile.txt', 'w+')
+  f.write('Result= ' + repr(list)[1:-1] + '\n')
   f.close()
