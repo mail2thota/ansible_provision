@@ -32,9 +32,6 @@
 					"name": "ZOOKEEPER_CLIENT"
 				},
 				{
-					"name": "PIG"
-				},
-				{
 					"name": "TEZ_CLIENT"
 				},
 				{
