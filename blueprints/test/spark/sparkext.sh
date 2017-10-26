@@ -1,6 +1,7 @@
-mkdir -p /home/hdfs/output
+mkdir -p ./output
 hadoop fs -rm -r -f /spark
 hdfs dfs -mkdir -p /spark/input
+hdfs dfs -mkdir -p /spark/output
 hdfs dfs -put ./inputfile.txt /spark/input
 
 spark-submit --master yarn --deploy-mode client --executor-memory 1g \

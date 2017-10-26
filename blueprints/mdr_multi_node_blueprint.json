@@ -32,6 +32,9 @@
 					"name": "ZOOKEEPER_CLIENT"
 				},
 				{
+					"name": "TEZ_CLIENT"
+				},
+				{
 					"name": "SPARK_CLIENT"
 				},
 				{
@@ -61,10 +64,10 @@
 					"name": "NAMENODE"
 				},
 				{
-					"name": "METRICS_MONITOR"
+					"name": "HISTORYSERVER"
 				},
 				{
-					"name": "HISTORYSERVER"
+					"name": "METRICS_MONITOR"
 				}
 			],
 			"cardinality": "1"
@@ -93,6 +96,24 @@
 			"name": "master_3",
 			"components": [{
 					"name": "SECONDARY_NAMENODE"
+				},
+				{
+					"name": "HCAT"
+				},
+				{
+					"name": "HIVE_METASTORE"
+				},
+				{
+					"name": "HIVE_SERVER"
+				},
+				{
+					"name": "HIVE_CLIENT"
+				},
+				{
+					"name": "WEBHCAT_SERVER"
+				},
+				{
+					"name": "MYSQL_SERVER"
 				},
 				{
 					"name": "METRICS_MONITOR"
