@@ -1,0 +1,98 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+
+master_1_components : [JOURNALNODE,NAMENODE,METRICS_MONITOR,HISTORYSERVER]
+master_2_components: [JOURNALNODE,APP_TIMELINE_SERVER,RESOURCEMANAGER,SPARK_JOBHISTORYSERVER,METRICS_MONITOR]
+master_3_components: [SECONDARY_NAMENODE,HCAT,HIVE_METASTORE,HIVE_SERVER,HIVE_CLIENT,WEBHCAT_SERVER,MYSQL_SERVER,METRICS_MONITOR]
+master_4_components: [OOZIE_SERVER,METRICS_MONITOR]
+zk_1_components: [METRICS_MONITOR,ZOOKEEPER_SERVER]
+worker_1_components: [NODEMANAGER,DATANODE,METRICS_MONITOR]
+edge_1_components: [METRICS_MONITOR,METRICS_COLLECTOR]
+edge_3_components: [ZOOKEEPER_CLIENT,TEZ_CLIENT,OOZIE_CLIENT,METRICS_MONITOR,MAPREDUCE2_CLIENT,YARN_CLIENT,HDFS_CLIENT,SPARK_CLIENT]
+
+cluster_name: "mdr"
+blueprint_name: "mdr_ha_blueprint"
+
+configurations:
+  - zoo.cfg:
+      dataDir: '{{ zookeeper_data_dir | default("/hadoop/zookeeper") }}'
+  - hadoop-env:
+      namenode_heapsize: 2048
+      dtnode_heapsize: 1024
+  - hbase-env:
+      hbase_regionserver_heapsize: 1024
+      hbase_master_heapsize: 1024
+  - hdfs-site:
+      dfs.namenode.checkpoint.dir: '{{ namenode_checkpoint_dir | default("/hadoop/hdfs/namesecondary") }}'
+      dfs.namenode.name.dir: '{{ namenode_name_dir | default("/hadoop/hdfs/namenode") }}'
+      dfs.datanode.data.dir: '{{ datanode_data_dir | default("/hadoop/hdfs/data" ) }}'
+      dfs.journalnode.edits.dir: '{{ journalnode_edits_dir | default("/hadoop/hdfs/journalnode") }}'
+  - mapred-site:
+      mapreduce.jobhistory.recovery.store.leveldb.path : '{{ jhs_recovery_store_ldb_path | default("/hadoop/mapreduce/jhs") }}'
+      mapreduce.map.memory.mb : '{{ mapred_map_mem_mb }}'
+      mapreduce.reduce.memory.mb : '{{ mapred_reduce_mem_mb }}'
+  - oozie-env:
+      oozie_heapsize: "1024m"
+      oozie_permsize: "384m"
+  - oozie-site:
+      oozie.service.AuthorizationService.security.enabled: "false"
+      oozie.service.AuthorizationService.authorization.enabled: "false"
+      oozie.service.coord.check.maximum.frequency: "false"
+      oozie.service.JPAService.jdbc.password: "password"
+
+  - yarn-site:
+      yarn.nodemanager.local-dirs : '{{ nodemanager_local_dirs| default("/hadoop/yarn/local") }}'
+      yarn.timeline-service.leveldb-timeline-store.path: '{{ timeline_ldb_store_path | default("/hadoop/yarn/timeline") }}'
+      yarn.timeline-service.leveldb-state-store.path: '{{ timeline_ldb_state_path| default("/hadoop/yarn/timeline") }}'
+      yarn.nodemanager.log-dirs: '{{ nodemanager_log_dirs| default("/hadoop/yarn/log") }}'
+      yarn.nodemanager.resource.memory-mb : '{{ nodemanager_mem_mb }}'
+
+blueprint:
+  stack_name: HDP
+  stack_version: "{{ hdp_stack }}"
+  groups:
+    - name : master_1
+      cardinality: 1
+      configuration: []  # configuration not yet implemented
+      components: "{{ master_1_components }}"
+      hosts: "{{ master_1_host }}"
+    - name : master_2
+      cardinality: 1
+      configuration: []  # configuration not yet implemented
+      components: "{{ master_2_components }}"
+      hosts: "{{ master_2_host }}"
+    - name : master_3
+      cardinality: 1
+      configuration: []  # configuration not yet implemented
+      components: "{{ master_3_components }}"
+      hosts: "{{ master_3_host }}"
+    - name : master_4
+      cardinality: 1
+      configuration: []  # configuration not yet implemented
+      components: "{{ master_4_components }}"
+      hosts: "{{ master_4_host }}"
+    - name : edge_1
+      cardinality: 1
+      configuration: []  # configuration not yet implemented
+      components: "{{ edge_1_components }}"
+      hosts: "{{ edge_1_host }}"
+    - name : edge_3
+      cardinality: 2
+      configuration: []  # configuration not yet implemented
+      components: "{{ edge_3_components }}"
+      hosts: "{{ edge_3_host }}"
+    - name : zk_1
+      cardinality: 3
+      configuration: []  # configuration not yet implemented
+      components: "{{ zk_1_components }}"
+      hosts: "{{ zk_1_host }}"
+    - name : worker_1
+      cardinality: 6
+      configuration: []  # configuration not yet implemented
+      components: "{{ worker_1_components }}"
+      hosts: "{{ worker_1_host }}"
+ 
