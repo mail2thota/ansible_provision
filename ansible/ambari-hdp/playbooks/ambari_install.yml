@@ -35,6 +35,8 @@
   become: true
   roles:
     - role: ambari_config
+    - role: hdp_test
   tags:
     - hdp-install
     - hdp-deploy
+    - hdp-test
