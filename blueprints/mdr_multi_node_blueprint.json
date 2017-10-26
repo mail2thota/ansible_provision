@@ -32,6 +32,12 @@
 					"name": "ZOOKEEPER_CLIENT"
 				},
 				{
+					"name": "PIG"
+				},
+				{
+					"name": "TEZ_CLIENT"
+				},
+				{
 					"name": "SPARK_CLIENT"
 				},
 				{
