@@ -23,7 +23,7 @@ AMBARI_VERSION=${ambari_version:-2.5.2.0}
 MYSQL_REPO_URL=${mysql_repo_url:-http://10.129.6.237/repos/mysql}
 CLUSTER_TYPE=${cluster_type:-multi_node}
 
-#generate and configure ssh key,thereby create the server groups in ansible hosts 
+#generate and configure ssh key,thereby create the server groups in ansible hosts
 if [ -f ~/.ssh/bootstrap_rsa.pub ]; then
   rm -rf ~/.ssh/bootstrap_rsa*
   > ~/.ssh/known_hosts
@@ -51,8 +51,8 @@ do
 	if [[ $host_domain_temp == *"${AMBARI_SERVER_HOST_ID}"* ]]; then
 		host_domain_temp="${host_domain_temp}-${AMBARI_SERVER_ID}-${AMBARI_AGENT_ID}"
 	elif [[ $host_domain_temp == *"${AMBARI_AGENT_HOST_ID}"* ]];then
-        host_domain_temp="${host_domain_temp}-${AMBARI_AGENT_ID}"	
-	fi	
+        host_domain_temp="${host_domain_temp}-${AMBARI_AGENT_ID}"
+	fi
     server_group_id_groups="$(cut -d '-' -f 3- <<< "${host_domain_temp}")"
 	for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
 	do
@@ -61,7 +61,7 @@ do
 			   ambari_server_hdp+=","
                server_cardinality="1+"
 			fi
-           	ambari_server_hdp+="{ \"fqdn\" : \"${host_domain}\" }"			
+           	ambari_server_hdp+="{ \"fqdn\" : \"${host_domain}\" }"
 			ambari_server_domains[server_count++]="${host_domain}"
 		fi
 		if [ $AMBARI_AGENT_ID == "${server_group_id}" ];then
@@ -121,5 +121,5 @@ sed -i "s%<HDP_UTILS_VERSION>%${HDP_UTILS_VERSION}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<HDP_OS_TYPE>%${HDP_OS_TYPE}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<MYSQL_REPO_URL>%${MYSQL_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<CLUSTER_TYPE>%${CLUSTER_TYPE}%g" "${GLOBAL_VAR_LOC}"
-ansible-playbook playbooks/ambari_install.yml
+ansible-playbook playbooks/ambari_install.yml --extra-vars "test_cases_host=agent8-ambariagent.example.com"
 

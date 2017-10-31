@@ -4,23 +4,23 @@ echo "test test" > wordcountfile
 
 sudo -u hdfs hdfs dfs -chmod 777 /
 
-hdfs dfs -mkdir /wordcount
+/usr/hdp/2.6.2.0-205/hadoop/bin/hdfs dfs -mkdir /wordcount
 
 
 
-hdfs dfs -mkdir /wordcount/input
+/usr/hdp/2.6.2.0-205/hadoop/bin/hdfs dfs -mkdir /wordcount/input
 
 
 
-hdfs dfs -mkdir /wordcount/output
+/usr/hdp/2.6.2.0-205/hadoop/bin/hdfs dfs -mkdir /wordcount/output
 
 
 
-hdfs dfs -put wordcountfile /wordcount/input
+/usr/hdp/2.6.2.0-205/hadoop/bin/hdfs dfs -put wordcountfile /wordcount/input
 
 
 
-hdfs hadoop jar /usr/hdp/2.6.2.0-205/hadoop-mapreduce/hadoop-mapreduce-examples.jar wordcount /wordcount/input/wordcountfile /wordcount/output/wordcountfile-output
+su hdfs /usr/hdp/2.6.2.0-205/hadoop/bin/hadoop jar /usr/hdp/2.6.2.0-205/hadoop-mapreduce/hadoop-mapreduce-examples.jar wordcount /wordcount/input/wordcountfile /wordcount/output/wordcountfile-output
 
 
 
@@ -28,11 +28,11 @@ sudo atd
 
 
 
-hdfs hadoop dfs -cat /wordcount/output/wordcountfile-output/part-r-00000
+su hdfs /usr/hdp/2.6.2.0-205/hadoop/bin/hadoop dfs -cat /wordcount/output/wordcountfile-output/part-r-00000
 
 
 
-hdfs dfs -getmerge /wordcount/output/wordcountfile-output /tmp/wordcountfile-output
+/usr/hdp/2.6.2.0-205/hadoop/bin/hdfs dfs -getmerge /wordcount/output/wordcountfile-output /tmp/wordcountfile-output
 
 
 

@@ -21,6 +21,7 @@
     cluster_state: absent
     wait_for_complete: True
 
+
 - name: deploy cluster with ambari; http://{{ groups.ambari_master[0] }}:{{ ambari_port }}
   ambari_cluster_state:
     host: "{{ groups.ambari_master[0] }}"
@@ -34,3 +35,6 @@
     wait_for_complete: True
     blueprint_var: "{{ blueprint }}"
     use_local_repository: "{{ use_local_repository }}"
+
+
+

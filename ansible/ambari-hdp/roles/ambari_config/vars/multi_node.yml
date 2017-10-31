@@ -12,45 +12,12 @@ master_4_components: [OOZIE_SERVER,METRICS_MONITOR]
 zk_1_components: [METRICS_MONITOR,ZOOKEEPER_SERVER]
 worker_1_components: [NODEMANAGER,DATANODE,METRICS_MONITOR]
 edge_1_components: [METRICS_MONITOR,METRICS_COLLECTOR]
-edge_3_components: [ZOOKEEPER_CLIENT,TEZ_CLIENT,OOZIE_CLIENT,METRICS_MONITOR,MAPREDUCE2_CLIENT,YARN_CLIENT,HDFS_CLIENT,SPARK_CLIENT]
+edge_3_components: [ZOOKEEPER_CLIENT,TEZ_CLIENT,OOZIE_CLIENT,METRICS_MONITOR,MAPREDUCE2_CLIENT,YARN_CLIENT,HDFS_CLIENT,SPARK_CLIENT,HIVE_CLIENT]
 
 cluster_name: "mdr"
 blueprint_name: "mdr_ha_blueprint"
 
-configurations:
-  - zoo.cfg:
-      dataDir: '{{ zookeeper_data_dir | default("/hadoop/zookeeper") }}'
-  - hadoop-env:
-      namenode_heapsize: 2048
-      dtnode_heapsize: 1024
-  - hbase-env:
-      hbase_regionserver_heapsize: 1024
-      hbase_master_heapsize: 1024
-  - hdfs-site:
-      dfs.namenode.checkpoint.dir: '{{ namenode_checkpoint_dir | default("/hadoop/hdfs/namesecondary") }}'
-      dfs.namenode.name.dir: '{{ namenode_name_dir | default("/hadoop/hdfs/namenode") }}'
-      dfs.datanode.data.dir: '{{ datanode_data_dir | default("/hadoop/hdfs/data" ) }}'
-      dfs.journalnode.edits.dir: '{{ journalnode_edits_dir | default("/hadoop/hdfs/journalnode") }}'
-  - mapred-site:
-      mapreduce.jobhistory.recovery.store.leveldb.path : '{{ jhs_recovery_store_ldb_path | default("/hadoop/mapreduce/jhs") }}'
-      mapreduce.map.memory.mb : '{{ mapred_map_mem_mb }}'
-      mapreduce.reduce.memory.mb : '{{ mapred_reduce_mem_mb }}'
-  - oozie-env:
-      oozie_heapsize: "1024m"
-      oozie_permsize: "384m"
-  - oozie-site:
-      oozie.service.AuthorizationService.security.enabled: "false"
-      oozie.service.AuthorizationService.authorization.enabled: "false"
-      oozie.service.coord.check.maximum.frequency: "false"
-      oozie.service.JPAService.jdbc.password: "password"
-
-  - yarn-site:
-      yarn.nodemanager.local-dirs : '{{ nodemanager_local_dirs| default("/hadoop/yarn/local") }}'
-      yarn.timeline-service.leveldb-timeline-store.path: '{{ timeline_ldb_store_path | default("/hadoop/yarn/timeline") }}'
-      yarn.timeline-service.leveldb-state-store.path: '{{ timeline_ldb_state_path| default("/hadoop/yarn/timeline") }}'
-      yarn.nodemanager.log-dirs: '{{ nodemanager_log_dirs| default("/hadoop/yarn/log") }}'
-      yarn.nodemanager.resource.memory-mb : '{{ nodemanager_mem_mb }}'
-
+configurations: []
 blueprint:
   stack_name: HDP
   stack_version: "{{ hdp_stack }}"

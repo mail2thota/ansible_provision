@@ -10,7 +10,7 @@
   copy:
     src: ./tasks/
     dest: /home/hdfs/
-    mode: 0774
+    mode: 0777
 
 - name: run test for hdfs
   become: True

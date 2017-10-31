@@ -25,6 +25,6 @@ if __name__ == "__main__":
 
   list = charCounts.collect()
   print repr(list)[1:-1]
-  f = open('/home/hdfs/spark/output/outputfile.txt', 'w+')
+  f = open('/home/hdfs/spark/outputfile.txt', 'w+')
   f.write('Result= ' + repr(list)[1:-1] + '\n')
   f.close()
