@@ -6,14 +6,14 @@
 ---
 # vars file for single_node_vm blueprint
 
-hive_components: [HIVE_METASTORE,HIVE_SERVER,HCAT,WEBHCAT_SERVER,HIVE_CLIENT]
-hadoop_components: [NODEMANAGER,SECONDARY_NAMENODE,MAPREDUCE2_CLIENT,DATANODE,NAMENODE,AMBARI_SERVER,HISTORYSERVER,YARN_CLIENT,RESOURCEMANAGER]
+hive_components: [HIVE_METASTORE,HIVE_SERVER,HCAT,WEBHCAT_SERVER,HIVE_CLIENT,MYSQL_SERVER]
+hadoop_components: [APP_TIMELINE_SERVER,NODEMANAGER,SECONDARY_NAMENODE,MAPREDUCE2_CLIENT,DATANODE,NAMENODE,HDFS_CLIENT,HISTORYSERVER,YARN_CLIENT,RESOURCEMANAGER]
 oozie_components: [OOZIE_CLIENT,OOZIE_SERVER]
 zookeeper_components: [ZOOKEEPER_SERVER,ZOOKEEPER_CLIENT]
-other_components: [TEZ_CLIENT,SLIDER,MYSQL_SERVER,PIG,APP_TIMELINE_SERVER]
-
-cr_components: "{{ hadoop_components | union (hive_components)| union (oozie_components)| union (zookeeper_components)| union (other_components) }}"
-#    |union(oozie_master)| union(oozie_slave)
+other_components: [TEZ_CLIENT]
+metric_components: [METRICS_COLLECTOR,METRICS_MONITOR]
+spark_components: [SPARK_JOBHISTORYSERVER,SPARK_CLIENT]
+cr_components: "{{ hadoop_components | union (zookeeper_components) | union(oozie_components) | union(hive_components) | union(metric_components) | union(spark_components) | union(other_components) }}"
 
 cluster_name: "mdr"
 blueprint_name: "mdr_blueprint"

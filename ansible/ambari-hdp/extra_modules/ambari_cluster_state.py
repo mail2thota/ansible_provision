@@ -107,7 +107,7 @@ def main():
                 clusterenv['cluster-env'] = {}
                 clusterenv['cluster-env']['repo_suse_rhel_template'] = "[{{repo_id}}]\nname={{repo_id}}\n{% if mirror_list %}mirrorlist={{mirror_list}}{% else %}baseurl={{base_url}}{% endif %}\n\npath=/\nenabled=1\ngpgcheck=0\nproxy=_none_"
                 configurations.append(clusterenv)
-            data1 = json.dumps({'blueprint': blueprint_name, 'configurations': configurations, 'host_groups': host_map})
+            data1 = json.dumps({'blueprint': blueprint_name, 'default_password': 'admin', 'configurations': configurations, 'host_groups': host_map})
 
             request = create_cluster(ambari_url, username, password, cluster_name, blueprint_name, configurations, host_map)
             request_id = json.loads(request.content)['Requests']['id']
@@ -157,7 +157,7 @@ def set_cluster_state(ambari_url, user, password, cluster_name, cluster_state):
 
 def create_cluster(ambari_url, user, password, cluster_name, blueprint_name, configurations, hosts_json):
     path = '/api/v1/clusters/{0}'.format(cluster_name)
-    data = json.dumps({'blueprint': blueprint_name, 'configurations': configurations, 'host_groups': hosts_json})
+    data = json.dumps({'blueprint': blueprint_name,'default_password': 'admin', 'configurations': configurations, 'host_groups': hosts_json})
     f = open('cluster.log', 'w')
     f.write(data)
     f.close()
@@ -214,9 +214,12 @@ def get_blueprints(ambari_url, user, password):
 def create_blueprint(ambari_url, user, password, blueprint_name, blueprint_data):
     data = json.dumps(blueprint_data)
     f = open('blueprint.log', 'w')
+
+  
+
     f.write(data)
     f.close()
-    path = "/api/v1/blueprints/" + blueprint_name
+    path = "/api/v1/blueprints/" + blueprint_name+"?validate_topology=false"
     r = post(ambari_url, user, password, path, data)
     if r.status_code != 201:
         msg = 'Could not create blueprint: request code {0}, \

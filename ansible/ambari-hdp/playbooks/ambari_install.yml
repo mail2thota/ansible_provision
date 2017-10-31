@@ -12,7 +12,6 @@
   tags:
     - ambari-prereqs
     - hdp-install
-
 - hosts: ambari_master
   become: true
   roles:
@@ -20,8 +19,6 @@
   tags:
     - ambari-server
     - hdp-install
-  
-
 
 
 - hosts: ambari_slave
@@ -31,11 +28,15 @@
   tags:
     - ambari-agent
     - hdp-install
-
 - hosts: ambari_master
   become: true
   roles:
     - role: ambari_config
   tags:
-    - hdp-install
     - hdp-deploy
+
+- hosts: "{{ test_cases_host }}"
+  become: true
+  roles:
+    - role:  hdp_test
+

@@ -23,6 +23,33 @@
     - { regexp: '<AMBARI_VERSION>', word: '{{ ambari_version }}' }
     - { regexp: '<REPO_URL>', word: '{{ local_ambari_repo_url }}' }
 
+- name: Copy Mysql-community repo template
+  template:
+    src: "mysql-community.repo"
+    dest: "/etc/yum.repos.d/mysql-community.repo"
+
+- name: changing the mysql repo to ftp
+  replace:
+    dest: "/etc/yum.repos.d/mysql-community.repo"
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.word }}'
+  with_items:
+    - { regexp: '<MYSQL_REPO_URL>', word: '{{ mysql_repo_url }}' }
+
+- name: Copy Mysql-community repo template
+  template:
+    src: "mysql-community.repo"
+    dest: "/etc/yum.repos.d/mysql-community-source.repo"
+
+- name: changing the mysql repo to ftp
+  replace:
+    dest: "/etc/yum.repos.d/mysql-community-source.repo"
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.word }}'
+  with_items:
+    - { regexp: '<MYSQL_REPO_URL>', word: '{{ mysql_repo_url }}' }
+
+
 - name: create logrotate script for hadoop services
   template:
     src: "hadoop-logrotate.yml"

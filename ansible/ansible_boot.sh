@@ -6,9 +6,9 @@ source ${thisdir}/../foreman/hammer_cfg.sh
 set -e
 
 HOST_USER_NAME=${node_user:-root}
-HOST_PASSWORD=${node_pass:-baesystems}
+HOST_PASSWORD=${node_pass:-as12345678}
 FOREMAN_USER_NAME=${username:-admin}
-FOREMAN_PASSWORD=${password:-4HFefKecSjn2i7Z8}
+FOREMAN_PASSWORD=${password:-as123}
 AMBARI_SERVER_HOST_ID=${ambari_host_suffix:-ambariserver}
 AMBARI_AGENT_HOST_ID=${ambari_agent_suffix:-ambariagent}
 AMBARI_SERVER_ID=${ambari_master_group:-ambari_master}
@@ -20,9 +20,10 @@ HDP_STACK_VERSION=${hdp_stack_version:-2.6}
 HDP_UTILS_VERSION=${hdp_utils_version:-1.1.0.21}
 HDP_OS_TYPE=${hdp_os_type:-redhat7}
 AMBARI_VERSION=${ambari_version:-2.5.2.0}
+MYSQL_REPO_URL=${mysql_repo_url:-http://10.129.6.237/repos/mysql}
+CLUSTER_TYPE=${cluster_type:-multi_node}
 
-
-#generate and configure ssh key,thereby create the server groups in ansible hosts 
+#generate and configure ssh key,thereby create the server groups in ansible hosts
 if [ -f ~/.ssh/bootstrap_rsa.pub ]; then
   rm -rf ~/.ssh/bootstrap_rsa*
   > ~/.ssh/known_hosts
@@ -31,16 +32,18 @@ ssh-keygen -f ~/.ssh/bootstrap_rsa -t rsa -N ''
 echo "generated bootstrap key in ~/.ssh"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/bootstrap_rsa &>/dev/null
-server_count=0
-agent_count=0
+server_count=1
+agent_count=7
+
 server_cardinality="1"
-agent_cardinality="1"
+agent_cardinality="7"
 while read -r foreman_config
 do
 	host_domain="$(cut -d ' ' -f 1 <<< "${foreman_config}")"
 	echo "copying shh key into ${host_domain} domain"
 	ssh-keyscan "${host_domain}" >>~/.ssh/known_hosts
 	sshpass -p "${HOST_PASSWORD}" ssh-copy-id -i ~/.ssh/bootstrap_rsa.pub "${HOST_USER_NAME}"@"${host_domain}"
+
 	ssh -n "${HOST_USER_NAME}"@"${host_domain}" "rm -rf /etc/yum.repos.d/*"
 	scp /etc/yum.repos.d/CentOS-Base.repo "${HOST_USER_NAME}"@"${host_domain}":/etc/yum.repos.d
 	scp /etc/yum.repos.d/epel.repo "${HOST_USER_NAME}"@"${host_domain}":/etc/yum.repos.d
@@ -48,8 +51,8 @@ do
 	if [[ $host_domain_temp == *"${AMBARI_SERVER_HOST_ID}"* ]]; then
 		host_domain_temp="${host_domain_temp}-${AMBARI_SERVER_ID}-${AMBARI_AGENT_ID}"
 	elif [[ $host_domain_temp == *"${AMBARI_AGENT_HOST_ID}"* ]];then
-        host_domain_temp="${host_domain_temp}-${AMBARI_AGENT_ID}"	
-	fi	
+        host_domain_temp="${host_domain_temp}-${AMBARI_AGENT_ID}"
+	fi
     server_group_id_groups="$(cut -d '-' -f 3- <<< "${host_domain_temp}")"
 	for server_group_id in $(echo $server_group_id_groups | sed "s/-/ /g")
 	do
@@ -58,7 +61,7 @@ do
 			   ambari_server_hdp+=","
                server_cardinality="1+"
 			fi
-           	ambari_server_hdp+="{ \"fqdn\" : \"${host_domain}\" }"			
+           	ambari_server_hdp+="{ \"fqdn\" : \"${host_domain}\" }"
 			ambari_server_domains[server_count++]="${host_domain}"
 		fi
 		if [ $AMBARI_AGENT_ID == "${server_group_id}" ];then
@@ -116,5 +119,7 @@ sed -i "s%<AMBARI_VERSION>%${AMBARI_VERSION}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<HDP_STACK_VERSION>%${HDP_STACK_VERSION}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<HDP_UTILS_VERSION>%${HDP_UTILS_VERSION}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<HDP_OS_TYPE>%${HDP_OS_TYPE}%g" "${GLOBAL_VAR_LOC}"
-ansible-playbook playbooks/ambari_install.yml
+sed -i "s%<MYSQL_REPO_URL>%${MYSQL_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
+sed -i "s%<CLUSTER_TYPE>%${CLUSTER_TYPE}%g" "${GLOBAL_VAR_LOC}"
+ansible-playbook playbooks/ambari_install.yml --extra-vars "test_cases_host=agent8-ambariagent.example.com"
 
