@@ -3,24 +3,25 @@
 # BAE SYSTEMS, DETICA are trademarks of BAE Systems
 # plc and may be registered in certain jurisdictions.
 #
----
+---   
+- hosts: ambari_*
+  become: true
+  roles:
+    - role: ambari_common
+  tags:
+    - ambari-prereqs
+    - hdp-install
+ 
 - hosts: postgres
   become: true
   roles:
     - role: postgresql
     - role: postgresql_test
     
-- hosts: ambari_*
-  become: true
-  roles:
-    - ambari_common
-  tags:
-    - ambari-prereqs
-    - hdp-install
 - hosts: ambari_master
   become: true
   roles:
-    - ambari_master
+    - role: ambari_master
   tags:
     - ambari-server
     - hdp-install
@@ -33,6 +34,7 @@
   tags:
     - ambari-agent
     - hdp-install
+    
 - hosts: ambari_master
   become: true
   roles:
