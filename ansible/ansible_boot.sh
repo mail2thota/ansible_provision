@@ -13,14 +13,14 @@ AMBARI_SERVER_HOST_ID=${ambari_host_suffix:-ambariserver}
 AMBARI_AGENT_HOST_ID=${ambari_agent_suffix:-ambariagent}
 AMBARI_SERVER_ID=${ambari_master_group:-ambari_master}
 AMBARI_AGENT_ID=${ambari_agent_group:-ambari_slave}
-HDP_REPO_URL=${hdp_repo_url:-http://10.129.6.237/repos/HDP/HDP-2.6.2.0/centos7}
-HDP_UTILS_REPO_URL=${hdp_utils_repo_url:-http://10.129.6.237/repos/HDP/HDP-UTILS-1.1.0.21}
-AMBARI_REPO_URL=${ambari_repo_url:-http://10.129.6.237/repos/ambari/ambari-2.5.2.0/centos7}
+HDP_REPO_URL=${hdp_repo_url:-http://10.11.12.7:8081/repos/HDP/HDP-2.6.2.0/centos7}
+HDP_UTILS_REPO_URL=${hdp_utils_repo_url:-http://10.11.12.7:8081/repos/HDP/HDP-UTILS-1.1.0.21}
+AMBARI_REPO_URL=${ambari_repo_url:-http://10.11.12.7:8081/repos/ambari/ambari-2.5.2.0/centos7}
 HDP_STACK_VERSION=${hdp_stack_version:-2.6}
 HDP_UTILS_VERSION=${hdp_utils_version:-1.1.0.21}
 HDP_OS_TYPE=${hdp_os_type:-redhat7}
 AMBARI_VERSION=${ambari_version:-2.5.2.0}
-MYSQL_REPO_URL=${mysql_repo_url:-http://10.129.6.237/repos/mysql}
+MYSQL_REPO_URL=${mysql_repo_url:-http://10.11.12.7:8081/repos/mysql}
 CLUSTER_TYPE=${cluster_type:-multi_node}
 
 #generate and configure ssh key,thereby create the server groups in ansible hosts

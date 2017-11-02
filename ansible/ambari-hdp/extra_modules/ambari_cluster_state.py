@@ -219,7 +219,7 @@ def create_blueprint(ambari_url, user, password, blueprint_name, blueprint_data)
 
     f.write(data)
     f.close()
-    path = "/api/v1/blueprints/" + blueprint_name+"?validate_topology=false"
+    path = "/api/v1/blueprints/" + blueprint_name
     r = post(ambari_url, user, password, path, data)
     if r.status_code != 201:
         msg = 'Could not create blueprint: request code {0}, \
