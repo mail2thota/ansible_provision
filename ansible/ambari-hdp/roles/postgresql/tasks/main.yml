@@ -4,25 +4,17 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-  - name: Download Postgresql into {{ groups.ambari_master[0] }}
-    get_url:
-      url: "{{ postgres_url }}"
-      dest: "{{ postgres_jar_location }}/{{ postgres_jar_filename }}.rpm"
-
-  - name: Install Postgresql into {{ groups.ambari_master[0] }}
-    yum: name={{ item }}
-    with_items:
-      - "{{ postgres_jar_location }}/{{ postgres_jar_filename }}.rpm"
-
-    #Dependencies are based on your Postgresql version. E.g: Version 9.2 will have postgresql92-server, Version 9.4 will have postgresql94-server
   - name: Install New Postgresql Dependencies
-    yum: name={{ item }} state=latest
+    yum: 
+      name: "{{ item }}"
+      state: latest
     with_items:
-      - postgresql92-server
-      - postgresql92-contrib
-      - pg_repack92
+      - postgresql96
+      - postgresql96-contrib
+      - pg_repack96
+      - postgresql96-server
       - postgresql-jdbc
-
+ 
   - name: Change Postgresql-JDBC Permission
     file:
       path: "/usr/share/java/postgresql-jdbc.jar"
@@ -38,23 +30,14 @@
 
   - name: Copy custom Postgresql.conf to "{{ postgres_data_location }}"
     template:
-      src: ../conf/postgresql.conf
+      src: templates/postgresql.conf
       dest: "{{ postgres_data_location }}"
       mode: "0751"
 
   - name: Copy Custom pg_hba.conf to "{{ postgres_data_location }}"
     template:
-      src: ../conf/pg_hba.conf
+      src: templates/pg_hba.conf
       dest: "{{ postgres_data_location }}"
-      mode: "0751"
-
-  - name: Create a Postgres file for Postgres Version < 9.4
-    copy:
-      src: ../conf/postgresql
-      dest: "/etc/sysconfig/pgsql/{{ postgresql_service_name }}"
-      force: no
-      group: sys
-      owner: root
       mode: "0751"
 
   - name: Link 'pgsql' to the new Postgres version
@@ -68,6 +51,8 @@
     service:
       name: "{{ postgresql_service_name }}"
       state: started
-
-  - name: Configuring Postgresql JDBC Driver
-    command: "ambari-server setup --jdbc-db=postgres --jdbc-driver=/usr/share/java/postgresql-jdbc.jar"
+      
+  - name: Enable the Postgres service
+    service:
+      name: "{{ postgresql_service_name }}"
+      enabled: yes

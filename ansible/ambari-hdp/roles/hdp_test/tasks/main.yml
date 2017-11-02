@@ -4,6 +4,15 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
+- name: run test for postgres
+  become: True
+  become_user: root
+  script: ./postgres/postgres_test.sh
+  register: postgres_test
+
+- debug: msg="{{ postgres_test.stdout }}"
+- debug: msg="{{ postgres_test.stderr }}"
+
 - name: copy all test files to edge node
   become: True
   become_user: hdfs

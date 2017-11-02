@@ -4,7 +4,12 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-
+- hosts: postgres
+  become: true
+  roles:
+    - role: postgresql
+    - role: postgresql_test
+    
 - hosts: ambari_*
   become: true
   roles:
@@ -39,4 +44,3 @@
   become: true
   roles:
     - role:  hdp_test
-

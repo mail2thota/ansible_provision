@@ -21,6 +21,7 @@ HDP_UTILS_VERSION=${hdp_utils_version:-1.1.0.21}
 HDP_OS_TYPE=${hdp_os_type:-redhat7}
 AMBARI_VERSION=${ambari_version:-2.5.2.0}
 MYSQL_REPO_URL=${mysql_repo_url:-http://10.129.6.237/repos/mysql}
+PGSQL_REPO_URL=${pgsql_repo_url:-http://10.129.6.237/repos/postgresql}
 CLUSTER_TYPE=${cluster_type:-multi_node}
 
 #generate and configure ssh key,thereby create the server groups in ansible hosts
@@ -120,6 +121,7 @@ sed -i "s%<HDP_STACK_VERSION>%${HDP_STACK_VERSION}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<HDP_UTILS_VERSION>%${HDP_UTILS_VERSION}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<HDP_OS_TYPE>%${HDP_OS_TYPE}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<MYSQL_REPO_URL>%${MYSQL_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
+sed -i "s%<PGSQL_REPO_URL>%${PGSQL_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<CLUSTER_TYPE>%${CLUSTER_TYPE}%g" "${GLOBAL_VAR_LOC}"
 ansible-playbook playbooks/ambari_install.yml --extra-vars "test_cases_host=agent8-ambariagent.example.com"
 
