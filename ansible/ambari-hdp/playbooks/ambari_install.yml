@@ -40,3 +40,7 @@
   roles:
     - role:  hdp_test
 
+- hosts: activemq
+  become: true
+  roles:
+    - role:  activemq

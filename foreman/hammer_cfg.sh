@@ -6,11 +6,11 @@ username=admin
 password=as123
 architecture="x86_64"
 domain=example.com
-url_repo=http://10.129.6.237
+url_repo=http://10.11.12.7:8081
 dns_id="foreman.example.com"
 
 medium_name="CentOSDemo7"
-image_path="http://10.129.6.237/repos/CentOS_7_x86_64"
+image_path="http://10.11.12.7:8081/repos/CentOS_7_x86_64"
 
 os_name="CentOSDemo7"
 os_majorversion=7

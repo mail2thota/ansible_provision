@@ -5,12 +5,14 @@
 #
 ---
 
-- name: "Determine if to use systemd or not (for centos 6 support)"
+- name: "determin if to use systemd or not (for centos 6 support)"
   stat:
     path: /etc/systemd
   register: systemd
 
-- name: "Set fact if systemd is avail"
+- debug: var=systemd.stat
+
+- name: "set fact if systemd is avail"
   set_fact:
     activemq_systemd: true
   when: systemd.stat.exists
@@ -18,6 +20,9 @@
 - name: "Add Activemq group"
   group:
     name: "{{ activemq_group }}"
+  tags:
+    - init
+    - group
 
 - name: "Add Activemq user"
   user:
@@ -28,6 +33,9 @@
     createhome: no
     state: present
     system: yes
+  tags:
+    - init
+    - user
 
 - name: "Create requires directories [home/log etc etc]"
   file:
@@ -40,30 +48,46 @@
   - "{{ activemq_home_dir }}"
   - "{{ activemq_log_dir }}"
 
-- name: Unarchive {{ activemq_tar }} into /opt
-  unarchive:
-    src: "{{activemq_tar_location}}"
-    dest: "/opt"
-    owner: activemq
-    group: activemq
-    mode: "go-w"
-    copy: no
+- name: "Get tarball"
+  get_url:
+    url: "{{ activemq_url }}"
+    dest: "/tmp/apache-activemq-{{ activemq_version }}-bin.tar.gz"
+    owner: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+  when: activemq_skip_checksum
+  #and activemq_checksum is not defined
+  tags:
+    - getbin
 
-- name: Create symbolic link for /opt/activemq
+- name: "Extract activemq tarball" #
+  unarchive:
+    src: /tmp/apache-activemq-{{ activemq_version }}-bin.bz2
+    dest: "{{ activemq_install_dir}}"
+    list_files: true
+    copy: no
+    owner: {{ activemq_user }}
+    group: {{ activemq_group }}
+    mode: "go-w"
+
+- name: "Create symbolic link activemq to /opt/activemq"
   file:
-    src: "/opt/{{activemq_version}}/"
-    dest: "/opt/activemq"
+    src: "{{ activemq_install_dir }}/apache-activemq-{{ activemq_version }}"
+    dest: "{{ activemq_install_dir }}/activemq"
     state: link
+    owner: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
+  tags:
+    - link
 
 - name: Update config
   lineinfile:
-    destfile: /opt/activemq/conf/activemq.xml
+    destfile: {{ activemq_run_dir }}/conf/activemq.xml
     regexp: '<managementContext createConnector="false"/>'
     line: '<managementContext createConnector="true"/>'
 
-- name: "Create init script link file"
+- name: "Create init sctipt link file"
   file:
-    src: "{{ activemq_dir }}/bin/linux-x86-{{ ansible_userspace_bits }}/activemq"
+    src: "{{ activemq_install_dir }}/activemq/bin/linux-x86-{{ ansible_userspace_bits }}/activemq"
     dest: "/etc/init.d/activemq"
     owner: root
     group: root
@@ -94,9 +118,15 @@
     group: root
   when: activemq_systemd is defined
 
-- service: name=activemq enabled=yes state=started
-
 - name: Start activemq
   service:
     name: "activemq"
     state: started
+    enbaled: yes
+
+- name: run test for activemq
+  script: ./tests/activemq_test.sh
+  register: activemq_test
+
+- debug: msg="{{ activemq_test.stdout }}"
+- debug: msg="{{ activemq_test.stderr }}"
