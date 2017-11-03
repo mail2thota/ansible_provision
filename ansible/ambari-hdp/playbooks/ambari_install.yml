@@ -12,6 +12,7 @@
   tags:
     - ambari-prereqs
     - hdp-install
+    
 - hosts: ambari_master
   become: true
   roles:

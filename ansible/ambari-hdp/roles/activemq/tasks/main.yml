@@ -59,14 +59,14 @@
   tags:
     - getbin
 
-- name: "Extract activemq tarball" #
+- name: "Extract activemq tarball"
   unarchive:
-    src: /tmp/apache-activemq-{{ activemq_version }}-bin.bz2
+    src: "/tmp/apache-activemq-{{ activemq_version }}-bin.tar.gz"
     dest: "{{ activemq_install_dir}}"
     list_files: true
     copy: no
-    owner: {{ activemq_user }}
-    group: {{ activemq_group }}
+    owner: "{{ activemq_user }}"
+    group: "{{ activemq_group }}"
     mode: "go-w"
 
 - name: "Create symbolic link activemq to /opt/activemq"
@@ -81,7 +81,7 @@
 
 - name: Update config
   lineinfile:
-    destfile: {{ activemq_run_dir }}/conf/activemq.xml
+    destfile: "{{ activemq_run_dir }}/conf/activemq.xml"
     regexp: '<managementContext createConnector="false"/>'
     line: '<managementContext createConnector="true"/>'
 
@@ -122,9 +122,10 @@
   service:
     name: "activemq"
     state: started
-    enbaled: yes
 
 - name: run test for activemq
+  become: True
+  become_user: root
   script: ./tests/activemq_test.sh
   register: activemq_test
 
