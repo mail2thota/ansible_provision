@@ -1,0 +1,7 @@
+f1      f2      M2534896R402Qnew        f4
+f1      f2      M2534896R987Qxyz        f4
+f1      f2      M2534897R421Qabc        f4
+f1      f2      M47Rzxcvzxcv    f4
+f1      f2      12345M000R      f4
+f1      f2      M23551Qnew      f4
+f1      f2      M298793R133R23Qnew      f4
