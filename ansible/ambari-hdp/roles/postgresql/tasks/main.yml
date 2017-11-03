@@ -5,7 +5,7 @@
 #
 ---
   - name: Install New Postgresql Dependencies
-    yum: 
+    yum:
       name: "{{ item }}"
       state: latest
     with_items:
@@ -14,7 +14,7 @@
       - pg_repack96
       - postgresql96-server
       - postgresql-jdbc
- 
+
   - name: Change Postgresql-JDBC Permission
     file:
       path: "/usr/share/java/postgresql-jdbc.jar"
@@ -51,8 +51,17 @@
     service:
       name: "{{ postgresql_service_name }}"
       state: started
-      
+
   - name: Enable the Postgres service
     service:
       name: "{{ postgresql_service_name }}"
       enabled: yes
+
+  - name: run test for postgres
+    become: True
+    become_user: root
+    script: ./tests/postgres_test.sh
+    register: postgres_test
+
+  - debug: msg="{{ postgres_test.stdout }}"
+  - debug: msg="{{ postgres_test.stderr }}"
