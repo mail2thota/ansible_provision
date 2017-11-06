@@ -12,6 +12,11 @@
   tags:
     - ambari-prereqs
     - hdp-install
+
+- hosts: activemq
+  become: true
+  roles:
+    - role:  activemq
     
 - hosts: ambari_master
   become: true
@@ -41,7 +46,4 @@
   roles:
     - role:  hdp_test
 
-- hosts: activemq
-  become: true
-  roles:
-    - role:  activemq
+
