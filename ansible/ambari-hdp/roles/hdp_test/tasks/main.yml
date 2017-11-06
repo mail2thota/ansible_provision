@@ -60,3 +60,12 @@
 
 - debug: msg="{{ hive_test.stdout }}"
 - debug: msg="{{ hive_test.stderr }}"
+
+- name: run test for pig
+  become: True
+  become_user: hdfs
+  script: ./pig/pig_test.sh
+  register: pig_test
+
+- debug: msg="{{ pig_test.stdout }}"
+- debug: msg="{{ pig_test.stderr }}"

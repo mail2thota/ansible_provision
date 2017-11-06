@@ -53,6 +53,9 @@
 					"name": "HIVE_CLIENT"
 				},
 				{
+					"name": "PIG"
+				},
+				{
 					"name": "METRICS_MONITOR"
 				}
 			],

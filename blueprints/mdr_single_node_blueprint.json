@@ -82,6 +82,9 @@
 				"name": "TEZ_CLIENT"
 			},
 			{
+				"name": "PIG"
+			},
+			{
 				"name": "HIVE_METASTORE"
 			},
 			{
