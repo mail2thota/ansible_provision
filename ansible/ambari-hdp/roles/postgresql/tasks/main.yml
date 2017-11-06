@@ -57,6 +57,14 @@
       name: "{{ postgresql_service_name }}"
       enabled: yes
 
+  - name: change mode for postgres_test.sh
+    become: True
+    become_user: root
+    copy:
+      src: ./tests/postgres_test.sh
+      dest: /root/
+      mode: 0777
+
   - name: run test for postgres
     become: True
     become_user: root

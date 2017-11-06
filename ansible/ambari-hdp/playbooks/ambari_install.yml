@@ -4,7 +4,7 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- hosts: ambari_*
+- hosts: all
   become: true
   roles:
     - role: ambari_common
