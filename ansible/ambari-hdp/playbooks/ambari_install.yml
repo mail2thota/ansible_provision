@@ -11,11 +11,15 @@
   tags:
     - ambari-prereqs
     - hdp-install
-
 - hosts: postgres
   become: true
   roles:
     - role: postgresql
+
+- hosts: activemq
+  become: true
+  roles:
+    - role:  activemq
 
 - hosts: ambari_master
   become: true

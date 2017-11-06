@@ -4,5 +4,4 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-dependencies:
-  - java_jdk
+# vars file for activemq-ansible-role

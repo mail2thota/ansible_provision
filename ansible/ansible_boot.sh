@@ -23,6 +23,7 @@ AMBARI_VERSION=${ambari_version:-2.5.2.0}
 MYSQL_REPO_URL=${mysql_repo_url:-http://10.129.6.237/repos/mysql}
 PGSQL_REPO_URL=${pgsql_repo_url:-http://10.129.6.237/repos/postgresql}
 CLUSTER_TYPE=${cluster_type:-multi_node}
+ACTIVEMQ_REPO_URL=${activemq_repo_url:-http://10.129.6.237/repos/activemq}
 
 #generate and configure ssh key,thereby create the server groups in ansible hosts
 if [ -f ~/.ssh/bootstrap_rsa.pub ]; then
@@ -123,5 +124,5 @@ sed -i "s%<HDP_OS_TYPE>%${HDP_OS_TYPE}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<MYSQL_REPO_URL>%${MYSQL_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<PGSQL_REPO_URL>%${PGSQL_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
 sed -i "s%<CLUSTER_TYPE>%${CLUSTER_TYPE}%g" "${GLOBAL_VAR_LOC}"
+sed -i "s%<ACTIVEMQ_REPO_URL>%${ACTIVEMQ_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
 ansible-playbook playbooks/ambari_install.yml --extra-vars "test_cases_host=agent8-ambariagent.example.com"
-
