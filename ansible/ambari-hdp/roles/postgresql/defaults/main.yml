@@ -4,10 +4,9 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-postgres_jar_location: /code/hdp-ansible
-postgres_jar_filename: pgdg-centos92-9.2-8.noarch
 postgres_data_location: "/var/lib/pgsql/{{ postgresql_version }}/data"
-postgresql_version: 9.2
+postgresql_version: 9.6
 postgresql_service_name: "postgresql-{{ postgresql_version }}"
-postgres_url: http://10.129.6.52/files/postgresql/pgdg-centos92-9.2-8.noarch.rpm
-postgresql_short_version: 92
+postgres_url: "{{ pgsql_repo_url }}/pgdg-centos96-9.6-3.noarch.rpm"
+postgresql_short_version: 96
+postgresql_port: 5433

@@ -4,18 +4,23 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-
-- hosts: ambari_*
+- hosts: all
   become: true
   roles:
-    - ambari_common
+    - role: ambari_common
   tags:
     - ambari-prereqs
     - hdp-install
+
+- hosts: postgres
+  become: true
+  roles:
+    - role: postgresql
+
 - hosts: ambari_master
   become: true
   roles:
-    - ambari_master
+    - role: ambari_master
   tags:
     - ambari-server
     - hdp-install
@@ -28,6 +33,7 @@
   tags:
     - ambari-agent
     - hdp-install
+
 - hosts: ambari_master
   become: true
   roles:
@@ -39,4 +45,3 @@
   become: true
   roles:
     - role:  hdp_test
-
