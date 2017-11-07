@@ -21,7 +21,7 @@ hdp_os_type: <HDP_OS_TYPE>
 ambari_version: <AMBARI_VERSION>
 mysql_repo_url: <MYSQL_REPO_URL>
 pgsql_repo_url: <PGSQL_REPO_URL>
-
+activemq_repo_url: <ACTIVEMQ_REPO_URL>
 #For Cluster
 #Host information instead of taking it hosts
 master_1_host: ["agent1-ambariagent.example.com"]
