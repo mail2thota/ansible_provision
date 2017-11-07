@@ -9,4 +9,4 @@ postgresql_version: 9.6
 postgresql_service_name: "postgresql-{{ postgresql_version }}"
 postgres_url: "{{ pgsql_repo_url }}/pgdg-centos96-9.6-3.noarch.rpm"
 postgresql_short_version: 96
-postgresql_port: 5433
+postgresql_port: 5432
