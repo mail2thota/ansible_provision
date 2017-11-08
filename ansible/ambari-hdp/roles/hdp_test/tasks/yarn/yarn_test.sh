@@ -2,7 +2,7 @@
 
 cd /home/hdfs
 
-yarn jar /usr/hdp/2.6.2.0-205/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 16 1000 > yarn_test
+yarn jar /usr/hdp/*/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 16 1000 > yarn_test
 
 
 yarn_output=$(awk '$1=$1' ORS='\\n' /home/hdfs/yarn_test)
