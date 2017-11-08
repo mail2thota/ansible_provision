@@ -1,0 +1,75 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+  - name: Install New Postgresql Dependencies
+    yum:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - postgresql96
+      - postgresql96-contrib
+      - pg_repack96
+      - postgresql96-server
+      - postgresql-jdbc
+
+  - name: Change Postgresql-JDBC Permission
+    file:
+      path: "/usr/share/java/postgresql-jdbc.jar"
+      mode: "0644"
+
+  - name: Remove Postgres Data Folder
+    file:
+      path: "/var/lib/pgsql/{{postgresql_version}}/data"
+      state: absent
+
+  - name: Initiate the Database
+    shell: "/usr/pgsql-{{ postgresql_version }}/bin/postgresql{{ postgresql_short_version }}-setup initdb"
+
+  - name: Copy custom Postgresql.conf to "{{ postgres_data_location }}"
+    template:
+      src: templates/postgresql.conf
+      dest: "{{ postgres_data_location }}"
+      mode: "0751"
+
+  - name: Copy Custom pg_hba.conf to "{{ postgres_data_location }}"
+    template:
+      src: templates/pg_hba.conf
+      dest: "{{ postgres_data_location }}"
+      mode: "0751"
+
+  - name: Link 'pgsql' to the new Postgres version
+    file:
+      path: /usr/bin/psql
+      src: "/usr/pgsql-{{ postgresql_version }}/bin/psql"
+      state: link
+      force: yes
+
+  - name: Start the Postgres service
+    service:
+      name: "{{ postgresql_service_name }}"
+      state: started
+
+  - name: Enable the Postgres service
+    service:
+      name: "{{ postgresql_service_name }}"
+      enabled: yes
+
+  - name: change mode for postgres_test.sh
+    become: True
+    become_user: root
+    copy:
+      src: ./tests/postgres_test.sh
+      dest: /root/
+      mode: 0777
+
+  - name: run test for postgres
+    become: True
+    become_user: root
+    script: ./tests/postgres_test.sh
+    register: postgres_test
+
+  - debug: msg="{{ postgres_test.stdout }}"
+  - debug: msg="{{ postgres_test.stderr }}"
