@@ -21,6 +21,7 @@
   become: true
   roles:
     - role:  activemq
+
 - hosts: ambari-server
   become: true
   roles:
