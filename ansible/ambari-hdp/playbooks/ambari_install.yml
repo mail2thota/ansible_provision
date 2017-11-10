@@ -11,6 +11,7 @@
   tags:
     - ambari-prereqs
     - hdp-install
+
 - hosts: postgres
   become: true
   roles:
