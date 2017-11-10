@@ -1,0 +1,188 @@
+#!/usr/bin/env python
+
+"""Generate CHANGELOG
+
+Idea by Matt DeBoard
+http://mattdeboard.net/2014/01/14/automatic-changelog-generation-with-git/
+"""
+
+import click
+import datetime
+import jinja2
+import json
+import os
+import re
+import subprocess
+
+
+GIT_FORMAT = (
+    '--pretty=format:{'
+    'STRXSEPrevisionSTRXSEP: STRXSEP%hSTRXSEP, '
+    'STRXSEPsubjectSTRXSEP: STRXSEP%sSTRXSEP, '
+    'STRXSEPbodySTRXSEP: STRXSEP%bSTRXSEP}EOFL'
+)
+
+EXTRACT_PR = re.compile("Merge pull request #(\d+) ")
+
+TEMPLATE = """
+    {
+        'version' : "{{ version }}",
+        'date'    : "{{ date }}",
+        'author'  : "{{ author }}",
+        'changes' : [ {% for change in changes %}
+            "{{ change.subject }}",
+            [
+                {% if change.uri %}"{{ change.uri }}",
+                {% endif %}{% if change.body %}"{{ change.body }}",{% endif %}
+            ],
+            {% endfor %}
+        ],
+    },
+"""
+
+
+@click.command()
+@click.option(
+    '-m',
+    '--merge',
+    is_flag=True,
+    help="Use this if you work with pull/merge-requests.",
+)
+@click.argument(
+    'project_uri',
+    nargs=1,
+)
+@click.argument(
+    'version_file',
+    nargs=1,
+)
+@click.argument(
+    'start_commit',
+    nargs=1,
+)
+@click.argument(
+    'end_commit',
+    nargs=1,
+)
+def genlog(merge, project_uri, version_file, start_commit, end_commit):
+    """Generate CHANGELOG. Preprend the result to the CHANGELOG file and edit
+    it as you wish.
+
+    PROJECT_URI     Reference to a github project
+
+    VERSION_FILE    File to read the version from
+
+    START_COMMIT    Generate the log from this revision or tag
+
+    END_COMMIT      Generate the log to this revision or tag
+    """
+    logs     = list(get_commit_msgs(merge, start_commit, end_commit))
+    author   = get_author()
+    date     = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+0000")
+    version  = get_version(version_file)
+    changes  = []
+    template = jinja2.Template(TEMPLATE)
+    for log in logs:
+        subject   = log['subject']
+        revision  = log['revision']
+        match     = EXTRACT_PR.findall(subject)
+        body      = log['body']
+        bodysplit = body.split("LINEXSEP")
+        bs_len    = len(bodysplit)
+        newbody   = []
+        for x, line in enumerate(bodysplit):
+            if x < bs_len - 1:
+                next_line = bodysplit[x + 1]
+            else:
+                next_line = None
+            line = line.strip()
+            fix = False
+            if line.startswith("*"):
+                fix = True
+            elif line.startswith("-"):
+                fix = True
+            if fix:
+                line = line[1:]
+                line = line.strip()
+                fix = False
+                if next_line:
+                    if next_line.startswith("*"):
+                        fix = True
+                    elif next_line.startswith("-"):
+                        fix = True
+                    if fix:
+                        line = "%s." % line
+            newbody.append(line)
+        if match:
+            pr = match[0]
+            uri = "%s/pull/%s" % (project_uri, pr)
+        else:
+            uri = "%s/commit/%s" % (project_uri, revision)
+        change = {
+            'uri'      : uri,
+            'subject'  : subject,
+            'revision' : revision,
+            'body'     : " ".join(newbody),
+        }
+        changes.append(change)
+    print(template.render(
+        version = version,
+        author  = author,
+        date    = date,
+        changes = changes,
+    ))
+
+
+def get_version(version_file):
+    """Get the version"""
+    env = {}
+    with open(version_file) as f:
+        code = compile(f.read(), version_file, 'exec')
+        exec(code, env)
+    return env['__version__']
+
+
+def get_commit_msgs(merge, start_commit, end_commit):
+    """Get the commits in a parseable format"""
+    args = []
+    args.extend([
+        "git",
+        "log",
+        GIT_FORMAT,
+    ])
+    if merge:
+        args.append("--merges")
+    args.append("%s...%s" % (start_commit, end_commit))
+    res = subprocess.check_output(args).decode("UTF-8").strip()[:-1]
+    # Escaping invalid json
+    res = "\\\"".join(res.split("\""))
+    res = "\"".join(res.split("STRXSEP"))
+    res = "    ".join(res.split('\t'))
+    lines = res.split("EOFL%s" % os.linesep)
+    lines[-1] = lines[-1][:-3]
+    for line in lines:
+        if line:
+            line = "LINEXSEP".join(line.split(os.linesep))
+            # Clean all \n \r depending on platform we need one or the other
+            line = "".join(line.split("\r"))
+            line = "".join(line.split("\n"))
+            yield json.loads("%s" % line)
+
+
+def get_author():
+    """Get the author of the changelog (current git user"""
+    name = subprocess.check_output([
+        "git",
+        "config",
+        "user.name",
+    ]).decode("UTF-8").strip()
+    email = subprocess.check_output([
+        "git",
+        "config",
+        "user.email",
+    ]).decode("UTF-8").strip()
+    return "%s <%s>" % (name, email)
+
+
+if __name__ == "__main__":
+    genlog()
