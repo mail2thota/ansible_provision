@@ -93,6 +93,7 @@ def main():
 
             blueprint_var = p.get('blueprint_var')
             blueprint, host_map = blueprint_var_to_ambari_converter(blueprint_var)
+	    default_password = blueprint_var['default_password']
             created_blueprint = False
 
             if not blueprint_exists(ambari_url, username, password, blueprint_name):
@@ -107,9 +108,9 @@ def main():
                 clusterenv['cluster-env'] = {}
                 clusterenv['cluster-env']['repo_suse_rhel_template'] = "[{{repo_id}}]\nname={{repo_id}}\n{% if mirror_list %}mirrorlist={{mirror_list}}{% else %}baseurl={{base_url}}{% endif %}\n\npath=/\nenabled=1\ngpgcheck=0\nproxy=_none_"
                 configurations.append(clusterenv)
-            data1 = json.dumps({'blueprint': blueprint_name, 'default_password': 'admin', 'configurations': configurations, 'host_groups': host_map})
+            data1 = json.dumps({'blueprint': blueprint_name, 'default_password': default_password, 'configurations': configurations, 'host_groups': host_map})
 
-            request = create_cluster(ambari_url, username, password, cluster_name, blueprint_name, configurations, host_map)
+            request = create_cluster(ambari_url, username, password, cluster_name, blueprint_name, configurations, host_map,default_password)
             request_id = json.loads(request.content)['Requests']['id']
             if wait_for_complete:
                 status = wait_for_request_complete(ambari_url, username, password, cluster_name, request_id,10)
@@ -155,9 +156,9 @@ def set_cluster_state(ambari_url, user, password, cluster_name, cluster_state):
     return r
 
 
-def create_cluster(ambari_url, user, password, cluster_name, blueprint_name, configurations, hosts_json):
+def create_cluster(ambari_url, user, password, cluster_name, blueprint_name, configurations, hosts_json,default_password):
     path = '/api/v1/clusters/{0}'.format(cluster_name)
-    data = json.dumps({'blueprint': blueprint_name,'default_password': 'admin', 'configurations': configurations, 'host_groups': hosts_json})
+    data = json.dumps({'blueprint': blueprint_name,'default_password': default_password, 'configurations': configurations, 'host_groups': hosts_json})
     f = open('cluster.log', 'w')
     f.write(data)
     f.close()

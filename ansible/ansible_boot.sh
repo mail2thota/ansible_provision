@@ -9,21 +9,6 @@ HOST_USER_NAME=${node_user:-root}
 HOST_PASSWORD=${node_pass:-as12345678}
 FOREMAN_USER_NAME=${username:-admin}
 FOREMAN_PASSWORD=${password:-as123}
-AMBARI_SERVER_HOST_ID=${ambari_host_suffix:-ambariserver}
-AMBARI_AGENT_HOST_ID=${ambari_agent_suffix:-ambariagent}
-AMBARI_SERVER_ID=${ambari_master_group:-ambari_master}
-AMBARI_AGENT_ID=${ambari_agent_group:-ambari_slave}
-HDP_REPO_URL=${hdp_repo_url:-http://10.129.6.237/repos/HDP/HDP-2.6.2.0/centos7}
-HDP_UTILS_REPO_URL=${hdp_utils_repo_url:-http://10.129.6.237/repos/HDP/HDP-UTILS-1.1.0.21}
-AMBARI_REPO_URL=${ambari_repo_url:-http://10.129.6.237/repos/ambari/ambari-2.5.2.0/centos7}
-HDP_STACK_VERSION=${hdp_stack_version:-2.6}
-HDP_UTILS_VERSION=${hdp_utils_version:-1.1.0.21}
-HDP_OS_TYPE=${hdp_os_type:-redhat7}
-AMBARI_VERSION=${ambari_version:-2.5.2.0}
-MYSQL_REPO_URL=${mysql_repo_url:-http://10.129.6.237/repos/mysql}
-PGSQL_REPO_URL=${pgsql_repo_url:-http://10.129.6.237/repos/postgresql}
-CLUSTER_TYPE=${cluster_type:-multi_node}
-ACTIVEMQ_REPO_URL=${activemq_repo_url:-http://10.129.6.237/repos/activemq}
 
 #generate and configure ssh key,thereby create the server groups in ansible hosts
 if [ -f ~/.ssh/bootstrap_rsa.pub ]; then
@@ -91,38 +76,14 @@ do
 done < <(hammer --csv -u "${FOREMAN_USER_NAME}" -p "${FOREMAN_PASSWORD}" host list | grep -vi '^Id' | awk -F, {'print $2'} | grep -vi "^$(hostname -f)" )
 
 #confgure the ansible callback plugin for foreman
-echo "configuring the ansible callback plugin for foreman"
-FOREMAN_CALLBACK_PLUGIN_DIR="/usr/share/ansible/plugins/callback"
-ANSIBLE_CFG="/etc/ansible/ansible.cfg"
-FOREMAN_CALLBACK_FILE="foreman_callback.py"
-mkdir -p "${FOREMAN_CALLBACK_PLUGIN_DIR}"
-sed -i '/callback_plugins/s/^#//g' "${ANSIBLE_CFG}"
-sed -i '/bin_ansible_callbacks/s/^#//g' "${ANSIBLE_CFG}"
-sed -i '/bin_ansible_callbacks/s/False/True/g' "${ANSIBLE_CFG}"
-cp "${FOREMAN_CALLBACK_FILE}" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
-sed -i "s%<FOREMAN_URL>%https://localhost%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
-sed -i "s%<FOREMAN_SSL_CERT>%/etc/puppetlabs/puppet/ssl/certs/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
-sed -i "s%<FOREMAN_SSL_KEY>%/etc/puppetlabs/puppet/ssl/private_keys/$(hostname -f).pem%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
-sed -i "s%<FOREMAN_SSL_VERIFY>%0%g" "${FOREMAN_CALLBACK_PLUGIN_DIR}/${FOREMAN_CALLBACK_FILE}"
 
 # execution of playbooks
 echo "execution of playbook"
 rm -rf executed_playbooks
 mkdir executed_playbooks
 cp -r  ambari-hdp executed_playbooks/
+
 cd executed_playbooks/ambari-hdp
-> inventory/full-dev-platform/hosts
-echo -e "${server_groups}" > inventory/full-dev-platform/hosts
-GLOBAL_VAR_LOC="inventory/full-dev-platform/group_vars/all"
-sed -i "s%<HDP_REPO_URL>%${HDP_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<HDP_UTILS_REPO_URL>%${HDP_UTILS_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<AMBARI_REPO_URL>%${AMBARI_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<AMBARI_VERSION>%${AMBARI_VERSION}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<HDP_STACK_VERSION>%${HDP_STACK_VERSION}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<HDP_UTILS_VERSION>%${HDP_UTILS_VERSION}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<HDP_OS_TYPE>%${HDP_OS_TYPE}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<MYSQL_REPO_URL>%${MYSQL_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<PGSQL_REPO_URL>%${PGSQL_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<CLUSTER_TYPE>%${CLUSTER_TYPE}%g" "${GLOBAL_VAR_LOC}"
-sed -i "s%<ACTIVEMQ_REPO_URL>%${ACTIVEMQ_REPO_URL}%g" "${GLOBAL_VAR_LOC}"
-ansible-playbook playbooks/ambari_install.yml --extra-vars "test_cases_host=agent8-ambariagent.example.com"
+ansible-playbook playbooks/pre-config.yml
+ansible-playbook playbooks/ambari_install.yml 
+
