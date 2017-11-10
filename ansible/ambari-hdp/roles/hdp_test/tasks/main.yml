@@ -11,13 +11,12 @@
     src: ./tasks/
     dest: /home/hdfs/
     mode: 0777
-
 - name: run test for hdfs
   become: True
   become_user: root
   script: ./hdfs/hdfs_test.sh
   register: hdfs_test
-  
+ 
 - debug: msg="{{ hdfs_test.stdout }}"
 - debug: msg="{{ hdfs_test.stderr }}"
 
@@ -35,7 +34,7 @@
 - name: run test for oozie
   become: True
   become_user: hdfs
-  script: ./oozie/oozie_test.sh
+  script:  ./oozie/oozie_test.sh {{ oozie_url }} {{ oozie_name_node }} {{ oozie_job_tracker }}
   register: oozie_test
 
 - debug: msg="{{ oozie_test.stdout }}"

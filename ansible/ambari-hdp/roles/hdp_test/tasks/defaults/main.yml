@@ -1,0 +1,3 @@
+oozie_url: "http://{{ hdp_test_oozie_host }}:11000/oozie"
+oozie_name_node: "hdfs://{{ hdp_test_namenode_host }}:8020"
+oozie_job_tracker: "{{ hdp_test_jobtracker}}:8050" 

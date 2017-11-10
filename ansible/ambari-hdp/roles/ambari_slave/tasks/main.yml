@@ -25,7 +25,7 @@
     insertafter: "{{ item.insertafter }}"
     backup: yes
   with_items:
-    - { regexp: "^.*hostname=.*$", line: "hostname={{ groups.ambari_master[0] }}", insertafter: '\[server\]' }
+    - { regexp: "^.*hostname=.*$", line: "hostname={{ ambari_hosts[0]['name'] }}", insertafter: '\[server\]' }
     - { regexp: "^hostname_script=.*$", line: "hostname_script=/var/lib/ambari-agent/hostname.sh", insertafter: '\[agent\]'}
 
 - name: start ambari agent

@@ -20,8 +20,7 @@
   become: true
   roles:
     - role:  activemq
-
-- hosts: ambari_master
+- hosts: ambari-server
   become: true
   roles:
     - role: ambari_master
@@ -30,7 +29,7 @@
     - hdp-install
 
 
-- hosts: ambari_slave
+- hosts: ambari-agent
   become: true
   roles:
     - role: ambari_slave
@@ -38,14 +37,14 @@
     - ambari-agent
     - hdp-install
 
-- hosts: ambari_master
+- hosts: ambari-server
   become: true
   roles:
     - role: ambari_config
   tags:
     - hdp-deploy
 
-- hosts: "{{ test_cases_host }}"
+- hosts: hdp_test
   become: true
   roles:
     - role:  hdp_test
