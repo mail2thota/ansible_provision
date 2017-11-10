@@ -4,11 +4,21 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
+- name: copy epel repo template
+  template:
+    src: "epel.repo"
+    dest: "/etc/yum.repos.d/epel.repo"
+
+- name: changing epel to local repo
+  replace:
+    dest: "/etc/yum.repos.d/epel.repo"
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.word }}'
+  with_items:
+    - { regexp: '<HDP_REPO_SITE>', word: '{{ hdp_repo_site }}' }
+
 - name: install epel release
   yum:
     name: epel-release
     state: installed
-  register: result
-  until: result.rc == 0
-  retries: 5
-  delay: 10
+  

@@ -1,0 +1,6 @@
+[epel]
+name=Extra Packages for Enterprise Linux 7 - $basearch
+enabled=1
+gpgcheck=1
+gpgkey=<HDP_REPO_SITE>/epel/7/x86_64/RPM-GPG-KEY/RPM-GPG-KEY-EPEL-7
+baseurl=<HDP_REPO_SITE>/epel/7/x86_64

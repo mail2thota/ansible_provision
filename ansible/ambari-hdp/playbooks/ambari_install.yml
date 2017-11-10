@@ -4,6 +4,11 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
+- hosts: localhost,all
+  become: true
+  roles:
+    - role: init
+	
 - hosts: all
   become: true
   roles:
