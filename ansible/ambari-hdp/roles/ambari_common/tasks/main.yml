@@ -22,6 +22,19 @@
   with_items:
     - { regexp: '<AMBARI_VERSION>', word: '{{ ambari_version }}' }
     - { regexp: '<REPO_URL>', word: '{{ local_ambari_repo_url }}' }
+	
+- name: copy centOS repo template
+  template:
+    src: "CentOS-Base.repo"
+    dest: "/etc/yum.repos.d/CentOS-Base.repo"
+
+- name: changing centOS to local repo
+  replace:
+    dest: "/etc/yum.repos.d/CentOS-Base.repo"
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.word }}'
+  with_items:
+    - { regexp: '<HDP_REPO_SITE>', word: '{{ hdp_repo_site }}' }	
 
 - name: Copy Mysql-community repo template
   template:
