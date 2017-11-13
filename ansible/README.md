@@ -1,13 +1,13 @@
 # Project:
-mdr_platform_bare_metal - ansible
+mdr_platform_bare_metal - ambari-hdp
 
-## Synopsis: 
-This package allows us to install ansible and run the needed playbooks for installation of softwares in multiple nodes.
+## Synopsis:
+Ansible package/playbooks for setting up ambari,hdp cluster,postgres database and activemq
 
-## Motivation: 
-To get the list of host which was provisioned by foreman and install the needed softwares such as ambari and hdp through ansible into the nodes.
+## Motivation:
+To abstrct complexity of provising hdp cluster usig ansible playbooks.
 
-## Origin Repo: 
+## Origin Repo:
 https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ansible_boot.sh
 
 
@@ -18,70 +18,124 @@ Assuming that the nodes are provisioned with OS and dependencies using foreman o
 ./ansible_boot.sh
 
 ```
-This will automatically do the needed configurations for ansible and executes the playbooks which installs the needed softwares required.
+This will automatically do the needed configurations for ansible roles and executes the ansible playbooks which setups the hdp cluster.
 
 ## Configuration:
-Following are the configurations 
-
-| Environment Variable       |  Example           | Description  |
-|:------------- |:-------------|:-----|
-|HOST_USER_NAME|root|User name of the node.|
-|HOST_PASSWORD|baesystems|Password of the node.|
-|FOREMAN_USER_NAME|admin|User Name of foreman|
-|FOREMAN_PASSWORD|4HFefKecSjn2i7Z8|Password of foreman|
-|AMBARI_SERVER_HOST_ID|ambariserver|Ambari server will be installed in host containing word ambariserver in its hostname |
-|AMBARI_AGENT_HOST_ID|ambariagent|Ambari agent will be installed in host containing word ambariserver in its hostname|
-|AMBARI_SERVER_ID|ambari_master| Ambari master group ID for ansible hosts |
-|AMBARI_AGENT_ID|ambari_slave|Ambari slave group ID for ansible hosts |
-|HDP_REPO_URL|http://10.129.6.142/repos/HDP/HDP-2.6.2.0/centos7 |This is for HDP repo path|
-|HDP_UTILS_REPO_URL|http://10.129.6.142/repos/HDP/HDP-UTILS-1.1.0.21|This is for HDP utils repo path|
-|AMBARI_REPO_URL|http://10.129.6.142/repos/ambari/ambari-2.5.2.0/centos7 |This is ambari repo path|
-|HDP_STACK_VERSION|2.6| Stack version of HDP |
-|HDP_UTILS_VERSION|1.1.0.21| HDP utils version |
-|HDP_OS_TYPE|redhat7| HDP OS type |
-|AMBARI_VERSION|2.5.2.0| Ambari version |
-
-
-
-## Test:
-* Once we launch `./ansible_boot.sh` which is under ansible folder ,there will be a folder named executed_playbooks created under this folder ambari-hdp folder will be copied,under this process there will be substitution of place holder name with which the play book has to be executed,so in general this is the folder which contain all playbooks which will be executed.ansible hosts file will be configured in the bootstrap machine and the servers will be grouped together as per their hostname.For example if the host name is node1-ambariserver.eng.vmware.com then this means the host will be acting as both ambari server and ambari agent based on the host name.If suppose  
-node2-ambariagent.eng.vmware.com then this host will act only as ambari agent.This will create entry in ansible hosts `/executed_playbooks/ambari-hdp/inventory/full-dev-platform/hosts` as below
+Following Yaml configuration template structure used for configuring the playbooks  
 
 ```
-[ambari_master]
-node1-ambariserver.eng.vmware.com
+---
+ansible_ssh:
+  user: node_username
+  pass: node_password
 
-[ambari_slave]
-node1-ambariserver.eng.vmware.com
-node2-ambariagent.eng.vmware.com
+ambari:
+    ansible_host_group : ansible host group
+    hosts:
+      - name: fqdn or hostname of the host for ambari instalation
+        ip : ip adress of the host
+    user: ambari username
+    password: ambari password
+    port : ambari port
+    version: ambari version number
+
+hdp:
+  blueprint: blueprint name
+  blueprint_configuration: blueprint specfic configuration
+  stack: hdp_stack
+  default_password: cluster default  password
+  stack_version : hdp stack full version
+  utils_version: hdp utils version
+  ansible_host_group:  ansible host group name to provision hdp nodes
+  cluster_type: hdp cluster type i.e multi node or single node
+  cluster_name: cluste name ex:- mdr
+  repo_site: repo site for all the required packages
+  dns_enabled: yes or no to update
+  component_groups :
+    component_group 1 :
+      - component1
+      - component2
+    component_group 2:
+      - component3
+      - component4
+  multi_node:
+      host_groups:
+        - host group 1:
+            components:
+              - component_group 1
+            hosts:
+                - name: fqdn or hostname of the host
+                  ip : ip address of the host
+            configuration: hostgroup specific configuration
+            cardinality: cardinality of the group
+        - host group 2:
+            components:
+              - component group 1
+              - component group 2
+            hosts:
+                - name: fqdn or hostname of the host
+                  ip: ip adress of the host
+            configuration: hostgroup specific configuration
+            cardinality: 1
+
+hdp_test:
+   ansible_host_group: ansible host group name to run test cases
+   hosts:
+    - name: fqdn or host name of the host
+   jobtracker_host: job tracker  host
+   namenode_host: name node host
+   oozie_host: oozie server host
+
+postgres:
+  ansible_host_group: ansible host group name to setup postgress
+  hosts:
+   - name:  fqdn or host name of the host
+     ip: ip adress of the host
+activemq:
+  ansible_host_group : ansible host group name to setup activemq
+  hosts:
+   - name:  fqdn or host name of the host
+     ip: ip adress of the host
+
 ```
+## Variables Description
 
-and boostrap machine interacts with the nodes through local DNS server.
+Variable | example| Description
+---------|----|-------
+ ansible_ssh [user]| admin| node user name for ansible to login for execution of playbooks must be a sudo user
+ ansible_ssh [pass]| admin| node password for ansible to use
+ ambari[ansible_host_group]| ambari-server| ansible host group name used for launching ambari cluster
+ ambari[hosts][name]| master1-ambariserver.example.com| machine host name to setup the ambari server
+ ambari[hosts][ip]|10.11.12.10| ip adress of the host machine mentioned in ambari[hosts][name]
+ ambari[user]| admin| login user name of the ambari interface
+ ambari[pass]| admin| login password of the ambari interface
+ ambari[version]| 2.5.2.0| Ambari version number
+ hdp[blueprint]| mdr-ha-blueprint| hdp cluster blueprint name
+ hdp[blueprint_configuration]|zoo.cfg: [autopurge.purgeInterval: 24]| configurations specific here will be replaced in blue print configuration
+ hdp[stack]|2.5| hdp stack number to be setup
+ hdp[stack_version]|2.6.2.0| Full version of hdp including minimum version
+ hdp[utils_version]|1.1.10.21| Full Hdp utils version
+ hdp[ansible_host_group]|ambari-agent| Ansible host group to map the all hdp cluster hosts
+ hdp[cluster_type]|multi_node| Hdp cluster type to be formed it must be either multi_node or single_node in case of single node all compnents listed in component groups added to blueprint
+ hdp[repo_site]|http://10.129.6.237/repos|Site path to hdp,ambari and the remaining packages for ambari/ansible to download during setup
+ hdp[component_groups]|hive_components,[HIVE_METASTORE,HIVE_SERVER,HCAT,WEBHCAT_SERVER,HIVE_CLIENT,MYSQL_SERVER]| Component Groups is group of key as group name and array of values with the components. and this can be used in any where in any host_groups[components]. Group name based on user preference
+ hdp[component_groups][component_group_name][components]|hive_components| Array of the components of that group
+ hdp[multi_node][host_groups]| host groups specification and its configuration mentioned here added to the blue print
+ hdp[multi_node][host_groups][host_group_name][components]|hive_components|List of the component groups mentioned in hdp[component_groups] to be added to blue print and for single node it has not effect
+ hdp[multi_node][host_groups][host_group_name][hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| Hosts mentioned here added to hosts list of the specific host group in the blueprint
+ hdp[multi_node][host_groups][host_group_name][configuration]|| Configurations metioned here will be applied to hostgroup specific configuration in the blueprint
+ hdp[multi_node][host_groups][hosts_group_name][cardinality]|1| cardinality of the host group to be added in blueprint
+ hdp_test[ansible_host_group]|hdp_test|Ansible host group name on which test cases will  be executed
+ hdp_test[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to execute the test cases .Assuming required hdp clients are avaible on the hosts
+ hdp_test[jobtracker_host]|agent8-ambariagent.example.com|Job tracker host to be used by test case job
+ hdp_test[namenode_host]|agent1-ambariagent.example.com| Namenode host to be used by test case job
+ hdp_test[oozie_host]|agent10-ambariagent.example.com|oozie server host to be used by test case job
+ postgres[ansible_host_group]|postgres| ansible host group name on which postgress will be setup
+ postgres[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup postgress server
+ activemq[ansible_host_group]|activemq|ansible host group name on which activemq will be setup
+ activemq[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  activemq
 
-* The interaction between the bootstrap machine and nodes happens through ssh where the script takes cares about public key which are added to authorized_keys in the nodes and also the nodes are under the known_hosts of the bootstrap machine which makes the bootstrap machine to access other nodes.
-
-* It also configures the ansible call back plugin for foreman so that the software configuration management interaction between the bootstrap machine and the nodes can be known through foreman.
-
-* It also executes the playbook setup for ambari which installs the ambari severs and agents according to the host group for the nodes.This can be also verified as below
-
-```
-[root@foreman abbc]# ssh root@raul-ambariservers-ambariagents.eng.vmware.com
-Last login: Wed Aug 16 23:34:41 2017 from foreman.eng.vmware.com
-[root@raul-ambariservers-ambariagents ~]# ps -ef | grep ambari
-root      20941      1  3 Aug15 ?        01:28:22 /usr/jdk64/jdk1.8.0_60/bin/java -server -XX:NewRatio=3 -XX:+UseConcMarkSweepGC -XX:-UseGCOverheadLimit -XX:CMSInitiatingOccupancyFraction=60 -Dsun.zip.disableMemoryMapping=true -Xms512m -Xmx2048m -Djava.security.auth.login.config=/etc/ambari-server/conf/krb5JAASLogin.conf -Djava.security.krb5.conf=/etc/krb5.conf -Djavax.security.auth.useSubjectCredsOnly=false -cp /etc/ambari-server/conf:/usr/lib/ambari-server/*:/usr/share/java/postgresql-jdbc.jar org.apache.ambari.server.controller.AmbariServer
-postgres  20957  20713  0 Aug15 ?        00:00:00 postgres: ambari ambari 127.0.0.1(40233) idle
-
-```
-
-* This script also launches the HDP multi-node configuration dynamically according to host name of the nodes which are grouped as ambari servers and ambari agents .This also forms the HDP cluster which can be viewed through UI in bootstrap machine as below
-
-```
-
-http://node1-ambariserver.eng.vmware.com:8080/#/main/dashboard/metrics
-
-
-```
+All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ambari-hdp/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
 
 ## Licence:
 mdr_platform_bare_metal - ansible - Copyright (c) 2016 BAE Systems Applied Intelligence.
-
