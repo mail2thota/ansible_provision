@@ -13,6 +13,7 @@
   template:
     src: "ambari.repo"
     dest: "/etc/yum.repos.d/ambari.repo"
+  
  
 - name: changing ambari to local repo 
   replace:
@@ -22,60 +23,33 @@
   with_items:
     - { regexp: '<AMBARI_VERSION>', word: '{{ ambari_version }}' }
     - { regexp: '<REPO_URL>', word: '{{ local_ambari_repo_url }}' }
-	
+  
+
 - name: copy centOS repo template
   template:
     src: "CentOS-Base.repo"
     dest: "/etc/yum.repos.d/CentOS-Base.repo"
-
-- name: changing centOS to local repo
+ 
+- name: changing centOS to local repo 
   replace:
     dest: "/etc/yum.repos.d/CentOS-Base.repo"
-    regexp: '{{ item.regexp }}'
-    replace: '{{ item.word }}'
-  with_items:
-    - { regexp: '<HDP_REPO_SITE>', word: '{{ hdp_repo_site }}' }	
+    regexp: '<HDP_REPO_SITE>'
+    replace: '{{ hdp_repo_site }}'
+ 
 
-- name: Copy Mysql-community repo template
-  template:
-    src: "mysql-community.repo"
-    dest: "/etc/yum.repos.d/mysql-community.repo"
 
-- name: changing the mysql repo to ftp
-  replace:
-    dest: "/etc/yum.repos.d/mysql-community.repo"
-    regexp: '{{ item.regexp }}'
-    replace: '{{ item.word }}'
-  with_items:
-    - { regexp: '<MYSQL_REPO_URL>', word: '{{ mysql_repo_url }}' }
-
-- name: Copy Mysql-community repo template
-  template:
-    src: "mysql-community.repo"
-    dest: "/etc/yum.repos.d/mysql-community-source.repo"
-
-- name: changing the mysql repo to ftp
-  replace:
-    dest: "/etc/yum.repos.d/mysql-community-source.repo"
-    regexp: '{{ item.regexp }}'
-    replace: '{{ item.word }}'
-  with_items:
-    - { regexp: '<MYSQL_REPO_URL>', word: '{{ mysql_repo_url }}' }
-    
 - name: Copy pgdg-96-centos repo template
   template:
-    src: "pgdg-96-centos.repo"
-    dest: "/etc/yum.repos.d/pgdg-96-centos.repo"
+     src: "pgdg-96-centos.repo"
+     dest: "/etc/yum.repos.d/pgdg-96-centos.repo"
 
 - name: changing the pgdg-96-centos repo to ftp
   replace:
-    dest: "/etc/yum.repos.d/pgdg-96-centos.repo"
-    regexp: '{{ item.regexp }}'
-    replace: '{{ item.word }}'
-  with_items:
-    - { regexp: '<PGSQL_REPO_URL>', word: '{{ pgsql_repo_url }}' }
-
-
+     dest: "/etc/yum.repos.d/pgdg-96-centos.repo"
+     regexp: '<PGSQL_REPO_URL>'
+     replace: '{{ pgsql_repo_url }}'
+ 
+    
 - name: create logrotate script for hadoop services
   template:
     src: "hadoop-logrotate.yml"

@@ -15,8 +15,8 @@ hdp:
   ansible_host_group: ambari-agent
   cluster_type: multi_node
   cluster_name: mdr
-  repo_site: http://10.129.6.237/repos
-  dns_enabled: yes
+  repo_site: http://10.11.12.7:8081/repos
+  dns_enabled: no
   component_groups :
     master_1 :
       - JOURNALNODE
