@@ -1,0 +1,24 @@
+#
+## Software Copyright BAE Systems plc 2017. All Rights Reserved.
+## BAE SYSTEMS, DETICA are trademarks of BAE Systems
+## plc and may be registered in certain jurisdictions.
+##
+#---
+## Create Config Files
+- name: Delete if any existing files
+  shell: cd "{{ role_path }}" && rm -f all && rm -f hosts && rm -f host_list
+
+- name: Create config files
+  shell: cd "{{ role_path }}"  && python configuraton-gen.py
+  register: config
+  run_once: true
+
+- debug: msg="{{ config.stdout }}"
+- debug: msg="{{ config.stderr }}"
+
+
+- name: Copying files back to inventory and ambari_Config
+  shell: cd "{{ role_path }}" && rm -f  ../ambari_config/*_node.yml && cp *_node.yml ../ambari_config/vars && rm -f ../init/tasks/all_config/host_list && cp host_list ../init/tasks/all_config/host_list && rm -f "{{ inventory_dir }}/hosts" && cp hosts "{{ inventory_dir}}"/hosts && rm -f "{{ inventory_dir }}"/group_vars/all && cp all "{{ inventory_dir }}"/group_vars/all
+  register: inventoryfiles
+- debug: msg="{{ inventoryfiles.stdout }}"
+- debug: msg="{{ inventoryfiles.stderr }}"

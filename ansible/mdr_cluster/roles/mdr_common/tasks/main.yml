@@ -1,0 +1,34 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+
+- name: check firewalld is stopped and is not running at boot time.
+  ignore_errors: yes
+  service: name=firewalld state=stopped enabled=no
+
+- name: copy ambari repo template
+  template:
+    src: "ambari.repo"
+    dest: "/etc/yum.repos.d/ambari.repo"
+  
+ 
+- name: copy centOS repo template
+  template:
+    src: "CentOS-Base.repo"
+    dest: "/etc/yum.repos.d/CentOS-Base.repo"
+ 
+
+- name: Copy pgdg-96-centos repo template
+  template:
+     src: "pgdg-96-centos.repo"
+     dest: "/etc/yum.repos.d/pgdg-96-centos.repo"
+
+    
+- name: create logrotate script for hadoop services
+  template:
+    src: "hadoop-logrotate.yml"
+    dest: "/etc/logrotate.d/ambari"
+    mode: 0644

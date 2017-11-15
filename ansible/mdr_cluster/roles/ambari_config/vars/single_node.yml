@@ -1,0 +1,39 @@
+blueprint:
+  default_password: admin
+  groups:
+  - cardinality: 1
+    components:
+    - MAPREDUCE2_CLIENT
+    - SECONDARY_NAMENODE
+    - HDFS_CLIENT
+    - METRICS_MONITOR
+    - YARN_CLIENT
+    - OOZIE_CLIENT
+    - TEZ_CLIENT
+    - HISTORYSERVER
+    - PIG
+    - DATANODE
+    - ZOOKEEPER_SERVER
+    - MYSQL_SERVER
+    - HIVE_SERVER
+    - RESOURCEMANAGER
+    - METRICS_COLLECTOR
+    - WEBHCAT_SERVER
+    - NAMENODE
+    - APP_TIMELINE_SERVER
+    - HIVE_METASTORE
+    - SPARK_CLIENT
+    - ZOOKEEPER_CLIENT
+    - HIVE_CLIENT
+    - SPARK_JOBHISTORYSERVER
+    - OOZIE_SERVER
+    - NODEMANAGER
+    configuration: []
+    hosts:
+    - master1-ambariserver.example.com
+    name: master-1
+  stack_name: HDP
+  stack_version: 2.6
+blueprint_name: mdr-ha-blueprint
+cluster_name: mdr
+configurations: []
