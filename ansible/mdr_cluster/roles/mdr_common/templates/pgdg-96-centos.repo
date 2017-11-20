@@ -1,0 +1,5 @@
+[pgdg96]
+name=PostgreSQL 9.6 $releasever - $basearch
+baseurl={{ pgsql_repo_url }}/yum/9.6/redhat/rhel-7-x86_64/
+enabled=1
+gpgcheck=0

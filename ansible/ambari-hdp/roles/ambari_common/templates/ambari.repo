@@ -1,7 +1,0 @@
-[ambari-<AMBARI_VERSION>]
-name=ambari-<AMBARI_VERSION>
-baseurl=<REPO_URL>
-gpgcheck=1
-gpgkey=<REPO_URL>/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins
-proxy=_none_
-

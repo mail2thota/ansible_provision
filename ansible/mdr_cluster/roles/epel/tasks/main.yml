@@ -1,0 +1,16 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- name: copy epel repo template
+  template:
+    src: "epel.repo"
+    dest: "/etc/yum.repos.d/epel.repo"
+
+- name: install epel release
+  yum:
+    name: epel-release
+    state: installed
+  
