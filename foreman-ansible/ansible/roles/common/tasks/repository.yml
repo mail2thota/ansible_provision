@@ -1,0 +1,62 @@
+
+- name: configure base yum repository
+  template:
+    src=CentOS_Base.repo.j2
+    dest=/etc/yum.repos.d/CentOS-Base.repo
+  when: ansible_os_family == "RedHat"
+
+- name: configure base yum sclo repository
+  template:
+    src=CentOS_SCLo_scl.repo.j2
+    dest=/etc/yum.repos.d/CentOS-SCLo-scl.repo
+  when: ansible_os_family == "RedHat"
+
+
+- name: configure base yum sclo_rh repository
+  template:
+    src=CentOS_SCLo_scl_rh.repo.j2
+    dest=/etc/yum.repos.d/CentOS-SCLo-scl-rh.repo
+  when: ansible_os_family == "RedHat"
+
+- name: configure epel yum repository
+  template:
+    src=epel.repo.j2 
+    dest=/etc/yum.repos.d/epel.repo
+  when: ansible_os_family == "RedHat"
+
+- name: configure base yum rpm key
+  rpm_key:
+    key="{{ base_yum_key }}"
+    state=present
+  when: ansible_os_family == "RedHat" and base_yum_gpg
+
+- name: configure base yum update rpm key
+  rpm_key:
+    key="{{ base_update_yum_key }}"
+    state=present
+  when: ansible_os_family == "RedHat" and base_update_yum_gpg
+
+
+- name: configure base yum sclo rpm key
+  rpm_key:
+    key="{{ sclo_yum_key }}"
+    state=present
+  when: ansible_os_family == "RedHat" and sclo_yum_gpg
+
+- name: configure base yum sclo_rh rpm key
+  rpm_key:
+    key="{{ rh_yum_key }}"
+    state=present
+  when: ansible_os_family == "RedHat" and rh_yum_gpg
+
+- name: configure epel yum rpm key
+  rpm_key:
+    key="{{ epel_yum_key }}"
+    state=present
+  when: ansible_os_family == "RedHat" and epel_yum_gpg
+
+
+
+
+
+

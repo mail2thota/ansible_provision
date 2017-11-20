@@ -1,0 +1,9 @@
+---
+foreman_yml_pkg:
+  - python-requests
+  - python-setuptools
+  - PyYAML
+  - gcc
+  - python-devel
+  - python-pip
+  - python-argparse

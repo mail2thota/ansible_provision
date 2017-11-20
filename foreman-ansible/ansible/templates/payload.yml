@@ -1,0 +1,75 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+#Copyright:@BaeSystemsAI
+#Original author: Heri Sutrisno
+#Email:harry.sutrisno@baesystems.com
+#Description:payload yml file for user
+
+
+foreman:
+    auth:
+        fqdn: barnis.example.com
+        ip: 10.11.12.8
+        user: admin
+        pass: admin
+
+    repourl: http://10.129.6.237
+    domain:
+        - name: example.com
+          fullname: this is example.com
+
+    subnet:
+        - name: subnet1
+          network: 10.11.12.0
+          mask: 255.255.255.0
+          gateway: 10.11.12.1
+          dns_primary: 10.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+
+        - name: subnet2
+          network: 13.11.12.0
+          mask: 255.255.255.0
+          gateway: 13.11.12.1
+          dns_primary: 13.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+            - name: solo.com
+            - name: orange.com
+
+      
+    hostgroup:
+        - name: master
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+
+    hosts:
+        - name: agent1
+          hostgroup: master
+          ip: 10.11.12.7
+          mac: 080027118E1E
+        - name: agent2
+          hostgroup: master
+          ip: 10.11.12.8
+          mac: 08002754366E
+        - name: agent3
+          hostgroup: master
+          ip: 10.11.12.98
+          mac: 080027BCB166
+        - name: agent4
+          hostgroup: master
+          ip: 10.11.12.10
+          mac: 0800271C38A4
+        - name: agent5
+          hostgroup: master
+          ip: 10.11.12.11
+          mac: 080027270FEE
+        - name: master2
+          hostgroup: master
+          ip: 10.11.12.19
+          mac: 08002770B6B1
