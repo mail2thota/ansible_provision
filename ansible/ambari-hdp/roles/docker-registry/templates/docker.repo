@@ -1,0 +1,5 @@
+[docker-ce-stable]
+name=Docker CE Stable - $basearch
+baseurl=<HDP_REPO_SITE>/docker/centos/7/$basearch/stable
+enabled=1
+gpgcheck=0
