@@ -17,17 +17,17 @@
     - ambari-prereqs
     - hdp-install
 
-- hosts: postgres
+- hosts: postgres_hosts
   become: true
   roles:
     - role: postgresql
 
-- hosts: activemq
+- hosts: activemq_hosts
   become: true
   roles:
     - role:  activemq
 
-- hosts: ambari-server
+- hosts: ambari_hosts
   become: true
   roles:
     - role: ambari_server
@@ -36,7 +36,7 @@
     - hdp-install
 
 
-- hosts: ambari-agent
+- hosts: hdp_hosts
   become: true
   roles:
     - role: ambari_agent
@@ -44,21 +44,21 @@
     - ambari-agent
     - hdp-install
 
-- hosts: ambari-server
+- hosts: ambari_hosts
   become: true
   roles:
     - role: ambari_config
   tags:
     - hdp-deploy
 
-- hosts: hdp_test
+- hosts: hdp_test_hosts
   become: true
   roles:
     - role:  hdp_test
 
 
 
-- hosts: es-master
+- hosts: es_master_hosts
   roles:
     - { role: elasticsearch,es_heap_size: "1g",
     es_config: {
@@ -77,7 +77,7 @@
     es_version_lock: false
     ansible_user: ansible
 
-- hosts: es-node
+- hosts: es_node_hosts
   roles:
     - { role: elasticsearch,  es_data_dirs: "/opt/elasticsearch",
     es_config: {
@@ -97,7 +97,7 @@
     ansible_user: ansible
     es_api_port: 9200
 
-- hosts: kibana
+- hosts: kibana_hosts
   become: true
   roles:
     - role: kibana
