@@ -55,3 +55,7 @@
   become: true
   roles:
     - role:  hdp_test
+
+- hosts: docker-registry
+  roles:
+    - role: docker-registry
