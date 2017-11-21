@@ -42,7 +42,8 @@ Prerequisite
             - restart network; "systemctl restart network"
     5. making sure that you don't have any DHCP server available which is been connecting to the subnet network
     6. making sure that your network device interface or network interface e.g; "enp0s3" is dedicated only for single IP(on the future we are going to support single network interface may have multiple IP )
-    7. The best approach is for having static ip for bootstrap machine, check how to setup static ip below:
+    7. make sure your proxy is disable, check as well in /etc/yum.conf
+    8. The best approach is for having static ip for bootstrap machine, check how to setup static ip below:
 --------------
 Static IP
 -------------
@@ -192,6 +193,13 @@ Installation and Provisioning Foreman
 
 
 ---
+
+Local DNS setup
+-----------------------
+
+    if you want to resolve your fqdn and ip by using local dns, you may find local dns script:
+      * cd /foreman-ansible/dns_script
+      * register ip and subnet
 
 Installation Of Ansible
 -----------------------
