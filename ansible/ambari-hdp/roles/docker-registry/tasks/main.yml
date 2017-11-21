@@ -13,3 +13,29 @@
     name: docker
     state: started
     enabled: yes
+
+- name: Install Docker Regisry.
+  package: name={{ docker_registry }} state={{ docker_package_state }}
+
+- name: "Create symbolic link /usr/lib/systemd/system/docker-registry to /usr/lib/systemd/system/docker-distribution.service"
+  file:
+    src: "/usr/lib/systemd/system/docker-distribution.service"
+    dest: "/usr/lib/systemd/system/docker-registry.service"
+    state: link
+    owner: "root"
+    group: "root"
+
+- name: Ensure Docker registry is started and enabled at boot
+  service:
+    name: docker-registry
+    state: started
+    enabled: yes
+
+- name: run test for docker-registry
+    become: True
+    become_user: root
+    script: ./tests/docker-registry_test.sh
+    register: docker-registry_test
+
+  - debug: msg="{{ docker-registry_test.stdout }}"
+  - debug: msg="{{ docker-registry_test.stderr }}"
