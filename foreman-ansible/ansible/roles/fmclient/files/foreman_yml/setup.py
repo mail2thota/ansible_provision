@@ -53,7 +53,6 @@ setup(
     package_data=find_data(
         find_packages(), ["py"]
     ),
-    zip_safe=False,
     entry_points = {
         'console_scripts': [
             'fmclient = src.main:main',
