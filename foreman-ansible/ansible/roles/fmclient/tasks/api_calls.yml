@@ -33,16 +33,17 @@
   local_action:
       module: wait_for
       port: 80
-      host: localhost
+      host: "{{ ansible_default_ipv4.address }}"
       delay: 0
       state: started
  
 
 - name: configure foreman with fmclient
   command: 
-      "fmclient import /opt/foreman_yml/payload.yml > /opt/foreman_yml/fmclient.log"
+      "fmclient import /opt/foreman_yml/payload.yml"
   register: command_output
 - debug: msg="{{command_output.stdout.split('\n')}}"
+- local_action: copy content="{{ command_output.stdout.split('\n') }}" dest="/opt/foreman_yml/fmclient.log"
 
 - debug:
       msg: "foreman is ready, start provisioning"
@@ -58,5 +59,5 @@
   with_items: "{{ hostlist }}"
  
 - debug:
-      msg: "provisioning has finished, nodes is ready"
+      msg: "provisioning has finished, nodes are ready"
 
