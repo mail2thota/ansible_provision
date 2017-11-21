@@ -53,7 +53,8 @@
       module: wait_for
       port: 22
       host: "{{ item.ip }}"
-      delay: 0
+      delay: 5
+      timeout: 172800
       state: started
       search_regex: OpenSSH
   with_items: "{{ hostlist }}"

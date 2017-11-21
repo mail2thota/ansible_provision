@@ -38,8 +38,6 @@ foreman:
           vlanid:
           domain:
             - name: example.com
-            - name: solo.com
-            - name: orange.com
 
       
     hostgroup:
