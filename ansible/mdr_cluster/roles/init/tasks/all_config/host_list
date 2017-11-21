@@ -7,6 +7,8 @@
 10.11.12.13 agent3-ambariagent.example.com
 10.11.12.10 master1-ambariserver.example.com
 10.11.12.11 agent1-ambariagent.example.com
-10.11.12.18 agent8-ambariagent.example.com
+10.11.12.24 agent14-ambariagent.example.com
+10.11.12.23 agent13-ambariagent.example.com
+10.11.12.18 master1-ambariserver.example.com
 10.11.12.19 agent9-ambariagent.example.com
 10.11.12.20 agent10-ambariagent.example.com
