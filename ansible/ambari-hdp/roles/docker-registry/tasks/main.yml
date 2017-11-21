@@ -32,10 +32,10 @@
     enabled: yes
 
 - name: run test for docker-registry
-    become: True
-    become_user: root
-    script: ./tests/docker-registry_test.sh
-    register: docker-registry_test
+  become: True
+  become_user: root
+  script: ./tests/docker-registry_test.sh
+  register: docker-registry_test
 
-  - debug: msg="{{ docker-registry_test.stdout }}"
-  - debug: msg="{{ docker-registry_test.stderr }}"
+- debug: msg="{{ docker-registry_test.stdout }}"
+- debug: msg="{{ docker-registry_test.stderr }}"
