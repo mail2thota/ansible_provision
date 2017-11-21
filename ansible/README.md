@@ -31,7 +31,7 @@ ansible_ssh:
 
 default:
     repo_site: hosted repo site address
-    dns_enabled: yes or no to update
+    dns_enabled: yes or no to update /etc/hosts file if dns server is not available
 
 ambari:
     hosts:
