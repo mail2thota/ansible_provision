@@ -118,7 +118,7 @@ Variable | example| Description
  ansible_ssh [user]| admin| node user name for ansible to login for execution of playbooks must be a sudo user
  ansible_ssh [pass]| admin| node password for ansible to use
  default[repo_site]|http://10.129.6.237/repos|Site path to hdp,ambari and the remaining packages for ambari/ansible to download during setup
- default[dns_enabled]|no| flag to updated the etc hosts if dns server is not avaible
+ default[dns_enabled]|no| flag to updated the etc hosts if dns server is not available
  ambari[hosts][name]| master1-ambariserver.example.com| machine host name to setup the ambari server
  ambari[hosts][ip]|10.11.12.10| ip adress of the host machine mentioned in ambari[hosts][name]
  ambari[user]| admin| login user name of the ambari interface
