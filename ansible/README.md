@@ -110,7 +110,7 @@ kibana:
        ip: ip address of the host
     elasticsearch_url: elasticsearch master host adddress
 ```
-Please refer to the default [config file](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ambari-hdp/roles/pre-config/config.yml) being used by the existing code base
+Please refer to the default [config file](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) being used by the existing code base
 ## Variables Description
 
 Variable | example| Description
@@ -150,7 +150,7 @@ Variable | example| Description
 
 
 
-All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ambari-hdp/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
+All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
 
 ## Service ports
 ### Hadoop Components
