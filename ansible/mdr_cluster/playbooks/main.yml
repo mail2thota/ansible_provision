@@ -17,15 +17,15 @@
     - ambari-prereqs
     - hdp-install
 
-#- hosts: postgres
-#  become: true
-#  roles:
-#    - role: postgresql
+- hosts: postgres
+  become: true
+  roles:
+    - role: postgresql
 
-#- hosts: activemq
-#  become: true
-#  roles:
-#    - role:  activemq
+- hosts: activemq
+  become: true
+  roles:
+    - role:  activemq
 
 - hosts: ambari-server
   become: true
