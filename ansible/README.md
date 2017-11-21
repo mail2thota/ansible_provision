@@ -31,7 +31,8 @@ ansible_ssh:
 
 default:
     repo_site: hosted repo site address
-    dns_enabled: yes or no to update etc/hosts file if dns server is not available
+    dns_enabled: yes or no to update
+
 ambari:
     ansible_host_group : ansible host group
     hosts:
@@ -98,7 +99,26 @@ activemq:
    - name:  fqdn or host name of the host
      ip: ip adress of the host
 
+es_master:
+    ansible_host_group: ansible host group name to setup elastic search master node
+    hosts:
+      - name: fqdn or hostname of the elastic search master node
+        ip: ip address of the host
+
+es_node:
+    ansible_host_group: ansible host group name to setup the elastic search nodes
+    hosts:
+      - name: fqdn or hostname of the host to setup the elastic search node
+        ip: ip adress of the host
+
+kibana:
+    ansible_host_group: ansible host group name to setup kibana
+    hosts:
+      - name : fqdn or hostname of the host
+       ip: ip address of the host
+    elasticsearch_url: elasticsearch master host adddress
 ```
+Please refer to the default [config file](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ambari-hdp/roles/pre-config/config.yml) being used by the existing code base
 ## Variables Description
 
 Variable | example| Description
@@ -120,7 +140,6 @@ Variable | example| Description
  hdp[utils_version]|1.1.10.21| Full Hdp utils version
  hdp[ansible_host_group]|ambari-agent| Ansible host group to map the all hdp cluster hosts
  hdp[cluster_type]|multi_node| Hdp cluster type to be formed it must be either multi_node or single_node in case of single node all compnents listed in component groups added to blueprint
-
  hdp[component_groups]|hive_components,[HIVE_METASTORE,HIVE_SERVER,HCAT,WEBHCAT_SERVER,HIVE_CLIENT,MYSQL_SERVER]| Component Groups is group of key as group name and array of values with the components. and this can be used in any where in any host_groups[components]. Group name based on user preference
  hdp[component_groups][component_group_name][components]|hive_components| Array of the components of that group
  hdp[multi_node][host_groups]| host groups specification and its configuration mentioned here added to the blue print
@@ -137,6 +156,15 @@ Variable | example| Description
  postgres[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup postgress server
  activemq[ansible_host_group]|activemq|ansible host group name on which activemq will be setup
  activemq[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  activemq
+ es_master[ansible_host_group]|es-master|ansible host group name on which elastic search master nodes will be installed
+ es_master[hosts]|{ name: master1-ambariserver.example.com,ip: 10.11.12.18 }| Hostnames and ip adress of the machines used by ansible to setup elastic search master nodes
+ es_node[ansible_host_group]|es-node|ansible host group name on which elastic search nodes will be installed
+ es_node[hosts]|{ name: agent13-ambariagent.example.com,ip: 10.11.12.23}| Hostnames and ip adress of the machines used by ansible to setup elastic search nodes
+ kibana[ansible_host_group]|kibana|ansible host group name on which kibana server will be installed
+ kibana[hosts]|{ name:master1-ambariserver.example.com,ip: 10.11.12.18}| Hostnames and ip adress of the machines used by ansible to setup kibana server
+ kibana[elasticsearch_url]|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
+
+
 
 All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ambari-hdp/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
 
@@ -154,13 +182,15 @@ Hive Metastore|9083
 Mysql Server|3306
 Oozie Jobs Interface|11000
 
+
 For additional default ports information can be found at [hortonworks website](https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.6.2/bk_reference/content/reference_chap2.html)
 ### Non Hadoop components
 Service | Port number
 --------|------------
 activemq|61616
 postgres|5432
-
+elasticsearch api|9200
+kibana webinterface|5601
 
 
 ## Licence:

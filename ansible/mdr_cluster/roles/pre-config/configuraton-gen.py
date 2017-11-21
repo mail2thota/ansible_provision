@@ -178,4 +178,5 @@ with open(defaultConfigFile, 'r') as stream:
 	print "all hosts"
 	print oshostConfig
     except yaml.YAMLError as exc:
+        sys.exit(1)
         print(exc)
