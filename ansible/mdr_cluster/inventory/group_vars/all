@@ -49,18 +49,31 @@ hdp_blueprint_configuration: []
 hdp_cluster_type: multi_node
 hdp_ansible_host_group: ambari-agent
 hdp_cluster_name: mdr
-hdp_repo_site: http://10.11.12.7:8081/repos
+hdp_repo_site: http://10.129.6.237/repos
 hdp_default_password: admin
 hdp_component_groups: {'master_3': ['SECONDARY_NAMENODE', 'HCAT', 'HIVE_METASTORE', 'HIVE_SERVER', 'HIVE_CLIENT', 'WEBHCAT_SERVER', 'MYSQL_SERVER', 'METRICS_MONITOR'], 'master_2': ['JOURNALNODE', 'APP_TIMELINE_SERVER', 'RESOURCEMANAGER', 'SPARK_JOBHISTORYSERVER', 'METRICS_MONITOR'], 'master_1': ['JOURNALNODE', 'NAMENODE', 'HISTORYSERVER', 'METRICS_MONITOR'], 'zk_1': ['METRICS_MONITOR', 'ZOOKEEPER_SERVER'], 'master_4': ['OOZIE_SERVER', 'METRICS_MONITOR'], 'edge_1': ['METRICS_MONITOR', 'METRICS_COLLECTOR'], 'worker_1': ['NODEMANAGER', 'DATANODE', 'METRICS_MONITOR'], 'edge_3': ['ZOOKEEPER_CLIENT', 'TEZ_CLIENT', 'SPARK_CLIENT', 'MAPREDUCE2_CLIENT', 'YARN_CLIENT', 'HDFS_CLIENT', 'OOZIE_CLIENT', 'HIVE_CLIENT', 'PIG', 'METRICS_MONITOR']}
 hdp_stack: 2.6
 
 #Service :default
 default_dns_enabled: False
-default_repo_site: http://10.11.12.7:8081/repos
+default_repo_site: http://10.129.6.237/repos
+
+#Service :kibana
+kibana_hosts: [{'ip': '10.11.12.18', 'name': 'master1-ambariserver.example.com'}]
+kibana_elasticsearch_url: http://master1-ambariserver.example.com:9200/
+kibana_ansible_host_group: kibana
 
 #Service :ansible_ssh
 ansible_ssh_user: root
 ansible_ssh_pass: as12345678
+
+#Service :es_master
+es_master_hosts: [{'ip': '10.11.12.10', 'name': 'master1-ambariserver.example.com'}]
+es_master_ansible_host_group: es-master
+
+#Service :es_node
+es_node_hosts: [{'ip': '10.11.12.23', 'name': 'agent13-ambariagent.example.com'}, {'ip': '10.11.12.24', 'name': 'agent14-ambariagent.example.com'}]
+es_node_ansible_host_group: es-node
 
 #Service :activemq
 activemq_hosts: [{'ip': '10.11.12.20', 'name': 'agent10-ambariagent.example.com'}]

@@ -22,6 +22,19 @@ master1-ambariserver.example.com
 agent9-ambariagent.example.com
 
 
+[kibana]
+master1-ambariserver.example.com
+
+
+[es-master]
+master1-ambariserver.example.com
+
+
+[es-node]
+agent13-ambariagent.example.com
+agent14-ambariagent.example.com
+
+
 [activemq]
 agent10-ambariagent.example.com
 
