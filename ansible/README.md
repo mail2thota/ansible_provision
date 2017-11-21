@@ -129,7 +129,7 @@ Variable | example| Description
  hdp[stack]|2.5| hdp stack number to be setup
  hdp[stack_version]|2.6.2.0| Full version of hdp including minimum version
  hdp[utils_version]|1.1.10.21| Full Hdp utils version
-  hdp[cluster_type]|multi_node| Hdp cluster type to be formed it must be either multi_node or single_node in case of single node all compnents listed in component groups added to blueprint
+ hdp[cluster_type]|multi_node| Hdp cluster type to be formed it must be either multi_node or single_node in case of single node all compnents listed in component groups added to blueprint
  hdp[component_groups]|hive_components,[HIVE_METASTORE,HIVE_SERVER,HCAT,WEBHCAT_SERVER,HIVE_CLIENT,MYSQL_SERVER]| Component Groups is group of key as group name and array of values with the components. and this can be used in any where in any host_groups[components]. Group name based on user preference
  hdp[component_groups][component_group_name][components]|hive_components| Array of the components of that group
  hdp[multi_node][host_groups]| host groups specification and its configuration mentioned here added to the blue print
