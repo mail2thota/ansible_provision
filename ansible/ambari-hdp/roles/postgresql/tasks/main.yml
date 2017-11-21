@@ -71,5 +71,5 @@
     script: ./tests/postgres_test.sh
     register: postgres_test
 
-  - debug: msg="{{ postgres_test.stdout }}"
-  - debug: msg="{{ postgres_test.stderr }}"
+    - debug: msg="{{ postgres_test.stdout }}"
+    - debug: msg="{{ postgres_test.stderr }}"

@@ -34,8 +34,8 @@
 - name: run test for docker-registry
   become: True
   become_user: root
-  script: ./tests/docker-registry_test.sh
-  register: docker-registry_test
+  script: ./tests/registry_test.sh
+  register: registry_test
 
-- debug: msg="{{ docker-registry_test.stdout }}"
-- debug: msg="{{ docker-registry_test.stderr }}"
+- debug: msg="{{ registry_test.stdout }}"
+- debug: msg="{{ registry_test.stderr }}"
