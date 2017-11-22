@@ -6,7 +6,7 @@ ansible_ssh:
   pass: as12345678
 
 default:
-  repo_site: http://10.11.12.7:8081/repos
+  repo_site: http://10.129.6.237/repos
   dns_enabled: no
 
 hdp:
@@ -19,7 +19,7 @@ hdp:
   ansible_host_group: ambari-agent
   cluster_type: multi_node
   cluster_name: mdr
-  repo_site: http://10.11.12.7:8081/repos
+  repo_site: http://10.129.6.237/repos
   component_groups :
     master_1 :
       - JOURNALNODE
@@ -157,6 +157,11 @@ activemq:
     - name: agent10-ambariagent.example.com
       ip: 10.11.12.20
 
+apache-server:
+  ansible_host_group : apache-server
+  hosts:
+    - name: agent11-ambariagent.example.com
+      ip: 10.11.12.21
 
 hdp_test:
    ansible_host_group: hdp_test
