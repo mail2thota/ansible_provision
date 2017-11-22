@@ -186,15 +186,11 @@ Installation Of Ansible
 
     https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible
 
-Installation Of Ambari
-----------------------
-
-    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ambari
 
 HDP Cluster
 ----------------------
 
-    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/hdp/blueprints
+    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/blueprints
 
 
 License
