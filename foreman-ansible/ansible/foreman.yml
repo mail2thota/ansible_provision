@@ -4,7 +4,7 @@
 - hosts: all
   vars_files:
     - templates/payload.yml
-    - vars/example.yml
+    - vars/fm_database.yml
   roles:
     - { role: common }
     - { role: mysql }
