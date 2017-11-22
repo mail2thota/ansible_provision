@@ -1,0 +1,59 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- name: install apache server
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - httpd
+    - tomcat
+    - tomcat-admin-webapps.noarch 
+    - tomcat-docs-webapp.noarch 
+    - tomcat-javadoc.noarch 
+    - tomcat-webapps.noarch
+
+- name: ensure the tomcat service is enabled and running
+  service:
+    name: tomcat
+    state: restarted
+    enabled: yes
+  become: true
+
+- name: ensure the httpd service is enable and running
+  service:
+    name: httpd
+    state: restarted
+    enabled: yes
+  become: true
+
+- name : check if tomcat server is up
+  wait_for : host={{ ansible_fqdn }} port=8080 delay=20
+
+- name : check if httpd server is up
+  wait_for : host={{ ansible_fqdn }} port=80 delay=20
+
+- name: run test for httpd server
+  become: True
+  become_user: root
+  script: ./tests/httpd/httpd_test.sh
+  register: httpd_test
+  failed_when: "'Failed' in httpd_test.stdout"
+
+- debug: msg="{{ httpd_test.stdout }}"
+- debug: msg="{{ httpd_test.stderr }}"
+
+
+- name: run test for tomcat server
+  become: True
+  become_user: root
+  script: ./tests/tomcat/tomcat_test.sh
+  register: tomcat_test
+  failed_when: "'Failed' in tomcat_test.stdout"
+
+- debug: msg="{{ tomcat_test.stdout }}"
+- debug: msg="{{ tomcat_test.stderr }}"
+

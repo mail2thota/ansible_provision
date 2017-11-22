@@ -97,6 +97,17 @@ activemq:
   hosts:
    - name:  fqdn or host name of the host
      ip: ip adress of the host
+apache-server:
+  ansible_host_group : ansible host group name to setup apache server
+  hosts:
+    - name: fqdn or host name of the host
+      ip: ip adress of the host
+
+docker-registry:
+  ansible_host_group : ansible host group name to setup docker registry
+  hosts:
+    - name: fqdn or host name of the host
+      ip: ip adress of the host	
 
 ```
 ## Variables Description
@@ -137,6 +148,11 @@ Variable | example| Description
  postgres[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup postgress server
  activemq[ansible_host_group]|activemq|ansible host group name on which activemq will be setup
  activemq[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  activemq
+ apache-server[ansible_host_group]|apache-server|ansible host group name on which apache server will be setup
+ apache-server[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  apache server
+ docker-registry[ansible_host_group]|docker-registry|ansible host group name on which docker registry will be setup
+ docker-registry[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  docker registry
+
 
 All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ambari-hdp/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
 
@@ -161,7 +177,8 @@ Service | Port number
 activemq|61616
 postgres|5432
 docker-registry|5000
-
+tomcat|8080
+httpd|80
 
 ## Licence:
 mdr_platform_bare_metal - ansible - Copyright (c) 2016 BAE Systems Applied Intelligence.
