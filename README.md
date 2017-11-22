@@ -15,10 +15,10 @@ Prerequisite
     1. setup SE Linux permissive or disabled
             /etc/sysconfig/selinux
     2. set-up firewall or disable it
-            - disable
+          - disable
                 sudo systemctl stop firewalld
                 sudo systemctl disable firewalld
-            - allow to go through
+          - allow to go through
                 sudo firewall-cmd --permanent --add-service=http
                 sudo firewall-cmd --permanent --add-service=https
                 sudo firewall-cmd --permanent --add-port=69/tcp
@@ -27,19 +27,27 @@ Prerequisite
                 sudo firewall-cmd --permanent --add-port=53/udp
                 sudo firewall-cmd --permanent --add-port=8443/tcp
                 sudo firewall-cmd --permanent --add-port=8140/tcp
-	3. http repo setup on bootstrap machine
-	    - installation of nginx Repo
-	        https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
+	  3. local http repo and pypi repo setup on bootstrap machine
+	        - installation of nginx Repo
+	              https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
+          - installation of pypi
+                * pypy should be install in sameplace where http repo installed.
+                * install pip: yum -y install python-pip
+                * install pypi server:pip install pypiserver
+                * unzip file: tar xvfz packages.tar.gz ~/
+                * run command: nohup pypi-server -p 8008 -P . -a . ~/packages/ &
+                * verify by using curl or open browser http://repo_url:8008/packages
+                * pypi local repo must be bind using port 8008.
     4. making sure your DNS address is able to be resolved
-        - you may check on /etc/resolv.conf
-        - if not set yet you may set manually or you may using nmtui,
-            - type "nmtui" you may use arrows, space and enter to navigate the cursor
-            - choose "Edit a connection", click enter
-            - choose your ethernet interface, click enter e.g; enp0s3
-            - choose IPv4 CONFIGURATION set "Automatic", click enter
-            - choose Automatically connect, click space
-            - click 'OK', and following by click "back" to close the nmtui windows.
-            - restart network; "systemctl restart network"
+          - you may check on /etc/resolv.conf
+          - if not set yet you may set manually or you may using nmtui,
+                - type "nmtui" you may use arrows, space and enter to navigate the cursor
+                - choose "Edit a connection", click enter
+                - choose your ethernet interface, click enter e.g; enp0s3
+                - choose IPv4 CONFIGURATION set "Automatic", click enter
+                - choose Automatically connect, click space
+                - click 'OK', and following by click "back" to close the nmtui windows.
+                - restart network; "systemctl restart network"
     5. making sure that you don't have any DHCP server available which is been connecting to the subnet network
     6. making sure that your network device interface or network interface e.g; "enp0s3" is dedicated only for single IP(on the future we are going to support single network interface may have multiple IP )
     7. make sure your proxy is disable, check as well in /etc/yum.conf
@@ -77,9 +85,10 @@ Configuration
 |architecture(system default):[name]|[name:x86_64]|[name:currently the only available options is x86_64]|
 |medium(system default):[name,path,os-family]|[name:Centos7],[path:http://10.129.6.237/repos/CentOS_7_x86_64/],[os-family:RedHat]|[name:name of os(str,required)],[path:location of image(str,required)],[os-family:type of os(str,required)|
 |setting(system default):[name,value]|[name:token_duration],[value:0]|[name:name of foreman variable setting(str,required)],[value:value assigned(int/str,required)]|
-|os(system default):[name,major,minor,description,family,release-name,password-hash,architectures:[name],provisioning-template:[name],medium:[name],partition-table:[name],parameters:[version,codename]]|[name:centos7],[major:7],[minor:6],[description:centos7dvd],[family:RedHat],[release-name:centos7release],[password-hash:SHA512],[architectures:[name:x86_64]],[provisioning-template:[name:Kickstart default],[name:Kickstart default finish],[name:Kickstart default PXELinux],[name:Kickstart default iPXE],[name:Kickstart default user data]],[medium:[name:CentOS7]],[partition-table:[name:Kickstart default]],[parameters:[version:7],[codename:Centos7]]|[name:name of os(str,required)],[major:major of version(str,required)],[minor:minor of version(str,required)],[description:details description(str,optional)],[family:family of os(str,optional)],[release-name:name release version(str,optional)],[password-hash:hass password(str,optional)],[architectures:[name:name of architectures(str, optional)]],[provisioning-template:[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)]],[medium:[name:name of medium assigned(str,optional)]],[partition-table:[name:name of partition-table assigned(str,optional)]],[parameters:[version:additional info(str,optional)],[codename:additional info(str,optional)]]|
+|os(system default):[name,family,password-hash,architectures:[name],provisioning-template:[name],medium:[name],partition-table:[name]]|[name:centos7],[family:RedHat],[password-hash:SHA512],[architectures:[name:x86_64]],[provisioning-template:[name:Kickstart default],[name:Kickstart default finish],[name:Kickstart default PXELinux],[name:Kickstart default iPXE],[name:Kickstart default user data]],[medium:[name:CentOS7]],[partition-table:[name:Kickstart default]]|[name:name of os(str,required)],[family:family of os(str,optional)],[password-hash:hash password(str,optional)],[architectures:[name:name of architectures(str, optional)]],[provisioning-template:[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)]],[medium:[name:name of medium assigned(str,optional)]],[partition-table:[name:name of partition-table assigned(str,optional)]|
 |hostgroup_default(system default):[name,parent,os,architecture,medium,partition-table]|[name:host default],[parent:host default],[os:centos7],[architecture:x86_64],[medium:Centos7],[partition-table:Kickstart default]|[name:name of host assigned(str,required)],[parent:inherit from which parent hostgroup(str,required,can be empty)],[os:os assigned(str,required)],[architecture:architecture assigned(str,required)],[medium:medium assigned(str,required)],[partition-table:partition table assigned(str,required)]
 |device_identifier(system default):[name]|[name:enp0s3]|[name:name of valid device identifier(str,optional)]|
+|timeout_second|timeout_second: 172800|find it in /foreman-ansible/ansible/roles/fmclient/defaults/main.yml. it is timeout(format in second) for foreman waiting to finish node provisioning, default is set for 48 hours waiting for foreman to finish node provisioning.
 
 
 Complete YAML User Template
@@ -123,54 +132,50 @@ User is allowed to modified as they like according requirement to do provisiong 
 
 Complete YAML System Default Template
 -------------------------------------
-It is restricted for user making changes on system.yml file below, but it is configurable and allow to be modified as per user need. You may find it in /etc/foreman_client/config/system.yml.
+It is restricted for user making changes on system.yml file below, but it is configurable and allow to be modified as per user need. before provisioning You may find it in /foreman-ansible/ansible/roles/fmclient/templates/system.yml.j2.
 
     foreman:
         architecture:
             - name: x86_64
 
         medium:
-            - name: CentOS7
+            - name: CentOS7_x86_64
               path: http://10.129.6.237/repos/CentOS_7_x86_64/
-              os-family: Redhat
+              os_family: Redhat
 
         setting:
             - name: token_duration
-              value: 0
+              value: 360
+              protocol: http
+
         os:
-            - name: centos7
-              major: 7
-              minor: 6
-              description: centos7
+            - name: CentOS7
               family: Redhat
-              release-name: centos7_release1
-              password-hash: SHA512
+              password_hash: SHA512
               architecture:
                 - name: x86_64
-              provisioning-template:
+              provisioning_template:
                 - name: Kickstart default
                 - name: Kickstart default finish
                 - name: Kickstart default PXELinux
                 - name: Kickstart default iPXE
                 - name: Kickstart default user data
               medium:
-                - name: CentOS7
-              partition-table:
+                - name: CentOS7_x86_64
+              partition_table:
                 - name: Kickstart default
-              parameters:
-                version: "7"
-                codename: "centos7"
 
         hostgroup_default:
-              - name: host default
+              - name: hostg_default
                 parent:
-                os: centos7
+                os: CentOS7
                 architecture: x86_64
-                medium: CentOS7
-                partition-table: Kickstart default
+                medium: CentOS7_x86_64
+                partition_table: Kickstart default
 
         device_identifier:
               - name: enp0s3
+
 
 
 Installation and Provisioning Foreman
@@ -180,7 +185,6 @@ Installation and Provisioning Foreman
     * cd /foreman-ansible/ansible
     * configure:
           - /foreman-ansible/ansible/templates/payload.yml
-          - /foreman-ansible/ansible/inventory
           - /foreman-ansible/ansible/bootup.sh
      * set correct url_repo in /foreman-ansible/ansible/bootup.sh
 
@@ -189,17 +193,10 @@ Installation and Provisioning Foreman
           - ./bootup.sh
 
     noted:when you see provisioning is ready you might turn up the nodes to be provisioned,
-    from bios setting you may choose boot from network and allow boot using PXELinux
+    from bios setting you may choose boot from network and allow boot using PXELinux. After the installation You may find the rest of log and setting in /opt/foreman_yml/ for the further chanages
 
 
 ---
-
-Local DNS setup
------------------------
-
-    if you want to resolve your fqdn and ip by using local dns, you may find local dns script:
-      * cd /foreman-ansible/dns_script
-      * register ip and subnet
 
 Installation Of Ansible
 -----------------------

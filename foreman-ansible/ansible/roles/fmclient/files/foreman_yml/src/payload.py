@@ -236,32 +236,19 @@ class ForemanLoad(ForemanBase):
                 log.log(log.LOG_ERROR, "Cannot create Operating System '{0}': \n YAML validation Error: {1}".format(operatingsystem, e))
                 sys.exit(1)
             try:
-                os_id = self.fm.operatingsystems.show(operatingsystem['description'])['id']
+                os_id = self.fm.operatingsystems.show(operatingsystem['name'])['id']
                 log.log(log.LOG_DEBUG, "Operating System '{0}' (id={1}) already present.".format(operatingsystem, os_id))
             except:
                 log.log(log.LOG_INFO, "Create Operating System '{0}'".format(operatingsystem))
                 os_tpl = {
                     'name':             operatingsystem['name'],
-                    'description':      operatingsystem['description'],
-                    'major':            operatingsystem['major'],
-                    'minor':            operatingsystem['minor'],
+                    'description':      operatingsystem['name'],
+                    'major':            7,
+                    'minor':            7,
                     'family':           operatingsystem['family'],
-                    'release_name':     operatingsystem['release_name'],
                     'password_hash':    operatingsystem['password_hash']
                 }
                 os_obj = self.fm.operatingsystems.create(operatingsystem=os_tpl)
-
-                #  host_params
-                if operatingsystem['parameters'] is not None:
-                    for name,value in operatingsystem['parameters'].iteritems():
-                        p = {
-                            'name':     name,
-                            'value':    value
-                        }
-                        try:
-                            self.fm.operatingsystems.parameters_create(os_obj['id'], p )
-                        except:
-                            log.log(log.LOG_WARN, "Error adding host parameter '{0}'".format(name))
 
 
     def load_config_os_link(self):
@@ -275,11 +262,12 @@ class ForemanLoad(ForemanBase):
 
             os_obj = False
             try:
-                os_obj = self.fm.operatingsystems.show(operatingsystem['description'])
+                os_obj = self.fm.operatingsystems.show(operatingsystem['name'])
             except:
-                log.log(log.LOG_WARN, "Cannot get ID of Operating System '{0}', skipping".format(operatingsystem))
-            if os_obj:
+                log.log(log.LOG_ERROR, "Cannot get ID of Operating System '{0}', skipping".format(operatingsystem))
+                sys.exit(1)
 
+            if os_obj:
                 # link Partition Tables
                 add_pt = []
                 for os_ptable in operatingsystem['partition_table']:
@@ -347,7 +335,6 @@ class ForemanLoad(ForemanBase):
         log.log(log.LOG_INFO, "Load hostgroups)")
         hg_parent = hg_os = hg_arch = hg_medium = hg_parttbl = False
         for hostgroup in self.get_config_section('hostgroup_default'):
-
             #validate yaml
             try:
                 self.validator.hostgroup_default(hostgroup)
@@ -364,28 +351,28 @@ class ForemanLoad(ForemanBase):
             try:
                 hg_os = self.fm.operatingsystems.show(hostgroup['os'])['id']
             except:
-                log.log(log.LOG_DEBUG, "Cannot get ID of Operating System '{0}', skipping".format(hostgroup['os']))
-
+                log.log(log.LOG_ERROR, "Cannot get ID of Operating System '{0}'".format(hostgroup['os']))
+                sys.exit(1)
             # find architecture
             try:
                 hg_arch = self.fm.architectures.show(hostgroup['architecture'])['id']
             except:
-                log.log(log.LOG_DEBUG, "Cannot get ID of Architecture '{0}', skipping".format(hostgroup['architecture']))
-
+                log.log(log.LOG_ERROR, "Cannot get ID of Architecture '{0}'".format(hostgroup['architecture']))
+                sys.exit(1)
             # find medium
             medialist = self.fm.media.index(per_page=99999)['results']
             for mediac in medialist:
                 if (mediac['name'] == hostgroup['medium']):
                     hg_medium = mediac['id']
             if not hg_medium:
-                log.log(log.LOG_DEBUG, "Cannot get ID of Medium '{0}', skipping".format(hostgroup['medium']))
-
+                log.log(log.LOG_ERROR, "Cannot get ID of Medium '{0}'".format(hostgroup['medium']))
+                sys.exit(1)
             # find partition table
             try:
                 hg_parttbl = self.fm.ptables.show(hostgroup['partition_table'])['id']
             except:
-                log.log(log.LOG_DEBUG, "Cannot get ID of Partition Table '{0}', skipping".format(hostgroup['partition_table']))
-
+                log.log(log.LOG_ERROR, "Cannot get ID of Partition Table '{0}'".format(hostgroup['partition_table']))
+                sys.exit(1)
 
         for hostgroup in self.get_config_section('hostgroup'):
 
@@ -410,14 +397,14 @@ class ForemanLoad(ForemanBase):
                 try:
                     hg_domain = self.fm.domains.show(hostgroup['domain'])['id']
                 except:
-                    log.log(log.LOG_DEBUG, "Cannot get ID of Domain '{0}', skipping".format(hostgroup['domain']))
-
+                    log.log(log.LOG_ERROR, "Cannot get ID of Domain '{0}'".format(hostgroup['domain']))
+                    sys.exit(1)   
                 # find subnet
                 try:
                     hg_subnet = self.fm.subnets.show(hostgroup['subnet'])['id']
                 except:
-                    log.log(log.LOG_DEBUG, "Cannot get ID of Subnet '{0}', skipping".format(hostgroup['subnet']))
-
+                    log.log(log.LOG_ERROR, "Cannot get ID of Subnet '{0}'".format(hostgroup['subnet']))
+                    sys.exit(1)
                 # build array
                 hg_arr = {
                     'name':         hostgroup['name']

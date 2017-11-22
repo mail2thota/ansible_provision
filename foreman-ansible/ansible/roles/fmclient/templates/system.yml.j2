@@ -13,7 +13,7 @@ foreman:
         - name: x86_64
 
     medium:
-        - name: CentOShery
+        - name: CentOS7_x86_64
           path: http://10.129.6.237/repos/CentOS_7_x86_64/
           os_family: Redhat
 
@@ -23,12 +23,8 @@ foreman:
           protocol: http
 
     os:
-        - name: centos7hery
-          major: 7
-          minor: 6
-          description: centos7hery
+        - name: CentOS7
           family: Redhat
-          release_name: cemtos7
           password_hash: SHA512
           architecture:
             - name: x86_64
@@ -39,19 +35,16 @@ foreman:
             - name: Kickstart default iPXE
             - name: Kickstart default user data
           medium:
-            - name: CentOShery
+            - name: CentOS7_x86_64
           partition_table:
             - name: Kickstart default
-          parameters:
-            version: "7"
-            codename: "centos7hery"
 
     hostgroup_default:
-          - name: host1
+          - name: hostg_default
             parent:
-            os: centos7hery
+            os: CentOS7
             architecture: x86_64
-            medium: CentOShery
+            medium: CentOS7_x86_64
             partition_table: Kickstart default
 
     device_identifier:

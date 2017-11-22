@@ -14,10 +14,6 @@
     src=foreman_yml
     dest=/opt/
 
-- name: python setup foreman_yml script
-  command:
-    /usr/bin/python2 setup.py install chdir=/opt/foreman_yml/
-
 - name: copy ./system.yml to target machine
   copy:
     content="{{ foreman_yml_config }}"
@@ -28,6 +24,10 @@
     content="{{ foreman_yml_payload_config }}"
     dest="/opt/foreman_yml/payload.yml"
   when: ansible_os_family == "RedHat"
+
+- name: python setup foreman_yml script
+  command:
+    /usr/bin/python2 setup.py install chdir=/opt/foreman_yml/
 
 - name: waiting for the foreman server 
   local_action:
@@ -54,7 +54,7 @@
       port: 22
       host: "{{ item.ip }}"
       delay: 5
-      timeout: 172800
+      timeout: "{{ timeout_second | default('172800') }}"
       state: started
       search_regex: OpenSSH
   with_items: "{{ hostlist }}"

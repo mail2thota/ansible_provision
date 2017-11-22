@@ -38,12 +38,7 @@ class Validator:
 
         self.os = Schema({
             Required('name'):                           All(str),
-            Required('major'):                          Any(str, int),
-            Required('minor'):                          Any(str, int),
-            Optional('description'):                    Any(str, None),
             Optional('family'):                         Any(str, None),
-            Optional('release_name'):                   Any(str, None),
-            Optional('parameters'):                     Any(dict, None),
             Optional('password_hash'):                  Any(
                                                             'MD5',
                                                             'SHA256',
