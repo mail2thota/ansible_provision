@@ -12,10 +12,3 @@
   template:
     src: "docker.repo"
     dest: "/etc/yum.repos.d/docker.repo"
-  
- 
-- name: changing docker to local repo 
-  replace:
-    dest: "/etc/yum.repos.d/docker.repo"
-    regexp: '<HDP_REPO_SITE>'
-    replace: '{{ hdp_repo_site }}'

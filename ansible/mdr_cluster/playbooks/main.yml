@@ -17,6 +17,10 @@
     - ambari-prereqs
     - hdp-install
 
+- hosts: docker-registry
+  roles:
+    - role: docker-registry
+
 - hosts: postgres
   become: true
   roles:
@@ -56,6 +60,3 @@
   roles:
     - role:  hdp_test
 
-- hosts: docker-registry
-  roles:
-    - role: docker-registry
