@@ -1,0 +1,33 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- name: copy init files to all nodes
+  become: True
+  become_user: root
+  copy:
+    src: ./tasks/
+    dest: /home/
+    mode: 0777
+ 
+- name: host_list entry into /etc/hosts of all nodes
+  become: True
+  become_user: root
+  script: /home/all_config/localhost_config.sh
+  when: not default_dns_enabled
+
+- name: remove the existing repos in all nodes
+  become: True
+  become_user: root
+  script: /home/all_config/repos_config.sh 
+  when: inventory_hostname != "localhost"
+  
+
+
+  
+
+
+
+

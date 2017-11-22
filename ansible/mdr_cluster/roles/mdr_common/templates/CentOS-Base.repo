@@ -1,0 +1,11 @@
+[base]
+name=CentOS-$releasever - Base
+gpgcheck=0
+gpgkey={{ default_repo_site }}/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-7
+baseurl={{ default_repo_site }}/centos/7/os/x86_64
+
+[update]
+name=CentOS-$releasever - Updates
+gpgcheck=0
+gpgkey={{ default_repo_site }}/centos/7/updates/x86_64/RPM-GPG-KEY-CentOS-7
+baseurl={{ default_repo_site }}/centos/7/updates/x86_64
