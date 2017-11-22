@@ -162,11 +162,14 @@ apache-server:
   hosts:
     - name: agent11-ambariagent.example.com
       ip: 10.11.12.21
+
 docker-registry:
   ansible_host_group : docker-registry
   hosts:
     - name: agent12-ambariagent.example.com
-      ip: 10.11.12.22hdp_test:
+      ip: 10.11.12.22
+
+hdp_test:
    ansible_host_group: hdp_test
    hosts:
     - name: agent8-ambariagent.example.com
