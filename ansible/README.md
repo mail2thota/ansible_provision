@@ -97,6 +97,11 @@ activemq:
   hosts:
    - name:  fqdn or host name of the host
      ip: ip adress of the host
+apache-server:
+  ansible_host_group : ansible host group name to setup apache server
+  hosts:
+    - name: fqdn or host name of the host
+      ip: ip adress of the host	
 
 ```
 ## Variables Description
@@ -137,7 +142,9 @@ Variable | example| Description
  postgres[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup postgress server
  activemq[ansible_host_group]|activemq|ansible host group name on which activemq will be setup
  activemq[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  activemq
-
+ apache-server[ansible_host_group]|apache-server|ansible host group name on which apache server will be setup
+ apache-server[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  apache server
+ 
 All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ambari-hdp/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
 
 ## Service ports
