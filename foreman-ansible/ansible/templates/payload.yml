@@ -43,7 +43,7 @@ foreman:
 
       
     hostgroup:
-        - name: master
+        - name: ambari
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
