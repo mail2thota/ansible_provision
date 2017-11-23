@@ -1,0 +1,14 @@
+---
+- name: Ensure old versions of Docker are not installed.
+  package:
+    name: '{{ item }}'
+    state: absent
+  with_items:
+    - docker
+    - docker-common
+    - docker-engine
+
+- name: copy docker repo template
+  template:
+    src: "docker.repo"
+    dest: "/etc/yum.repos.d/docker.repo"

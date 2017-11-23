@@ -179,6 +179,12 @@ mongodb:
     - name: agent15-ambariagent.example.com
       ip: 10.11.12.9
 
+docker-registry:
+  ansible_host_group : docker-registry
+  hosts:
+    - name: agent12-ambariagent.example.com
+      ip: 10.11.12.22
+
 hdp_test:
    hosts:
     - name: agent8-ambariagent.example.com

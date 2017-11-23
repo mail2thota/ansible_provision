@@ -97,7 +97,12 @@ activemq:
 apache-server:
   hosts:
     - name: fqdn or host name of the host
-      ip: ip adress of the host	
+      ip: ip adress of the host
+
+docker-registry:
+  hosts:
+    - name: fqdn or host name of the host
+      ip: ip adress of the host		  
 
 es_master:
     hosts:
@@ -153,7 +158,7 @@ Variable | example| Description
  kibana[hosts]|{ name:master1-ambariserver.example.com,ip: 10.11.12.18}| Hostnames and ip adress of the machines used by ansible to setup kibana server
  kibana[elasticsearch_url]|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
  apache-server[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  apache server
-
+ docker-registry[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup docker registry
 
 All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
 
@@ -180,6 +185,9 @@ activemq|61616
 postgres|5432
 elasticsearch api|9200
 kibana webinterface|5601
+docker-registry|5000
+tomcat|8080
+httpd|80
 
 
 ## Licence:
