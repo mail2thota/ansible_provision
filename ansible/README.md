@@ -152,7 +152,6 @@ Variable | example| Description
  es_node[hosts]|{ name: agent13-ambariagent.example.com,ip: 10.11.12.23}| Hostnames and ip adress of the machines used by ansible to setup elastic search nodes
  kibana[hosts]|{ name:master1-ambariserver.example.com,ip: 10.11.12.18}| Hostnames and ip adress of the machines used by ansible to setup kibana server
  kibana[elasticsearch_url]|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
- apache-server[ansible_host_group]|apache-server|ansible host group name on which apache server will be setup
  apache-server[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  apache server
 
 
