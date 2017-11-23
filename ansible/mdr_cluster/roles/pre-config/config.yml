@@ -70,7 +70,7 @@ hdp:
               - master_1
             hosts:
                 - name: agent1-ambariagent.example.com
-                  ip : 10.11.12.11
+                  ip : 10.11.12.8
             configuration: []
             cardinality: 1
         - master_2:
@@ -78,7 +78,7 @@ hdp:
               - master_2
             hosts:
                 - name: agent2-ambariagent.example.com
-                  ip: 10.11.12.12
+                  ip: 10.11.12.9
             configuration: []
             cardinality: 1
         - master_3:
@@ -86,7 +86,7 @@ hdp:
               - master_3
             hosts:
                 - name: agent3-ambariagent.example.com
-                  ip: 10.11.12.13
+                  ip: 10.11.12.10
 
             configuration: []
             cardinality: 1
@@ -95,7 +95,7 @@ hdp:
               - master_4
             hosts:
                 - name: agent4-ambariagent.example.com
-                  ip: 10.11.12.14
+                  ip: 10.11.12.11
             configuration: []
             cardinality: 1
         - zk_1:
@@ -103,9 +103,9 @@ hdp:
               - zk_1
             hosts:
                 - name: agent5-ambariagent.example.com
-                  ip: 10.11.12.15
+                  ip: 10.11.12.12
                 - name: agent6-ambariagent.example.com
-                  ip: 10.11.12.16
+                  ip: 10.11.12.13
             configuration: []
             cardinality: 3
         - edge_1:
@@ -121,7 +121,7 @@ hdp:
               - edge_3
             hosts:
                 - name: agent8-ambariagent.example.com
-                  ip: 10.11.12.18
+                  ip: 10.11.12.15
             configuration: []
             cardinality: 1
         - worker_1:
@@ -129,7 +129,7 @@ hdp:
               - worker_1
             hosts:
                 - name: agent7-ambariagent.example.com
-                  ip: 10.11.12.17
+                  ip: 10.11.12.14
             configuration: []
             cardinality: 1
 
@@ -145,17 +145,17 @@ ambari:
 postgres:
    hosts:
      - name: agent9-ambariagent.example.com
-       ip: 10.11.12.19
+       ip: 10.11.12.16
 
 activemq:
   hosts:
     - name: agent10-ambariagent.example.com
-      ip: 10.11.12.20
+      ip: 10.11.12.17
 
 kibana:
   hosts:
    - name : master1-ambariserver.example.com
-     ip: 10.11.12.18
+     ip: 10.11.12.
   elasticsearch_url: http://master1-ambariserver.example.com:9200/
 
 es_master:
@@ -166,13 +166,18 @@ es_master:
 es_node:
   hosts:
    - name: agent13-ambariagent.example.com
-     ip: 10.11.12.23
+     ip: 10.11.12.18
    - name: agent14-ambariagent.example.com
-     ip: 10.11.12.24
+     ip: 10.11.12.19
 apache-server:
   hosts:
     - name: agent11-ambariagent.example.com
-      ip: 10.11.12.21
+      ip: 10.11.12.18
+
+mongodb:
+  hosts:
+    - name: agent15-ambariagent.example.com
+      ip: 10.11.12.9
 
 hdp_test:
    hosts:
