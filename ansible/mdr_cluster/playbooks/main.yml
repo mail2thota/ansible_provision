@@ -23,6 +23,10 @@
   roles:
     - role:  activemq
 
+- hosts: docker-registry_hosts
+  become: true
+  roles:
+    - role: docker-registry
 
 - hosts: apache-server_hosts
   become: true
@@ -103,4 +107,3 @@
   become: true
   roles:
     - role: kibana
-

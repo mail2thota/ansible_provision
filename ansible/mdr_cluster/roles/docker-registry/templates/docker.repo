@@ -1,0 +1,17 @@
+[docker-ce-stable]
+name=Docker CE Stable - $basearch
+baseurl={{ default_repo_site }}/docker/centos/7/$basearch/stable
+enabled=1
+gpgcheck=0
+
+[container-selinux]
+name=Container SE linux
+baseurl={{ default_repo_site }}/centos/7/extras/$basearch
+enabled=1
+gpgcheck=0
+
+[docker-distribution]
+name=Container SE linux
+baseurl={{ default_repo_site }}/centos/7/extras/$basearch
+enabled=1
+gpgcheck=0

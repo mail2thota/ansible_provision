@@ -2,7 +2,6 @@
 import yaml
 import os
 import sys
-import socket
 
 oshostConfig = {}
 ansiblehostsfile = 'hosts'
@@ -168,8 +167,6 @@ with open(defaultConfigFile, 'r') as stream:
 
         #Genearating host configuration to suplly ansible-boot
         osHostsFile = open(etchostsFile, 'w')
-	#retriving current host
-        osHostsFile.write(socket.gethostbyname(socket.gethostname())+" "+socket.gethostname()+"\n")
 	for host in oshostConfig:
             osHostsFile.write(host+" "+oshostConfig[host]+"\n")
 	
