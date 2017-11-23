@@ -51,7 +51,8 @@ Prerequisite
     5. making sure that you don't have any DHCP server available which is been connecting to the subnet network
     6. making sure that your network device interface or network interface e.g; "enp0s3" is dedicated only for single IP(on the future we are going to support single network interface may have multiple IP )
     7. make sure your proxy is disable, check as well in /etc/yum.conf
-    8. The best approach is for having static ip for bootstrap machine, check how to setup static ip below:
+    8. ansible version required is : ansible 2.3.1.0
+    9. The best approach is for having static ip for bootstrap machine, check how to setup static ip below:
 --------------
 Static IP
 -------------
