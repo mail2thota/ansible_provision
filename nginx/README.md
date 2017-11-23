@@ -14,7 +14,10 @@
    
 ### OPTION 1 - executing script with out any argument
 
-   create repos folder under /usr/share/. Download and copy all required repositories to /usr/share/repos and set the PROXY_URL param prior to executing the script
+   * create repos folder under /usr/share/: mkdir -p /usr/share/repos
+   * download and copy all required repositories to /usr/share/repos: wget -O /usr/share/repos/repos.tar.gz http://10.129.6.237/repos/repo_share/repos.tar.gz
+   * unzip file: tar xvfz repos.tar.gz
+   * set the PROXY_URL param in ./http_repo_setup.sh: ROXY_URL= http://ip:port/ (where ip and port are your proxy server ip and port)
    
    
   ```

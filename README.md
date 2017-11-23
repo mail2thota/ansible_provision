@@ -34,6 +34,7 @@ Prerequisite
                 * pypy should be install in sameplace where http repo installed.
                 * install pip: yum -y install python-pip
                 * install pypi server:pip install pypiserver
+                * download ppackages.tar.gz : wget -N http://10.129.6.237/repos/repo_share/packages.tar.gz
                 * unzip file: tar xvfz packages.tar.gz ~/
                 * run command: nohup pypi-server -p 8008 -P . -a . ~/packages/ &
                 * verify by using curl or open browser http://repo_url:8008/packages
