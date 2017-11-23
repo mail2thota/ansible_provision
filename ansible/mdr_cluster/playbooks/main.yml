@@ -23,16 +23,13 @@
   roles:
     - role:  activemq
 
-<<<<<<< HEAD
-- hosts: ambari_hosts
-=======
-- hosts: apache-server
+
+- hosts: apache-server_hosts
   become: true
   roles:
     - role: apache-server
 
-- hosts: ambari-server
->>>>>>> master
+- hosts: ambari_hosts
   become: true
   roles:
     - role: ambari_server

@@ -1,6 +1,6 @@
 [elasticsearch-{{ es_major_version }}]
 name=Elasticsearch repository for 5.5.0 elasticsearch
-baseurl={{ hdp_repo_site }}/elasticsearch/5.5.0/yum
+baseurl={{ default_repo_site }}/elasticsearch/5.5.0/yum
 gpgcheck=1
-gpgkey={{ hdp_repo_site }}/elasticsearch/GPG-KEY-elasticsearch
+gpgkey={{ default_repo_site }}/elasticsearch/GPG-KEY-elasticsearch
 enabled=1
