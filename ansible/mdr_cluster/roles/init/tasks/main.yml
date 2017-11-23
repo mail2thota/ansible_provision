@@ -4,7 +4,7 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- name: copy init files to all nodes
+- name: copy init files to nodes
   become: True
   become_user: root
   copy:
@@ -12,13 +12,13 @@
     dest: /home/
     mode: 0777
  
-- name: host_list entry into /etc/hosts of all nodes
+- name: host_list entry into /etc/hosts of nodes
   become: True
   become_user: root
   script: /home/all_config/localhost_config.sh
   when: not default_dns_enabled
 
-- name: remove the existing repos in all nodes
+- name: remove the existing repos in nodes
   become: True
   become_user: root
   script: /home/all_config/repos_config.sh 

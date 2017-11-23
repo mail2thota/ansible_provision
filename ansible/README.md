@@ -93,6 +93,11 @@ activemq:
   hosts:
    - name:  fqdn or host name of the host
      ip: ip adress of the host
+apache-server:
+  ansible_host_group : ansible host group name to setup apache server
+  hosts:
+    - name: fqdn or host name of the host
+      ip: ip adress of the host	
 
 es_master:
     hosts:
@@ -143,6 +148,7 @@ Variable | example| Description
  hdp_test[oozie_host]|agent10-ambariagent.example.com|oozie server host to be used by test case job
   postgres[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup postgress server
  activemq[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  activemq
+<<<<<<< HEAD
  es_master[hosts]|{ name: master1-ambariserver.example.com,ip: 10.11.12.18 }| Hostnames and ip adress of the machines used by ansible to setup elastic search master nodes
  es_node[hosts]|{ name: agent13-ambariagent.example.com,ip: 10.11.12.23}| Hostnames and ip adress of the machines used by ansible to setup elastic search nodes
  kibana[hosts]|{ name:master1-ambariserver.example.com,ip: 10.11.12.18}| Hostnames and ip adress of the machines used by ansible to setup kibana server
@@ -151,6 +157,12 @@ Variable | example| Description
 
 
 All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
+=======
+ apache-server[ansible_host_group]|apache-server|ansible host group name on which apache server will be setup
+ apache-server[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  apache server
+ 
+All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/ambari-hdp/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
+>>>>>>> master
 
 ## Service ports
 ### Hadoop Components

@@ -4,15 +4,11 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- hosts: localhost,all
-  become: true
-  roles:
-    - role: init
- 
 - hosts: all
   become: true
   roles:
-    - role: mdr_common
+    - init
+    - mdr_common
   tags:
     - ambari-prereqs
     - hdp-install
@@ -27,7 +23,16 @@
   roles:
     - role:  activemq
 
+<<<<<<< HEAD
 - hosts: ambari_hosts
+=======
+- hosts: apache-server
+  become: true
+  roles:
+    - role: apache-server
+
+- hosts: ambari-server
+>>>>>>> master
   become: true
   roles:
     - role: ambari_server

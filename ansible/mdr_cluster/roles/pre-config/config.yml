@@ -153,6 +153,7 @@ activemq:
     - name: agent10-ambariagent.example.com
       ip: 10.11.12.20
 
+<<<<<<< HEAD
 kibana:
   hosts:
    - name : master1-ambariserver.example.com
@@ -170,6 +171,13 @@ es_node:
      ip: 10.11.12.23
    - name: agent14-ambariagent.example.com
      ip: 10.11.12.24
+=======
+apache-server:
+  ansible_host_group : apache-server
+  hosts:
+    - name: agent11-ambariagent.example.com
+      ip: 10.11.12.21
+>>>>>>> master
 
 hdp_test:
    hosts:
