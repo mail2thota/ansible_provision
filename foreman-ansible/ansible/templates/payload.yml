@@ -73,7 +73,7 @@ foreman:
           hostgroup: ambari
           ip: 10.11.12.8
           mac: 0800278B2194
-                - name: agent7-ambariagent
+        - name: agent7-ambariagent
           hostgroup: ambari
           ip: 10.11.12.9
           mac: 08002728805D
@@ -93,7 +93,7 @@ foreman:
           hostgroup: ambari
           ip: 10.11.12.13
           mac: 080027EE643F  
-                - name: agent12-ambariagent
+        - name: agent12-ambariagent
           hostgroup: ambari
           ip: 10.11.12.14
           mac: 0800275F8125
