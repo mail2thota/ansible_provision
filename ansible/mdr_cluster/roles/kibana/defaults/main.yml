@@ -1,0 +1,7 @@
+---
+kibana_version: "5.5.0"
+
+kibana_port: 5601
+kibana_host: "0.0.0.0"
+
+kibana_elasticsearch_url: "{{ kibana_elasticsearch_url }}"
