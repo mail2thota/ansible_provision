@@ -12,12 +12,6 @@
     dest: /home/
     mode: 0777
  
-- name: copy the default hosts file to nodes
-  template:
-   src: "hosts.yml"
-   dest: "/etc/hosts"
-  when: not default_dns_enabled
-
 - name: host_list entry into /etc/hosts of nodes
   become: True
   become_user: root
