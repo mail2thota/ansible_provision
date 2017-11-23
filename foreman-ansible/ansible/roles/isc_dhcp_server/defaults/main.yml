@@ -1,0 +1,5 @@
+---
+isc_dhcp_server_omapi_port: 7911
+
+foreman: []
+subnet: "{{ foreman.subnet }}"

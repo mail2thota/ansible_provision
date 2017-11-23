@@ -1,0 +1,5 @@
+[fmclient]
+127.0.0.1 
+
+[fmclient:vars]
+ansible_password=as12345678
