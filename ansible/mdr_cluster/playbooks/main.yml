@@ -41,7 +41,6 @@
     - ambari-server
     - hdp-install
 
-
 - hosts: hdp_hosts
   become: true
   roles:
@@ -107,3 +106,8 @@
   become: true
   roles:
     - role: kibana
+
+- hosts: mongodb_hosts
+  become: true
+  roles:
+    - role:  mongodb

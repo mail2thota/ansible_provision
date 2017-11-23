@@ -1,0 +1,24 @@
+---
+- name: add mongodb community repo file
+  template: src=repo.j2 dest=/etc/yum.repos.d/mongo-community.repo
+  tags: mongodb
+
+- name: install mongodb-org
+  yum: name=mongodb-org state=present
+  tags: mongodb
+
+- name: configure mongodb
+  template: src=mongod.conf.j2 dest=/etc/mongod.conf
+  tags: mongodb
+
+- name: run mongodb
+  service: name=mongod state=started enabled=yes
+  tags: mongodb
+
+- name: run mongo health check
+  shell: echo 'db.stats().ok' | mongo {{ item }}:{{ mongod_port }}/test --quiet
+  register: shell
+  with_items:  
+      - "{{groups['mongodb_hosts']}}" 
+- debug: msg="{{shell}}"
+  

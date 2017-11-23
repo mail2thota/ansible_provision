@@ -119,6 +119,11 @@ kibana:
       - name : fqdn or hostname of the host
        ip: ip address of the host
     elasticsearch_url: elasticsearch master host adddress
+
+mongodb:
+  hosts: fqdn or hostname of the host
+    - name:
+      ip: ip address of the host
 ```
 Please refer to the default [config file](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) being used by the existing code base
 ## Variables Description
@@ -188,6 +193,7 @@ kibana webinterface|5601
 docker-registry|5000
 tomcat|8080
 httpd|80
+mongodb| 27017
 
 
 ## Licence:
