@@ -1,0 +1,64 @@
+---
+- name: rake create foreman apipie cache (be patient)
+  command:
+    "/usr/sbin/foreman-rake apipie:cache"
+
+- name: install foreman_yml dependencies
+  package:
+    name="{{ item }}"
+    state=present
+  with_items: "{{ foreman_yml_pkg }}"
+
+- name: copy foreman_yml files to the target machine
+  copy:
+    src=foreman_yml
+    dest=/opt/
+
+- name: copy ./system.yml to target machine
+  copy:
+    content="{{ foreman_yml_config }}"
+    dest="/opt/foreman_yml/.system.yml"
+
+- name: copy payload.yml to target machine
+  copy:
+    content="{{ foreman_yml_payload_config }}"
+    dest="/opt/foreman_yml/payload.yml"
+  when: ansible_os_family == "RedHat"
+
+- name: python setup foreman_yml script
+  command:
+    /usr/bin/python2 setup.py install chdir=/opt/foreman_yml/
+
+- name: waiting for the foreman server 
+  local_action:
+      module: wait_for
+      port: 80
+      host: "{{ ansible_default_ipv4.address }}"
+      delay: 0
+      state: started
+ 
+
+- name: configure foreman with fmclient
+  command: 
+      "fmclient import /opt/foreman_yml/payload.yml"
+  register: command_output
+- debug: msg="{{command_output.stdout.split('\n')}}"
+- local_action: copy content="{{ command_output.stdout.split('\n') }}" dest="/opt/foreman_yml/fmclient.log"
+
+- debug:
+      msg: "foreman is ready, start provisioning"
+
+- name: waiting for the nodes to be ready 
+  local_action:
+      module: wait_for
+      port: 22
+      host: "{{ item.ip }}"
+      delay: 5
+      timeout: "{{ timeout_second | default('172800') }}"
+      state: started
+      search_regex: OpenSSH
+  with_items: "{{ hostlist }}"
+ 
+- debug:
+      msg: "provisioning has finished, nodes are ready"
+

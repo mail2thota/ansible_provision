@@ -1,0 +1,42 @@
+# {{ ansible_managed }}
+
+omapi-port {{ isc_dhcp_server_omapi_port }};
+ddns-update-style none;
+
+default-lease-time 600;
+max-lease-time 7200;
+log-facility local7;
+
+
+{% for item in subnet -%}
+subnet {{ item.network }} netmask {{ item.mask }} {
+	{% set domain_dicts = {'name': '','search':''} -%}
+	{% set format_name = '' -%}
+	{% set format_search = '' -%}
+		{% for domain in item.domain -%}
+		 
+			{% set format_name = format_name + domain.name -%}
+			{% set format_search = format_search + domain.name -%}	
+			{% if item.domain|length > loop.index -%}
+				{% set format_name =  format_name + ' ' -%}
+				{% set format_search =  format_search + '", "' -%}
+				
+				
+			{% endif -%}
+			{% if item.domain|length == loop.index -%}
+				{% if domain_dicts.update({'name':format_name }) -%}
+				{% endif -%}
+				{% if domain_dicts.update({'search':format_search }) -%}
+				{% endif -%}
+			{% endif -%}
+
+		{%- endfor %}
+   
+    option routers                   {{ item.gateway }};
+    option domain-name              "{{ domain_dicts.name }}";
+    option domain-search            "{{ domain_dicts.search }}";
+    option domain-name-servers       {{ item.dns_primary }}, {{ item.dns_secondary }};
+
+}
+{% endfor -%}
+

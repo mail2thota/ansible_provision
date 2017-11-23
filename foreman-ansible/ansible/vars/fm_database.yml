@@ -1,0 +1,15 @@
+---
+mysql_databases: 
+  - name: foreman
+    collation: utf8_unicode_ci
+    encoding: utf8
+
+mysql_users: 
+  - name: foreman
+    host: localhost
+    password: foreman
+    priv: "foreman.*:ALL"
+
+
+foreman_db_username: foreman
+foreman_db_password: foreman

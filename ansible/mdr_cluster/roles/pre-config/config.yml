@@ -16,10 +16,8 @@ hdp:
   default_password: admin
   stack_version : 2.6.2.0
   utils_version: 1.1.0.21
-  ansible_host_group: ambari-agent
   cluster_type: multi_node
   cluster_name: mdr
-  repo_site: http://10.129.6.237/repos
   component_groups :
     master_1 :
       - JOURNALNODE
@@ -136,7 +134,6 @@ hdp:
             cardinality: 1
 
 ambari:
-  ansible_host_group : ambari-server
   hosts:
     - name: master1-ambariserver.example.com
       ip : 10.11.12.10
@@ -146,19 +143,33 @@ ambari:
   version: 2.5.2.0
 
 postgres:
-   ansible_host_group : postgres
    hosts:
      - name: agent9-ambariagent.example.com
        ip: 10.11.12.19
 
 activemq:
-  ansible_host_group : activemq
   hosts:
     - name: agent10-ambariagent.example.com
       ip: 10.11.12.20
 
+kibana:
+  hosts:
+   - name : master1-ambariserver.example.com
+     ip: 10.11.12.18
+  elasticsearch_url: http://master1-ambariserver.example.com:9200/
+
+es_master:
+  hosts:
+    - name: master1-ambariserver.example.com
+      ip: 10.11.12.10
+
+es_node:
+  hosts:
+   - name: agent13-ambariagent.example.com
+     ip: 10.11.12.23
+   - name: agent14-ambariagent.example.com
+     ip: 10.11.12.24
 apache-server:
-  ansible_host_group : apache-server
   hosts:
     - name: agent11-ambariagent.example.com
       ip: 10.11.12.21
@@ -170,7 +181,6 @@ docker-registry:
       ip: 10.11.12.22
 
 hdp_test:
-   ansible_host_group: hdp_test
    hosts:
     - name: agent8-ambariagent.example.com
    jobtracker_host: agent2-ambariagent.example.com

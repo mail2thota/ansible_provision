@@ -13,26 +13,27 @@
     - ambari-prereqs
     - hdp-install
 
-- hosts: docker-registry
-  roles:
-    - role: docker-registry
-
-- hosts: postgres
+- hosts: postgres_hosts
   become: true
   roles:
     - role: postgresql
 
-- hosts: activemq
+- hosts: activemq_hosts
   become: true
   roles:
     - role:  activemq
 
-- hosts: apache-server
+- hosts: docker-registry_hosts
+  become: true
+  roles:
+    - role: docker-registry
+
+- hosts: apache-server_hosts
   become: true
   roles:
     - role: apache-server
 
-- hosts: ambari-server
+- hosts: ambari_hosts
   become: true
   roles:
     - role: ambari_server
@@ -41,7 +42,7 @@
     - hdp-install
 
 
-- hosts: ambari-agent
+- hosts: hdp_hosts
   become: true
   roles:
     - role: ambari_agent
@@ -49,15 +50,60 @@
     - ambari-agent
     - hdp-install
 
-- hosts: ambari-server
+- hosts: ambari_hosts
   become: true
   roles:
     - role: ambari_config
   tags:
     - hdp-deploy
 
-- hosts: hdp_test
+- hosts: hdp_test_hosts
   become: true
   roles:
     - role:  hdp_test
 
+
+
+- hosts: es_master_hosts
+  roles:
+    - { role: elasticsearch,es_heap_size: "1g",
+    es_config: {
+        network.host: 0.0.0.0,
+        cluster.name: "es-cluster",
+        http.port: 9200,
+        transport.tcp.port: 9300,
+        node.data: false,
+        node.master: true,
+        bootstrap.memory_lock: false,
+        }
+    }
+  vars:
+    es_scripts: false
+    es_templates: false
+    es_version_lock: false
+    ansible_user: ansible
+
+- hosts: es_node_hosts
+  roles:
+    - { role: elasticsearch,  es_data_dirs: "/opt/elasticsearch",
+    es_config: {
+        network.host: 0.0.0.0,
+        http.port: 9200,
+        transport.tcp.port: 9300,
+        node.data: true,
+        node.master: false,
+        bootstrap.memory_lock: false,
+        cluster.name: "es-cluster"
+        }
+    }
+  vars:
+    es_scripts: false
+    es_templates: false
+    es_version_lock: false
+    ansible_user: ansible
+    es_api_port: 9200
+
+- hosts: kibana_hosts
+  become: true
+  roles:
+    - role: kibana

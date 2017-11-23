@@ -1,0 +1,6 @@
+[epel]
+name=Epel Linux-$releasever - $basearch
+enabled= {{ epel_yum_enable }}
+gpgcheck={{ epel_yum_gpg }}
+baseurl={{ epel_yum_url }}
+exclude=nginx nginx-filesystem

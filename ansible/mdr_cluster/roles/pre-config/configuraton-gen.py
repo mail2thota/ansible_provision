@@ -15,7 +15,7 @@ def generateHostConfig(hdpHostConfig):
     hostInfo = []
     hdpHostInfo = {}
     outfile = open(ansiblehostsfile, 'w')
-    outfile.write("["+hdpHostConfig["ansible_host_group"]+"]")
+    outfile.write("[hdp_hosts]")
     if hdpHostConfig["cluster_type"] == 'single_node':
         print globalConfigData
         if "hosts" in globalConfigData["ambari"]:
@@ -29,7 +29,8 @@ def generateHostConfig(hdpHostConfig):
                 hosts = groupsInfo[groupName]["hosts"]
                 for host in hosts:
                     outfile.write('\n'+host["name"])
-                    oshostConfig[host["ip"]] = host["name"]
+	  	    if 'ip' in host:
+                    	oshostConfig[host["ip"]] = host["name"]
     return
 
 def generateBluePrint(hdpConfig):
@@ -101,16 +102,14 @@ def generateCommonConfigHostsFile(config):
             if service == "hdp":
                 continue
             #Creating/Updating ansible hosts group file
-            if "ansible_host_group" in config[service]:
-                if "hosts" in config[service]:
-                    print service
-                    hostFile.write("\n\n\n[" +config[service]["ansible_host_group"]+"]")
-                    for host in config[service]["hosts"]:
-                          hostFile.write("\n"+host["name"])
-                          if 'ip' in host:
-                            oshostConfig[host["ip"]] = host["name"]
-                else: print 'hosts are not specified for the service :'+service
-            else : print service +" doesn't have ansible host specification properties"
+            if "hosts" in config[service]:
+                 print service
+                 hostFile.write("\n\n\n["+service+"_hosts]")
+                 for host in config[service]["hosts"]:
+                     hostFile.write("\n"+host["name"])
+                     if 'ip' in host:
+                        oshostConfig[host["ip"]] = host["name"]
+            else: print 'hosts are not specified for the service :'+service
     hostFile.close()
 
     #Adding the properties to all file
@@ -175,4 +174,6 @@ with open(defaultConfigFile, 'r') as stream:
 	print "all hosts"
 	print oshostConfig
     except yaml.YAMLError as exc:
-        print(exc)
+	print exc
+	sys.exit(1)
+      

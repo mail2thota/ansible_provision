@@ -1,0 +1,15 @@
+---
+
+- name: update yum cache
+  yum:
+    name=*
+    update_cache=yes
+  when: ansible_pkg_mgr == "yum"
+
+- include: repository.yml
+- include: configuration.yml
+
+- name: Restart Network
+  service: 
+       name=network 
+       state=restarted
