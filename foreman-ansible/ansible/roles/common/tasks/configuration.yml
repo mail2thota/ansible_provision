@@ -10,6 +10,14 @@
     dest=/etc/hostname
     backup=yes
 
+- name: Restart Network
+  service:
+       name=network
+       state=restarted
+
+- name: gather facts
+  setup:
+
 - name: Making sure ~/.pip directory is exist 
   file: path=~/.pip state=directory
 

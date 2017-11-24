@@ -2,6 +2,7 @@
 # This playbook deploys foreman together with passenger_nginx and mysql
 # including foreman-proxy, tftp and dhcp
 - hosts: all
+  gather_facts: no
   vars_files:
     - templates/payload.yml
     - vars/fm_database.yml
