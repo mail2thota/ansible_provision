@@ -7,7 +7,7 @@ ansible_ssh:
 
 default:
   repo_site: http://10.129.6.237/repos
-  dns_enabled: no
+  dns_enabled: 'no'
 
 hdp:
   blueprint: mdr-ha-blueprint

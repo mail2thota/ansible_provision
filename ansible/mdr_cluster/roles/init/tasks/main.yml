@@ -11,8 +11,14 @@
     src: ./tasks/
     dest: /home/
     mode: 0777
+
+- name: check and remove host_list entry in /etc/hosts of nodes since dns is enabled
+  become: True
+  become_user: root
+  command: sed -i '/mdr_hosts_begins/,/mdr_hosts_ends/d' /etc/hosts
+  when: default_dns_enabled
  
-- name: host_list entry into /etc/hosts of nodes
+- name: host_list entry into /etc/hosts of nodes since dns is disabled
   become: True
   become_user: root
   script: /home/all_config/localhost_config.sh
@@ -23,11 +29,3 @@
   become_user: root
   script: /home/all_config/repos_config.sh 
   when: inventory_hostname != "localhost"
-  
-
-
-  
-
-
-
-
