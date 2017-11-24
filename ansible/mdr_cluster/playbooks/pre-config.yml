@@ -8,5 +8,4 @@
   become: true
   roles:
      - pre-config
-     - init
 

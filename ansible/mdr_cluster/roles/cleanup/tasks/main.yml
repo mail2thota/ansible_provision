@@ -1,0 +1,21 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- name: copy cleanup files to nodes
+  become: True
+  become_user: root
+  copy:
+    src: ./tasks/
+    dest: /home/
+    mode: 0777
+
+
+- name: move the original repo files to /tmp/yum.repos.d
+  become: True
+  become_user: root
+  script: ./tasks/all_cleanup/cleanup_config.sh
+  when: inventory_hostname != "localhost"
+  

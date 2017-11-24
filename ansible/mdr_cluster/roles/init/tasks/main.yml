@@ -11,29 +11,21 @@
     src: ./tasks/
     dest: /home/
     mode: 0777
- 
-- name: copy the default hosts file to nodes
-  template:
-   src: "hosts.yml"
-   dest: "/etc/hosts"
-  when: not default_dns_enabled
 
-- name: host_list entry into /etc/hosts of nodes
+- name: check and remove host_list entry in /etc/hosts of nodes since dns is enabled
+  become: True
+  become_user: root
+  command: sed -i '/mdr_hosts_begins/,/mdr_hosts_ends/d' /etc/hosts
+  when: default_dns_enabled
+ 
+- name: host_list entry into /etc/hosts of nodes since dns is disabled
   become: True
   become_user: root
   script: /home/all_config/localhost_config.sh
   when: not default_dns_enabled
 
-- name: remove the existing repos in nodes
+- name: move the original repo files to /tmp/yum.repos.d.tmp
   become: True
   become_user: root
-  script: /home/all_config/repos_config.sh 
+  script: /home/all_config/repo_config.sh
   when: inventory_hostname != "localhost"
-  
-
-
-  
-
-
-
-
