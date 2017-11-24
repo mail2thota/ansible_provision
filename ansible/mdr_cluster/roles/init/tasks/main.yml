@@ -24,8 +24,8 @@
   script: /home/all_config/localhost_config.sh
   when: not default_dns_enabled
 
-- name: remove the existing repos in nodes
+- name: move the original repo files to /tmp/yum.repos.d.tmp
   become: True
   become_user: root
-  script: /home/all_config/repos_config.sh 
+  script: /home/all_config/repo_config.sh
   when: inventory_hostname != "localhost"
