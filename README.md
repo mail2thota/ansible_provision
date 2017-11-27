@@ -186,9 +186,12 @@ Installation and Provisioning Foreman
     git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
     * cd /foreman-ansible/ansible
     * configure:
-          - /foreman-ansible/ansible/templates/payload.yml
-          - /foreman-ansible/ansible/bootup.sh
-     * set correct url_repo in /foreman-ansible/ansible/bootup.sh
+          foreman yml:
+          	- /foreman-ansible/ansible/templates/payload.yml
+          repository of url:
+                - /foreman-ansible/ansible/bootup.sh
+          bootstrap address and password:
+                - /foreman-ansible/ansible/inventory
 
     * launch:
           - cd /foreman-ansible/ansible/
