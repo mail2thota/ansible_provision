@@ -22,3 +22,5 @@ setEpelRepo
 yum clean all
 yum install ansible -y
 ansible-playbook foreman.yml -i ${thisdir}/inventory -u root
+cd ../../ansible/mdr_cluster/
+./ansible_boot.sh
