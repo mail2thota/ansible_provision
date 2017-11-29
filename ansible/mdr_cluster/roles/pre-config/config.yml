@@ -8,6 +8,8 @@ ansible_ssh:
 default:
   repo_site: http://10.129.6.237/repos
   dns_enabled: no
+  java_vendor: oracle
+
 
 hdp:
   blueprint: mdr-ha-blueprint
