@@ -22,3 +22,10 @@
   register: inventoryfiles
 - debug: msg="{{ inventoryfiles.stdout }}"
 - debug: msg="{{ inventoryfiles.stderr }}"
+
+- name: Copying blueprint template
+  shell: cd "{{ role_path }}" && rm -f  ../ambari_config/vars/*_node.yml && cp *_node.yml ../ambari_config/vars/
+  when: hdp_stack is defined 
+
+
+
