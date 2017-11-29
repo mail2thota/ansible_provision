@@ -11,11 +11,13 @@
     src: ./tasks/
     dest: /home/hdfs/
     mode: 0777
+
 - name: run test for hdfs
   become: True
   become_user: root
   script: ./hdfs/hdfs_test.sh
   register: hdfs_test
+  failed_when: "'HDFS test is Failed' in hdfs_test.stdout"
  
 - debug: msg="{{ hdfs_test.stdout }}"
 - debug: msg="{{ hdfs_test.stderr }}"
@@ -26,6 +28,7 @@
   become_user: hdfs
   script: ./yarn/yarn_test.sh
   register: yarn_test
+  failed_when: "'Yarn test is Failed' in yarn_test.stdout"
 
 - debug: msg="{{ yarn_test.stdout }}"
 - debug: msg="{{ yarn_test.stderr }}"
@@ -36,6 +39,7 @@
   become_user: hdfs
   script:  ./oozie/oozie_test.sh {{ oozie_url }} {{ oozie_name_node }} {{ oozie_job_tracker }}
   register: oozie_test
+  failed_when: "'Failed' in oozie_test.stdout"
 
 - debug: msg="{{ oozie_test.stdout }}"
 - debug: msg="{{ oozie_test.stderr }}"
@@ -46,6 +50,7 @@
   become_user: hdfs
   script: ./spark/spark_test.sh {{hdp_test_namenode_host}}
   register: spark_test
+  failed_when: "'Failed' in spark_test.stdout"
 
 - debug: msg="{{ spark_test.stdout }}"
 - debug: msg="{{ spark_test.stderr }}"
@@ -56,6 +61,7 @@
   become_user: hdfs
   script: ./hive/hive_test.sh
   register: hive_test
+  failed_when: "'Failed' in hive_test.stdout"
 
 - debug: msg="{{ hive_test.stdout }}"
 - debug: msg="{{ hive_test.stderr }}"
@@ -65,6 +71,7 @@
   become_user: hdfs
   script: ./pig/pig_test.sh
   register: pig_test
+  failed_when: "'Failed' in pig_test.stdout"
 
 - debug: msg="{{ pig_test.stdout }}"
 - debug: msg="{{ pig_test.stderr }}"
