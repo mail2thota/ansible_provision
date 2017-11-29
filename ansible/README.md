@@ -32,7 +32,7 @@ ansible_ssh:
 default:
     repo_site: hosted repo site address
     dns_enabled: yes or no to update /etc/hosts file if dns server is not available
-	java_vendor: oracle or openjdk to install java according to the vendor mentioned,if "java_vendor" variable not mentioned then by default it takes openjdk     
+	java_vendor: oracle or openjdk,this variable is to install java according to the vendor mentioned,if it is not mentioned then by default it takes openjdk     
 
 ambari:
     hosts:
