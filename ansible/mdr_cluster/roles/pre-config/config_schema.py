@@ -27,8 +27,8 @@ class Validator:
         })
 
         self.ansible_ssh = Schema({
-            Required('user',msg='ansible_ssh[user] doesn\'t exists'):                           All(str,'ansible_ssh user must be a string'),
-            Required('pass',msg='ansible_ssh[pass] doesn\'t exists'):                           All(str,'ansible_ssh pass must be a string')
+            Required('user',msg='ansible_ssh[user] doesn\'t exists'):                           All(str,msg='ansible_ssh user must be a string'),
+            Required('pass',msg='ansible_ssh[pass] doesn\'t exists'):                           All(str,msg='ansible_ssh pass must be a string')
 
         },extra=ALLOW_EXTRA )
 
@@ -57,7 +57,7 @@ class Validator:
             Required('stack_version',msg='hdp[default_password] doesn\'t exists'):                  Match('^[0-9]*.(\.[0-9]*){3}?$',msg='hdp[stack_version] doesn\'t match with expected version format( Ex: 2.5.2.0) but configured value: '),
             Required('utils_version',msg='hdp[utils_version] doesn\'t exists'):                     Match('^[0-9]*.(\.[0-9]*){3}?$',msg='hdp[utils_version] doesn\'t match with expected version format( Ex: 1.1.0.21) but configured value: '),
             Required('cluster_name',msg='hdp[cluster_name] doensn\'t exists'):                      All(str,msg='cluster_name must be a string ex: mdr'),
-            Optional('blueprint_configuration',msg='hdp[blueprint_configuration] doesn\'t exists'): Any(list,msg='Blueprint configuration is specific to cluster, please make sure to test it before providing here'),
+            Optional('blueprint_configuration',msg='hdp[blueprint_configuration] doesn\'t exists'): Any(list,None,msg='Blueprint configuration is specific to cluster, please make sure to test it before providing here'),
             Required('component_groups',msg='hdp[component_groups] doesn\'t exists'):               Componentgroups(dict),
             Required('multi_node',msg='hdp[multi_node] doesn\'t exists'):                           All(Schema({ Required('host_groups',msg='hdp[mutli_node][host_groups] doesn\'t exists') : Any(list)})),
             Required('cluster_type',msg='hdp[cluster_type] doesn\'t exists'):                       Any('multi_node','single_node',msg='Cluster type should be multi_node or single_node')
