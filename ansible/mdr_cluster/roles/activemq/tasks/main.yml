@@ -128,6 +128,7 @@
   become_user: root
   script: ./tests/activemq_test.sh
   register: activemq_test
+  failed_when: "'Failed' in activemq_test.stdout"
 
 - debug: msg="{{ activemq_test.stdout }}"
 - debug: msg="{{ activemq_test.stderr }}"

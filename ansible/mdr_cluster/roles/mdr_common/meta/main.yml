@@ -9,3 +9,5 @@ dependencies:
   - epel
   - ntp
   - wget
+  - centos
+  - java_jdk

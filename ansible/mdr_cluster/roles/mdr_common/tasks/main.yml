@@ -10,19 +10,11 @@
   service: name=firewalld state=stopped enabled=no
 
   
- 
-- name: copy centOS repo template
-  template:
-    src: "CentOS-Base.repo"
-    dest: "/etc/yum.repos.d/CentOS-Base.repo"
- 
-
 - name: Copy pgdg-96-centos repo template
   template:
      src: "pgdg-96-centos.repo"
      dest: "/etc/yum.repos.d/pgdg-96-centos.repo"
 
-    
 - name: create logrotate script for hadoop services
   template:
     src: "hadoop-logrotate.yml"

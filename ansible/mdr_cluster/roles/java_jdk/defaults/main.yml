@@ -4,4 +4,5 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
+jdk_rpm: "{{ default_repo_site }}/centos/7/os/x86_64/Packages/jdk-8u112-linux-x64.rpm"
 

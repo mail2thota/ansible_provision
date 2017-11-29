@@ -11,6 +11,16 @@ default:
   java_vendor: oracle
 
 
+ambari:
+  hosts:
+    - name: master1-ambariserver.example.com
+      ip : 10.11.12.24
+  user: admin
+  password: admin
+  port : 8080
+  version: 2.5.2.0
+
+
 hdp:
   blueprint: mdr-ha-blueprint
   blueprint_configuration: []
@@ -135,14 +145,6 @@ hdp:
             configuration: []
             cardinality: 1
 
-ambari:
-  hosts:
-    - name: master1-ambariserver.example.com
-      ip : 10.11.12.24
-  user: admin
-  password: admin
-  port : 8080
-  version: 2.5.2.0
 
 postgres:
    hosts:

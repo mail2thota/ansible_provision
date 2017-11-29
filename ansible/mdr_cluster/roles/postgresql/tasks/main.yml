@@ -70,6 +70,7 @@
     become_user: root
     script: ./tests/postgres_test.sh
     register: postgres_test
+    failed_when: "'Failed' in postgres_test.stdout"
   
   - debug: msg="{{ postgres_test.stdout }}"
   - debug: msg="{{ postgres_test.stderr }}"
