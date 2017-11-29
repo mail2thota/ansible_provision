@@ -10,8 +10,8 @@ class Validator:
     def __init__(self):
 
         self.config = Schema( {
-            Required('ansible_ssh'): Any(dict),
-            Required('default'): Any(dict),
+            Required('ansible_ssh',msg='ansible_ssh doesn\'t exists'): Any(dict),
+            Required('default',msg='default doesn\'t exists'): Any(dict),
             Optional('ambari'): All(dict),
             Optional('hdp'): All(dict),
             Optional('hdp_test'): All(dict),
@@ -27,22 +27,23 @@ class Validator:
         })
 
         self.ansible_ssh = Schema({
-            Required('user'):                           All(str),
-            Required('pass'):                           All(str)
+            Required('user',msg='ansible_ssh[user] doesn\'t exists'):                           All(str),
+            Required('pass',msg='ansible_ssh[pass] doesn\'t exists'):                           All(str)
 
         },extra=ALLOW_EXTRA )
 
         self.default = Schema({
-            Required('repo_site'):                      All(FqdnUrl()),
-            Required('dns_enabled'):                    Any(Boolean())
+            Required('repo_site',msg='default[repo_site] doesn\t exists'):                 Any(FqdnUrl(), msg='repo_site must be valid fqdn ex: http://10.129.6.237/repos'),
+            Required('dns_enabled',msg='default[dns_enabled] doesn\t exists'):             Any(Boolean(),msg='dns_enable must be either yes or no'),
+            Optional('java_vendor'):                                                       Any('oracle','openjdk',msg='must be either oracle or openjdk')
         },extra=ALLOW_EXTRA)
 
         self.ambari = Schema({
-            Required('user',msg='ambari[user] doesn\'t exists'):                           Any(All(str,msg='ambari username name must be a string')),
-            Required('password'):                                                           All(str),
-            Required('port'):                           Any(int,msg='Port Number must be integer (Ex: 8080) but configured value'),
-            Required('version'):                        Match('^[0-9]*.(\.[0-9]*){3}?$',msg='ambari version doesn''t match with expected version format( Ex: 2.5.2.0) but configured value'),
-            Required('hosts',msg='ambari must have hosts configuration'):                          All(list)
+            Required('user',msg='ambari[user] doesn\'t exists'):                           Any(str,msg='ambari username name must be a string'),
+            Required('password',msg='ambari[password] doesn\'t exists'):                   All(str,msg='password must be a string'),
+            Required('port'):                                                              Any(int,msg='Port Number must be integer (Ex: 8080) but configured value'),
+            Required('version'):                                                           Match('^[0-9]*.(\.[0-9]*){3}?$',msg='ambari version doesn''t match with expected version format( Ex: 2.5.2.0) but configured value'),
+            Required('hosts',msg='ambari must have hosts configuration'):                  All(list)
         })
 
         self.host = Schema({
@@ -50,13 +51,13 @@ class Validator:
             Optional('ip'):                             Match('^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',msg='host ip does''t match with expcted ip4 version but Configured Value')
         })
         self.hdp = Schema({
-            Required('blueprint',msg='hdp[blueprint] doesn\'t exists'):                             All(str),
+            Required('blueprint',msg='hdp[blueprint] doesn\'t exists'):                             All(str,msg='blueprint shuld be string ex: mdr-ha-blueprint'),
             Required('stack',msg='hdp[statck] doesn\'t existis'):                                   Any(Number(precision=2, scale=1,yield_decimal=False,msg='hdp[stack] doesn\'t match with the exptected version format (Ex: 2.5) but configured value :') ),
-            Required('default_password',msg='hdp[default_password] doesn\'t exists'):               All(str),
+            Required('default_password',msg='hdp[default_password] doesn\'t exists'):               All(str,msg='default_pasword must be a string'),
             Required('stack_version',msg='hdp[default_password] doesn\'t exists'):                  Match('^[0-9]*.(\.[0-9]*){3}?$',msg='hdp[stack_version] doesn\'t match with expected version format( Ex: 2.5.2.0) but configured value: '),
             Required('utils_version',msg='hdp[utils_version] doesn\'t exists'):                     Match('^[0-9]*.(\.[0-9]*){3}?$',msg='hdp[utils_version] doesn\'t match with expected version format( Ex: 1.1.0.21) but configured value: '),
-            Required('cluster_name',msg='hdp[cluster_name] doensn\'t exists'):                      All(str),
-            Optional('blueprint_configuration',msg='hdp[blueprint_configuration] doesn\'t exists'): Any(list,None,msg='Blueprint configuration is specific to cluster, please make sure to test it before providing here'),
+            Required('cluster_name',msg='hdp[cluster_name] doensn\'t exists'):                      All(str,msg='cluster_name must be a string ex: mdr'),
+            Optional('blueprint_configuration',msg='hdp[blueprint_configuration] doesn\'t exists'): Any(list,msg='Blueprint configuration is specific to cluster, please make sure to test it before providing here'),
             Required('component_groups',msg='hdp[component_groups] doesn\'t exists'):               Componentgroups(dict),
             Required('multi_node',msg='hdp[multi_node] doesn\'t exists'):                           All(Schema({ Required('host_groups',msg='hdp[mutli_node][host_groups] doesn\'t exists') : Any(list)})),
             Required('cluster_type',msg='hdp[cluster_type] doesn\'t exists'):                       Any('multi_node','single_node',msg='Cluster type should be multi_node or single_node')
@@ -65,10 +66,10 @@ class Validator:
 
         self.component_group = Schema(Unique())
         self.host_group= Schema({
-            Optional('cardinality',msg='cardinality doesn\'t exsits'):                              All(int,msg='cardinality doesn\'t match the expected'),
             Required('hosts', msg='hosts doesn\'t exsits'):                                         All(list, msg='hosts doesn\'t match the expected'),
             Required('components', msg='components doesn\'t exsits'):                               All(list, msg='components doesn\'t match the expected'),
-            Optional('configuration',msg='Configuration doesn''t exists'):                          Any(list,msg='Configuration doesn\'t match the expected')
+            Optional('configuration',msg='Configuration doesn''t exists'):                          Any(list,msg='Configuration doesn\'t match the expected'),
+            Optional('cardinality', msg='cardinality doesn\'t exsits'):                             All(int,msg='cardinality doesn\'t match the expected'),
         })
         self.hdp_test = Schema({
             Required('hosts',msg='hdp_test[hosts] doesn\'t exists'):                                 All(list),

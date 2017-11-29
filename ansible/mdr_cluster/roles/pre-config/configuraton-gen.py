@@ -42,7 +42,7 @@ def generateBluePrint(hdpConfig):
     outfile = open(hdpConfig["cluster_type"] + '.yml', 'w+')
 
     blueprint = {"cluster_name": hdpConfig["cluster_name"], "blueprint_name": hdpConfig["blueprint"],
-                 "configurations": hdpConfig["blueprint_configuration"]}
+                 "configurations": hdpConfig.get("blueprint_configuration",[])}
     if "default_password" in hdpConfig:
         blueprint["blueprint"] = {"default_password": hdpConfig["default_password"], "stack_name": "HDP",
                                   "stack_version": hdpConfig["stack"], "groups": []}
@@ -97,7 +97,6 @@ def generateCommonDefaultAllConfigFile(config):
                 allFile.write("#Generated from default-all file \n")
                 for property in configdata:
                     allFile.write("\n" + property + ": " + str(configdata[property]))
-
         except yaml.YAMLError as exc:
             log.log(log.LOG_ERROR,"Unalbe to write the all file" +exc)
             sys.exit(1)
@@ -174,6 +173,11 @@ def addNodeCredentials(configdata):
 
 def validateHosts(configService,data):
     hosts= data.get('hosts')
+    if(len(hosts) == 0):
+        log.log(log.LOG_ERROR,
+                configService + "[hosts] : YAML validation Error: doesn't exists")
+        sys.exit(1)
+
     for host in hosts:
         try:
             validator.host(host)
@@ -213,6 +217,7 @@ def validateConfigFile(configdata):
                     for component_group in component_groups :
                         try:
                             validator.component_group(component_groups.get(component_group))
+
                         except Invalid as exe:
                            log.log(log.LOG_ERROR, configService +": component_groups[" +component_group+"] : YAML validation Error: {0} in  {1}".format(exe.error_message,component_groups.get(component_group)))
                            sys.exit(1)
