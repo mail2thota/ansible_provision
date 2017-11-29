@@ -4,8 +4,13 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- name: install openjdk
+- name: install open jdk
   any_errors_fatal: true
   yum: name=java-1.8.0-openjdk state=installed
-  tags:
-    - openjdk
+  when: default_java_vendor == "openjdk" or default_java_vendor is undefined
+
+- name: install oracle jdk
+  any_errors_fatal: true
+  yum: name={{ jdk_rpm }} state=present
+  when: default_java_vendor == "oracle"
+  

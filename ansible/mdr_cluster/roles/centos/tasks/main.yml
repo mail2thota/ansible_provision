@@ -4,6 +4,9 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-dependencies:
-  - epel
-  - java_jdk
+- name: copy centOS repo template
+  template:
+    src: "CentOS-Base.repo"
+    dest: "/etc/yum.repos.d/CentOS-Base.repo"
+ 
+

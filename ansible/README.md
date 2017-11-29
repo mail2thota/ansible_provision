@@ -32,6 +32,7 @@ ansible_ssh:
 default:
     repo_site: hosted repo site address
     dns_enabled: yes or no to update /etc/hosts file if dns server is not available
+	java_vendor: it is set either 'oracle' or 'openjdk'. when it is configured as 'oracle' will install oracle java8u112 and configured 'openjdk' will install  java-1.8.0-openjdk     
 
 ambari:
     hosts:
@@ -134,6 +135,7 @@ Variable | example| Description
  ansible_ssh [pass]| admin| node password for ansible to use
  default[repo_site]|http://10.129.6.237/repos|Site path to hdp,ambari and the remaining packages for ambari/ansible to download during setup
  default[dns_enabled]|no| flag to updated the etc hosts if dns server is not available
+ default[java_vendor]|oracle| to specify the java vendor through which java has to be installed,it can be either oracle or openjdk ,but if this variable not mentioned then it would take openjdk by default
  ambari[hosts][name]| master1-ambariserver.example.com| machine host name to setup the ambari server
  ambari[hosts][ip]|10.11.12.10| ip adress of the host machine mentioned in ambari[hosts][name]
  ambari[user]| admin| login user name of the ambari interface

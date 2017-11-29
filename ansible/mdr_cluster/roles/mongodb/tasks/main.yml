@@ -20,5 +20,6 @@
   register: shell
   with_items:  
       - "{{groups['mongodb_hosts']}}" 
+  failed_when: "'Failed' in shell.stdout"
 - debug: msg="{{shell}}"
   
