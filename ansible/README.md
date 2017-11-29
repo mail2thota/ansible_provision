@@ -32,6 +32,8 @@ ansible_ssh:
 default:
     repo_site: hosted repo site address
     dns_enabled: yes or no to update /etc/hosts file if dns server is not available
+    java_vendor: oracle or openjdk,this variable is to install java according to the vendor mentioned,if it is not mentioned then by default it takes openjdk     
+
 
 ambari:
     hosts:
@@ -128,44 +130,45 @@ mongodb:
 Please refer to the default [config file](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) being used by the existing code base
 ## Variables Description
 
-Variable | example| Description
----------|----|-------
- ansible_ssh [user]| admin| node user name for ansible to login for execution of playbooks must be a sudo user
- ansible_ssh [pass]| admin| node password for ansible to use
- default[repo_site]|http://10.129.6.237/repos|Site path to hdp,ambari and the remaining packages for ambari/ansible to download during setup
- default[dns_enabled]|no| flag to updated the etc hosts if dns server is not available
- ambari[hosts][name]| master1-ambariserver.example.com| machine host name to setup the ambari server
- ambari[hosts][ip]|10.11.12.10| ip adress of the host machine mentioned in ambari[hosts][name]
- ambari[user]| admin| login user name of the ambari interface
- ambari[pass]| admin| login password of the ambari interface
- ambari[version]| 2.5.2.0| Ambari version number
- hdp[blueprint]| mdr-ha-blueprint| hdp cluster blueprint name
- hdp[blueprint_configuration]|zoo.cfg: [autopurge.purgeInterval: 24]| configurations specific here will be replaced in blue print configuration
- hdp[stack]|2.5| hdp stack number to be setup
- hdp[stack_version]|2.6.2.0| Full version of hdp including minimum version
- hdp[utils_version]|1.1.10.21| Full Hdp utils version
- hdp[cluster_type]|multi_node| Hdp cluster type to be formed it must be either multi_node or single_node in case of single node all compnents listed in component groups added to blueprint
- hdp[component_groups]|hive_components,[HIVE_METASTORE,HIVE_SERVER,HCAT,WEBHCAT_SERVER,HIVE_CLIENT,MYSQL_SERVER]| Component Groups is group of key as group name and array of values with the components. and this can be used in any where in any host_groups[components]. Group name based on user preference
- hdp[component_groups][component_group_name][components]|hive_components| Array of the components of that group
- hdp[multi_node][host_groups]| host groups specification and its configuration mentioned here added to the blue print
- hdp[multi_node][host_groups][host_group_name][components]|hive_components|List of the component groups mentioned in hdp[component_groups] to be added to blue print and for single node it has not effect
- hdp[multi_node][host_groups][host_group_name][hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| Hosts mentioned here added to hosts list of the specific host group in the blueprint
- hdp[multi_node][host_groups][host_group_name][configuration]|| Configurations metioned here will be applied to hostgroup specific configuration in the blueprint
- hdp[multi_node][host_groups][hosts_group_name][cardinality]|1| cardinality of the host group to be added in blueprint
- hdp_test[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to execute the test cases .Assuming required hdp clients are avaible on the hosts
- hdp_test[jobtracker_host]|agent8-ambariagent.example.com|Job tracker host to be used by test case job
- hdp_test[namenode_host]|agent1-ambariagent.example.com| Namenode host to be used by test case job
- hdp_test[oozie_host]|agent10-ambariagent.example.com|oozie server host to be used by test case job
- postgres[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup postgress server
- activemq[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  activemq
- es_master[hosts]|{ name: master1-ambariserver.example.com,ip: 10.11.12.18 }| Hostnames and ip adress of the machines used by ansible to setup elastic search master nodes
- es_node[hosts]|{ name: agent13-ambariagent.example.com,ip: 10.11.12.23}| Hostnames and ip adress of the machines used by ansible to setup elastic search nodes
- kibana[hosts]|{ name:master1-ambariserver.example.com,ip: 10.11.12.18}| Hostnames and ip adress of the machines used by ansible to setup kibana server
- kibana[elasticsearch_url]|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
- apache-server[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  apache server
- docker-registry[hosts]|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup docker registry
+Variable |mandatory/optional| example| Description
+---------|---|----|-------
+ ansible_ssh [user]|mandatory| admin| node user name for ansible to login for execution of playbooks must be a sudo user
+ ansible_ssh [pass]|mandatory| admin| node password for ansible to use
+ default[repo_site]|mandatory|http://10.129.6.237/repos|Site path to hdp,ambari and the remaining packages for ambari/ansible to download during setup
+ default[dns_enabled]|mandatory|no| flag to updated the etc hosts if dns server is not available
+ default[java_vendor]|optional|oracle| to specify the java vendor through which java has to be installed,it can be either oracle or openjdk ,but if this variable not mentioned then it would take openjdk by default
+ ambari[hosts][name]|mandatory| master1-ambariserver.example.com| machine host name to setup the ambari server
+ ambari[hosts][ip]|optional|10.11.12.10| ip adress of the host machine mentioned in ambari[hosts][name]
+ ambari[user]|mandatory| admin| login user name of the ambari interface
+ ambari[pass]|mandatory| admin| login password of the ambari interface
+ ambari[version]|mandatory| 2.5.2.0| Ambari version number
+ hdp[blueprint]|mandatory| mdr-ha-blueprint| hdp cluster blueprint name
+ hdp[blueprint_configuration]|optional|zoo.cfg: [autopurge.purgeInterval: 24]| configurations specific here will be replaced in blue print configuration
+ hdp[stack]|mandatory|2.5| hdp stack number to be setup
+ hdp[stack_version]|mandatory|2.6.2.0| Full version of hdp including minimum version
+ hdp[utils_version]|mandatory|1.1.10.21| Full Hdp utils version
+ hdp[cluster_type]|mandatory|multi_node| Hdp cluster type to be formed it must be either multi_node or single_node in case of single node all compnents listed in component groups added to blueprint
+ hdp[component_groups]|mandatory|hive_components,[HIVE_METASTORE,HIVE_SERVER,HCAT,WEBHCAT_SERVER,HIVE_CLIENT,MYSQL_SERVER]| Component Groups is group of key as group name and array of values with the components. and this can be used in any where in any host_groups[components]. Group name based on user preference
+ hdp[component_groups][component_group_name][components]|mandatory|hive_components| Array of the components of that group
+ hdp[multi_node][host_groups]|mandatory||host groups specification and its configuration mentioned here added to the blue print
+ hdp[multi_node][host_groups][host_group_name][components]|mandatory|hive_components|List of the component groups mentioned in hdp[component_groups] to be added to blue print and for single node it has not effect
+ hdp[multi_node][host_groups][host_group_name][hosts]|mandatory|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| Hosts mentioned here added to hosts list of the specific host group in the blueprint
+ hdp[multi_node][host_groups][host_group_name][configuration]|optional|| Configurations metioned here will be applied to hostgroup specific configuration in the blueprint
+ hdp[multi_node][host_groups][hosts_group_name][cardinality]|optional|1| cardinality of the host group to be added in blueprint
+ hdp_test[hosts]| { name: mandatory,ip:optional}|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to execute the test cases .Assuming required hdp clients are avaible on the hosts
+ hdp_test[jobtracker_host]|mandatory|agent8-ambariagent.example.com|Job tracker host to be used by test case job
+ hdp_test[namenode_host]|mandatory|agent1-ambariagent.example.com| Namenode host to be used by test case job
+ hdp_test[oozie_host]|mandatory|agent10-ambariagent.example.com|oozie server host to be used by test case job
+ postgres[hosts]| { name: mandatory,ip:optional}|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup postgress server
+ activemq[hosts]| { name: mandatory,ip:optional}|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  activemq
+ es_master[hosts]| { name: mandatory,ip:optional}|{ name: master1-ambariserver.example.com,ip: 10.11.12.18 }| Hostnames and ip adress of the machines used by ansible to setup elastic search master nodes
+ es_node[hosts]| { name: mandatory,ip:optional}|{ name: agent13-ambariagent.example.com,ip: 10.11.12.23}| Hostnames and ip adress of the machines used by ansible to setup elastic search nodes
+ kibana[hosts]| { name: mandatory,ip:optional}|{ name:master1-ambariserver.example.com,ip: 10.11.12.18}| Hostnames and ip adress of the machines used by ansible to setup kibana server
+ kibana[elasticsearch_url]|mandatory|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
+ apache-server[hosts]| { name: mandatory,ip:optional}|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup  apache server
+ docker-registry[hosts]| { name: mandatory,ip:optional}|{name: agent1-ambariagent.example.com,ip:10.11.12.7}| hostnames of the manchines used by ansible to setup docker registry
 
-All the above mentioned Variables are mandatory and the default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) file and user needs to update as per his enviromnent specific Configurations before start using it.
+ default  [config](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) file being used by the existing code base and user needs to update it as per enviromnent specific Configurations before start using it.
 
 ## Service ports
 ### Hadoop Components
