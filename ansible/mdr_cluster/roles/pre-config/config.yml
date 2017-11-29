@@ -180,7 +180,6 @@ mongodb:
       ip: 10.11.12.17
 
 docker-registry:
-  ansible_host_group : docker-registry
   hosts:
     - name: agent12-ambariagent.example.com
       ip: 10.11.12.14
