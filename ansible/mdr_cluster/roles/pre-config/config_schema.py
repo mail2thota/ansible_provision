@@ -27,8 +27,8 @@ class Validator:
         })
 
         self.ansible_ssh = Schema({
-            Required('user',msg='ansible_ssh[user] doesn\'t exists'):                           All(str),
-            Required('pass',msg='ansible_ssh[pass] doesn\'t exists'):                           All(str)
+            Required('user',msg='ansible_ssh[user] doesn\'t exists'):                           All(str,'ansible_ssh user must be a string'),
+            Required('pass',msg='ansible_ssh[pass] doesn\'t exists'):                           All(str,'ansible_ssh pass must be a string')
 
         },extra=ALLOW_EXTRA )
 
