@@ -47,7 +47,7 @@ class Validator:
         })
 
         self.host = Schema({
-            Required('name',msg='name is doesn\'t exists'):                           All(str,msg='hostname doesnt match with the expected configured'),
+            Required('name',msg='name doesn\'t exists'):                           All(str,msg='hostname doesnt match with the expected configured'),
             Optional('ip'):                             Match('^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',msg='host ip does''t match with expcted ip4 version but Configured Value')
         })
         self.hdp = Schema({
