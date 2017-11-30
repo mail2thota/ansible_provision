@@ -4,6 +4,11 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
+- name: copy ambari repo template
+  template:
+    src: "ambari.repo"
+    dest: "/etc/yum.repos.d/ambari.repo"
+
 - name: install ambari agent
   yum:
     name: ambari-agent
