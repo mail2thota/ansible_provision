@@ -30,13 +30,13 @@ class Validator:
             Required('user',msg='ansible_ssh[user] doesn\'t exists'):                           All(str,msg='ansible_ssh user must be a string'),
             Required('pass',msg='ansible_ssh[pass] doesn\'t exists'):                           All(str,msg='ansible_ssh pass must be a string')
 
-        },extra=ALLOW_EXTRA )
+        })
 
         self.default = Schema({
             Required('repo_site',msg='default[repo_site] doesn\t exists'):                 Any(FqdnUrl(), msg='repo_site must be valid fqdn ex: http://10.129.6.237/repos'),
             Required('dns_enabled',msg='default[dns_enabled] doesn\t exists'):             Any(Boolean(),msg='dns_enable must be either yes or no'),
             Optional('java_vendor'):                                                       Any('oracle','openjdk',msg='must be either oracle or openjdk')
-        },extra=ALLOW_EXTRA)
+        })
 
         self.ambari = Schema({
             Required('user',msg='ambari[user] doesn\'t exists'):                           Any(str,msg='ambari username name must be a string'),
