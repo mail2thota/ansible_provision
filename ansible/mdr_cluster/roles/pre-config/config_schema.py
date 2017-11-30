@@ -41,8 +41,8 @@ class Validator:
         self.ambari = Schema({
             Required('user',msg='ambari[user] doesn\'t exists'):                           Any(str,msg='ambari username name must be a string'),
             Required('password',msg='ambari[password] doesn\'t exists'):                   All(str,msg='password must be a string'),
-            Required('port'):                                                              Any(int,msg='Port Number must be integer (Ex: 8080) but configured value'),
-            Required('version'):                                                           Match('^[0-9]*.(\.[0-9]*){3}?$',msg='ambari version doesn''t match with expected version format( Ex: 2.5.2.0) but configured value'),
+            Required('port',msg='ambari[port] doesn\'t exists'):                                                              Any(int,msg='Port Number must be integer (Ex: 8080) but configured value'),
+            Required('version',msg='ambari[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){3}?$',msg='ambari version doesn''t match with expected version format( Ex: 2.5.2.0) but configured value'),
             Required('hosts',msg='ambari must have hosts configuration'):                  All(list)
         })
 
