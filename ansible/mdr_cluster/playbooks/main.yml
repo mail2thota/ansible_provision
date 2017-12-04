@@ -36,8 +36,9 @@
 - hosts: apache-server_hosts
   become: true
   roles:
-    - role: apache-server
-
+    - apache-server
+    - python-pip
+    
 - hosts: ambari_hosts
   become: true
   roles:

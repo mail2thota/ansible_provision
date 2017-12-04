@@ -1,0 +1,3 @@
+---
+pip_repo_url: "{{ default_pip_repo_site }}"
+
