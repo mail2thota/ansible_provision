@@ -4,11 +4,33 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- name: Install python-pip
+- name: install python-pip dependencies
   yum:
-    name: python-pip
-    state: installed
-  register: result
-  until: result.rc == 0
-  retries: 5
-  delay: 10
+     name: "{{ item }}"
+     state: latest
+  with_items:
+     - python-pip
+     - python-devel
+     - postgresql-devel
+     - gcc
+     
+- name: create ~/.pip directory  
+  file: path=~/.pip state=directory
+
+- name: copying the template for python-pip.conf to node
+  template:
+    src=python.pip.j2
+    dest=~/.pip/pip.conf
+    backup=yes
+
+- name: copying the template for python easy_install to node
+  template:
+    src=python.pydistutils.j2
+    dest=~/.pydistutils.cfg
+    backup=yes
+
+- name: copying the template for python pypi to node
+  template:
+    src=python.pypirc.j2
+    dest=~/.pypirc
+    backup=yes

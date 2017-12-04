@@ -1,0 +1,5 @@
+{% set repo_url = pip_repo_url %}
+{% set listh = repo_url.split('//') %}
+[global]
+index-url = {{ pip_repo_url }}:8008/simple
+trusted-host = {{ listh[1] }}
