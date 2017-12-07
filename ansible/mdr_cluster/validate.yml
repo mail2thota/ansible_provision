@@ -4,18 +4,21 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- hosts: localhost
-  become: true
-  roles:
-     - pre-config
-  tags:
-     - mdr
 
 - hosts: 127.0.0.1
   gather_facts: no
   vars_files:
     - fmconfig/payload.yml.j2
   roles:
-    - { role: fmvalidation }
+    -  fmvalidation 
   tags:
     - foreman
+
+
+- hosts: 127.0.0.1
+  become: true
+  roles:
+     - pre-config
+  tags:
+     - mdr
+
