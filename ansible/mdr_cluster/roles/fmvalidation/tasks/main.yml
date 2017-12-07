@@ -1,0 +1,11 @@
+---
+
+- name: Validate forman config files
+  shell:
+      '/usr/bin/python2 {{ fmvalidation }}/main.py import 
+      {{ fmconfig }}/payload.yml.j2 {{ fmconfig }}/system.yml.j2 | cat'
+  args:
+    executable: /bin/bash
+  register: command_output
+- debug: msg="{{ command_output.stdout.split('\n') }}"
+

@@ -1,0 +1,74 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+#Copyright:@BaeSystemsAI
+#Original author: Heri Sutrisno
+#Email:harry.sutrisno@baesystems.com
+#Description:payload yml file for user
+
+
+foreman:
+   
+    auth:
+        foreman_fqdn: bootstrap.example.com
+        foreman_ip: 10.11.12.23
+        foreman_user: admin
+        foreman_pass: admin
+
+    domain:
+        - name: example.com
+          fullname: this is example.com
+
+    subnet:
+        - name: subnet1
+          network: 10.11.12.0
+          mask: 255.255.255.0
+          gateway: 10.11.12.1
+          dns_primary: 10.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+        - name: subnet2
+          network: 13.11.12.0
+          mask: 255.255.255.0
+          gateway: 13.11.12.1
+          dns_primary: 13.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+      
+    hostgroup:
+        - name: ambari
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+
+    primary_hosts:
+        - name: agent1-ambariagent
+          hostgroup: ambari
+          ip: 10.11.12.3
+          mac: 0800271AD0DA
+        - name: agent2-ambariagent
+          hostgroup: ambari
+          ip: 10.11.12.4
+          mac: 080027626A0D
+   
+    secondary_hosts:
+        - name: agent_secondary-ambariagent
+          ip: 10.11.12.3
+          mac: 0800271AD0DA
+          subnet: subnet1
+          identifier: enpso3 
+          primary: agent2-ambariagent
+
+        - name: agent_secondary-ambariagent
+          ip: 10.11.12.3
+          mac: 0800271AD0DA
+          subnet: subnet1
+          identifier: enpso3 
+          primary: agent2-ambariagent
+
+
+
+          
