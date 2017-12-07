@@ -7,5 +7,6 @@
   args:
     executable: /bin/bash
   register: command_output
+  failed_when: "'ERROR' in command_output.stdout"
 - debug: msg="{{ command_output.stdout.split('\n') }}"
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 repo_url=$1
 regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
 red=`tput setaf 1`
@@ -32,11 +33,14 @@ foreman(){
         ansible-playbook foreman.yml 
 }
 
+validate(){
+        echo "Validating Config files"
+	ansible-playbook validate.yml --tags=$1
+}
 
 ambari_hdp(){
 	echo "execution of ambari and hdp playbook"
-	ansible-playbook playbooks/pre-config.yml 
-	ansible-playbook playbooks/main.yml
+	ansible-playbook mdr.yml
 } 
 option1="Node Provision"
 option2="Cluster"
@@ -49,18 +53,21 @@ do
     case $opt in
         "${option1}")
             echo "${bold}${green}Selected ${option1}${reset}"
+	    validate foreman
             init
             foreman
             break
             ;;
         "${option2}")
             echo "${bold}${green}Selected ${option2}${reset}"
+            validate mdr
 	    init
             ambari_hdp
             break
             ;;
         "${option3}")
             echo "${bold}${green}Selected ${option3}${reset}"
+            validate mdr,foreman
 	    init
             foreman
             ambari_hdp
