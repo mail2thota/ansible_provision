@@ -33,7 +33,6 @@ class Validator:
         })
 
         self.default = Schema({
-            Required('repo_site',msg='default[repo_site] doesn\t exists'):                 Any(FqdnUrl(), msg='repo_site must be valid fqdn ex: http://10.129.6.237/repos'),
             Required('dns_enabled',msg='default[dns_enabled] doesn\t exists'):             Any(Boolean(),msg='dns_enable must be either yes or no'),
             Optional('java_vendor'):                                                       Any('oracle','openjdk',msg='must be either oracle or openjdk')
         })

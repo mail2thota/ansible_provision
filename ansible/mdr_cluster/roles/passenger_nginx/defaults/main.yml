@@ -2,9 +2,9 @@
 
 foreman: []
 
-passenger_nginx_yum_baseurl: "{{ foreman.repourl }}/repos/passenger_nginx/x86_64/"
+passenger_nginx_yum_baseurl: "{{ foreman_repo_url }}/repos/passenger_nginx/x86_64/"
 passenger_nginx_yum_gpg: 0
-passenger_nginx_yum_key: "{{ foreman.repourl }}/repos/passenger_nginx/gpg/gpg.key"
+passenger_nginx_yum_key: "{{ foreman_repo_url }}/repos/passenger_nginx/gpg/gpg.key"
 passenger_nginx_yum_sslverify: true
 passenger_nginx_yum_repo_gpgcheck: 0
 passenger_nginx_server_name: "{{ ansible_fqdn }}"

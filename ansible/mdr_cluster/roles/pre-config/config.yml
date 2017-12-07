@@ -6,8 +6,6 @@ ansible_ssh:
   pass: as12345678
 
 default:
-  pip_repo_site: http://10.129.6.237
-  repo_site: http://10.129.6.237/repos
   dns_enabled: no
   java_vendor: oracle
 

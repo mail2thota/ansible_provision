@@ -1,5 +1,4 @@
 ---
-
 - include: configuration.yml
 - include: repository.yml
 

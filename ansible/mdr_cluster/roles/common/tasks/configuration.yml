@@ -1,3 +1,7 @@
+- name: set repourl from localhost
+  set_fact:
+     foreman_repo_url: "{{ lookup('env','repo_url') }}"
+
 - name: template foreman /etc/hosts
   template:
     src=hostname.etc.j2

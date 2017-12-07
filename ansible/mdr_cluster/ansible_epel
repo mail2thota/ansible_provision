@@ -4,11 +4,11 @@
 setBaseRepo(){
 
     base_name="CentOS-\$releasever - Base"
-    base_url="$url_repo/repos/centos/\$releasever/os/\$basearch"
-    base_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-CentOS-7"
+    base_url="$repo_url/repos/centos/\$releasever/os/\$basearch"
+    base_gpgkey="$repo_url/repos/pki/\$basearch/RPM-GPG-KEY-CentOS-7"
     update_name="CentOS-\$releasever - Updates"
-    update_url="$url_repo/repos/centos/\$releasever/updates/\$basearch"
-    update_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-CentOS-7"
+    update_url="$repo_url/repos/centos/\$releasever/updates/\$basearch"
+    update_gpgkey="$repo_url/repos/pki/\$basearch/RPM-GPG-KEY-CentOS-7"
 
 
 tee /etc/yum.repos.d/CentOS-Base.repo <<EOF
@@ -29,8 +29,8 @@ EOF
 setEpelRepo(){
 
     epel_name="Extra Packages for Enterprise Linux 7 - \$basearch"
-    epel_url="$url_repo/repos/epel/\$releasever/\$basearch"
-    epel_gpgkey="$url_repo/repos/pki/\$basearch/RPM-GPG-KEY-EPEL-7"
+    epel_url="$repo_url/repos/epel/\$releasever/\$basearch"
+    epel_gpgkey="$repo_url/repos/pki/\$basearch/RPM-GPG-KEY-EPEL-7"
 
 tee /etc/yum.repos.d/epel.repo <<EOF
 [epel]

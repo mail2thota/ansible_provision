@@ -2,9 +2,9 @@
 
 foreman: []
 foreman_proxy_yum_main_gpg: 1
-foreman_proxy_yum_main_key: "{{ foreman.repourl }}/repos/pki/x86_64/RPM-GPG-KEY-foreman"
+foreman_proxy_yum_main_key: "{{ foreman_repo_url }}/repos/pki/x86_64/RPM-GPG-KEY-foreman"
 foreman_proxy_yum_plugins_gpg: 1
-foreman_proxy_yum_plugins_key: "{{ foreman.repourl }}/repos/pki/x86_64/RPM-GPG-KEY-foreman"
+foreman_proxy_yum_plugins_key: "{{ foreman_repo_url }}/repos/pki/x86_64/RPM-GPG-KEY-foreman"
 
 foreman_proxy_plugins_repo: true
 
