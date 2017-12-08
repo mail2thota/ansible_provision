@@ -1,0 +1,4 @@
+---
+
+fmconfig: '{{ playbook_dir }}/fmconfig'
+fmvalidation: '{{ role_path }}/files/src'

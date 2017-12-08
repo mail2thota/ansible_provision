@@ -1,0 +1,41 @@
+---
+
+foreman: []
+
+
+
+base_yum_url: "{{ foreman_repo_url }}/repos/centos/$releasever/os/$basearch"
+base_yum_gpg: 1
+base_yum_key: "{{ foreman_repo_url }}/repos/pki/x86_64/RPM-GPG-KEY-CentOS-7"
+
+base_update_yum_url: "{{ foreman_repo_url }}/repos/centos/$releasever/updates/$basearch"
+base_update_yum_gpg: 1
+base_update_yum_key: "{{ foreman_repo_url }}/repos/pki/x86_64/RPM-GPG-KEY-CentOS-7"
+
+
+sclo_yum_url: "{{ foreman_repo_url }}/repos/centos/$releasever/sclo/$basearch/sclo"
+sclo_yum_gpg: 1
+sclo_yum_enable: 1
+sclo_yum_key: "{{ foreman_repo_url }}/repos/pki/x86_64/RPM-GPG-KEY-CentOS-SIG-SCLo"
+
+
+rh_yum_url: "{{ foreman_repo_url }}/repos/centos/$releasever/sclo/$basearch/rh"
+rh_yum_gpg: 1
+rh_yum_enable: 1
+rh_yum_key: "{{ foreman_repo_url }}/repos/pki/x86_64/RPM-GPG-KEY-CentOS-SIG-SCLo"
+
+
+epel_yum_url: "{{ foreman_repo_url }}/repos/epel/$releasever/$basearch"
+epel_yum_gpg: 1
+epel_yum_enable: 1
+epel_yum_key: "{{ foreman_repo_url }}/repos/pki/x86_64/RPM-GPG-KEY-EPEL-7"
+
+
+foreman_fqdn: "{{ foreman.auth.foreman_fqdn }}"
+foreman_ip: "{{ foreman.auth.foreman_ip }}"
+device_idr: "{{ ansible_default_ipv4.interface }}"
+net_mask: "{{ ansible_default_ipv4.netmask }}"
+gateway: "{{ ansible_default_ipv4.gateway }}"
+mac_address: "{{ ansible_default_ipv4.macaddress }}"
+
+

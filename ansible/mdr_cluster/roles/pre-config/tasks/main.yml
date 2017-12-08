@@ -6,15 +6,16 @@
 #---
 ## Create Config Files
 - name: Delete if any existing files
-  shell: cd "{{ role_path }}" && rm -f all && rm -f hosts && rm -f host_list
+  shell: 'cd {{ role_path }} && rm -f all && rm -f hosts && rm -f host_list'
 
 - name: Create config files
-  shell: cd "{{ role_path }}"  && python configuraton-gen.py
+  shell: 'cd {{ role_path }}  && python configuraton-gen.py'
   register: config
   run_once: true
 
-- debug: msg="{{ config.stdout }}"
-- debug: msg="{{ config.stderr }}"
+- debug: msg="{{ config.stderr.split('\n')}}"
+- debug: msg="{{ config.stdout.split('\n')}}"
+
 
 
 - name: Copying files back to inventory and ambari_Config

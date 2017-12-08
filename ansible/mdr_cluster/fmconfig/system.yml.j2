@@ -1,0 +1,53 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+#Copyright:@BaeSystemsAI
+#Original author: Heri Sutrisno
+#Email:harry.sutrisno@baesystems.com
+#Description:Default setting, making sure you know
+#            what are you doing
+
+foreman:
+    
+    protocol:
+        type: http
+
+    foreman_proxy: 
+        port: 8443
+
+    architecture:
+        - name: x86_64
+
+    medium:
+        - name: CentOS7_x86_64
+          path: /repos/CentOS_7_x86_64/
+          os_family: Redhat
+
+    setting:
+        - name: token_duration
+          value: 360
+
+    os:
+        - name: CentOS7
+          family: Redhat
+          password_hash: SHA512
+          architecture:
+            - name: x86_64
+          provisioning_template:
+            - name: Kickstart default
+            - name: Kickstart default finish
+            - name: Kickstart default PXELinux
+            - name: Kickstart default iPXE
+            - name: Kickstart default user data
+          medium:
+            - name: CentOS7_x86_64
+          partition_table:
+            - name: Kickstart default
+
+    hostgroup_system:
+          os: CentOS7
+          architecture: x86_64
+          medium: CentOS7_x86_64
+          partition_table: Kickstart default
+
+    primary_interface:
+          identifier: enp0s3

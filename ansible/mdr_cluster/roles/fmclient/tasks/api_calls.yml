@@ -1,0 +1,53 @@
+---
+- name: rake create foreman apipie cache (be patient)
+  command:
+    "/usr/sbin/foreman-rake apipie:cache"
+
+- name: install foreman_yml dependencies
+  package:
+    name="{{ item }}"
+    state=present
+  with_items: "{{ foreman_yml_pkg }}"
+
+- pip:
+      name: pyyaml
+- pip:
+      name: requests
+
+- pip:
+      name: python-foreman
+
+- name: waiting for the foreman server 
+  local_action:
+      module: wait_for
+      port: 80
+      host: "{{ ansible_default_ipv4.address }}"
+      delay: 0
+      state: started
+
+- name: Configure foreman with fmclient
+  shell:
+      '/usr/bin/python2 {{ fmclient }}/main.py import 
+      {{ fmconfig }}/payload.yml.j2 {{ fmconfig }}/system.yml.j2 {{ foreman_repo_url }} | cat'
+  args:
+    executable: /bin/bash
+  register: command_output
+- debug: msg="{{ command_output.stdout.split('\n') }}"
+
+- debug:
+      msg: "foreman is ready, start provisioning"
+
+- name: waiting for the nodes to be ready 
+  local_action:
+      module: wait_for
+      port: 22
+      host: "{{ item.ip }}"
+      delay: 2
+      timeout: "{{ timeout_second | default('172800') }}"
+      state: started
+      search_regex: OpenSSH
+  with_items: "{{ hostlist }}"
+ 
+- debug:
+      msg: "provisioning has finished, nodes are ready"
+

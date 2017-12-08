@@ -1,5 +1,0 @@
-{% set repo_url = foreman.repourl %}
-{% set listh = repo_url.split('//') %}
-[global]
-index-url = {{ foreman.repourl }}:8008/simple
-trusted-host = {{ listh[1] }}

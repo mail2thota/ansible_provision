@@ -1,0 +1,24 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+
+- hosts: 127.0.0.1
+  gather_facts: no
+  vars_files:
+    - fmconfig/payload.yml.j2
+  roles:
+    -  fmvalidation 
+  tags:
+    - foreman
+
+
+- hosts: 127.0.0.1
+  become: true
+  roles:
+     - pre-config
+  tags:
+     - mdr
+

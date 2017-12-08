@@ -1,0 +1,9 @@
+---
+- include: configuration.yml
+- include: repository.yml
+
+- name: update yum cache
+  yum:
+    name=*
+    update_cache=yes
+  when: ansible_pkg_mgr == "yum"
