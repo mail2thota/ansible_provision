@@ -53,22 +53,22 @@ do
     case $opt in
         "${option1}")
             echo "${bold}${green}Selected ${option1}${reset}"
-	    validate foreman
             init
+	    validate foreman
             foreman
             break
             ;;
         "${option2}")
             echo "${bold}${green}Selected ${option2}${reset}"
-            validate mdr
 	    init
+            validate mdr
             ambari_hdp
             break
             ;;
         "${option3}")
             echo "${bold}${green}Selected ${option3}${reset}"
+            init
             validate mdr,foreman
-	    init
             foreman
             ambari_hdp
             break

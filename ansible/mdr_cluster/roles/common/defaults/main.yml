@@ -31,8 +31,8 @@ epel_yum_enable: 1
 epel_yum_key: "{{ foreman_repo_url }}/repos/pki/x86_64/RPM-GPG-KEY-EPEL-7"
 
 
-foreman_fqdn: "{{ foreman.auth.fqdn }}"
-foreman_ip: "{{ foreman.auth.ip }}"
+foreman_fqdn: "{{ foreman.auth.foreman_fqdn }}"
+foreman_ip: "{{ foreman.auth.foreman_ip }}"
 device_idr: "{{ ansible_default_ipv4.interface }}"
 net_mask: "{{ ansible_default_ipv4.netmask }}"
 gateway: "{{ ansible_default_ipv4.gateway }}"

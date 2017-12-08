@@ -12,11 +12,10 @@ from foreman_base import ForemanBase
 from pprint import pprint
 from foreman.client import Foreman, ForemanException
 
-
 class ForemanLoad(ForemanBase):
     
     def load_config_template(self):
-        log.log(log.LOG_INFO, "Update global templates")
+        log.log(log.LOG_INFO, "Update Global Templates")
         config_templates.init()
         try:
             kick_id = self.fm.config_templates.show('Kickstart default')['id']
@@ -34,9 +33,8 @@ class ForemanLoad(ForemanBase):
             log.log(log.LOG_ERROR, "template can not be built")
             sys.exit(1)
 
-
     def load_global_params(self):
-        log.log(log.LOG_INFO, "Load global parameters")
+        log.log(log.LOG_INFO, "Load Global Parameters")
         global_tpl = {
         'disable-firewall': 'true',
         'enable-epel': 'false',
@@ -49,16 +47,9 @@ class ForemanLoad(ForemanBase):
         for keyglobal,valglobal in global_tpl.iteritems():
             self.fm.common_parameters.create(common_parameter={'name':keyglobal, 'value':valglobal})
 
-
     def load_config_arch(self):
         log.log(log.LOG_INFO, "Load Architectures")
         for arch in self.get_config_section('architecture'):
-            try:
-                self.validator.arch(arch)
-            except MultipleInvalid as e:
-                log.log(log.LOG_ERROR, "Cannot create Architecture '{0}' \n YAML validation Error: {1}".format(arch, e))
-                sys.exit(1)
-
             try:
                 arch_id = self.fm.architectures.show(arch['name'])['id']
                 log.log(log.LOG_DEBUG, "Architecture '{0}' (id={1}) already present.".format(arch, arch_id))
@@ -66,15 +57,9 @@ class ForemanLoad(ForemanBase):
                 log.log(log.LOG_INFO, "Create Architecture '{0}'".format(arch))
                 self.fm.architectures.create( architecture = { 'name': arch['name'] } )
 
-
     def load_config_domain(self):
         log.log(log.LOG_INFO, "Load Domains")
         for domain in self.get_config_section('domain'):
-            try:
-                self.validator.domain(domain)
-            except MultipleInvalid as e:
-                log.log(log.LOG_ERROR, "Cannot create Domain '{0}' \n YAML validation Error: {1}".format(domain, e))
-                sys.exit(1)
             try:
                 dom_id = self.fm.domains.show(domain['name'])['id']
                 log.log(log.LOG_DEBUG, "Domain '{0}' (id={1}) already present.".format(domain, dom_id))
@@ -82,25 +67,19 @@ class ForemanLoad(ForemanBase):
                 log.log(log.LOG_INFO, "Create Domain '{0}'".format(domain['name']))
                 self.fm.domains.create(domain = {'name': domain['name'], 'fullname': domain['fullname']})
 
-
-
     def load_config_medium(self):
+        self.get_repo_ip
         log.log(log.LOG_INFO, "Load Media")
         medialist = self.fm.media.index(per_page=99999)['results']
         for medium in self.get_config_section('medium'):
-            try:
-                self.validator.medium(medium)
-            except MultipleInvalid as e:
-                log.log(log.LOG_ERROR, "Cannot create Media '{0}': \n YAML validation Error: {1}".format(medium, e))
-                sys.exit(1)
-
+            full_path = self.get_repo_ip() + medium['path']
             try:
                 medium_id = self.fm.media.show(medium['name'])['id']
                 log.log(log.LOG_DEBUG, "Medium '{0}' (id={1}) already present.".format(medium, medium_id))
             except:
                 medium_tpl = {
                     'name':        medium['name'],
-                    'path':        medium['path'],
+                    'path':        full_path,
                     'os_family':   medium['os_family']
                     }
                 self.fm.media.create(medium=medium_tpl)
@@ -109,11 +88,6 @@ class ForemanLoad(ForemanBase):
     def load_config_settings(self):
         log.log(log.LOG_INFO, "Load Foreman Settings")
         for setting in self.get_config_section('setting'):
-            try:
-                self.validator.setting(setting)
-            except MultipleInvalid as e:
-                log.log(log.LOG_ERROR, "Cannot update Setting '{0}': \n YAML validation Error: {1}".format(setting, e))
-                sys.exit(1)
             try:
                 setting_id = self.fm.settings.show(setting['name'])['id']
             except:
@@ -127,29 +101,31 @@ class ForemanLoad(ForemanBase):
 
 
     def load_foremanurl_settings(self):
-        log.log(log.LOG_INFO, "Load unattended and foreman url Settings")
+        log.log(log.LOG_INFO, "Load Unattended And Foreman URL Settings")
         try:
             settingunatt_id = self.fm.settings.show('unattended_url')['id']
             settingurl_id = self.fm.settings.show('foreman_url')['id']
-        except:
-            log.log(log.LOG_WARN, "Cannot get ID of Setting '{0}', skipping".format('unattended_url and foreman_url'))
-
+        except MultipleInvalid as e:
+            log.log(log.LOG_ERROR, "Cannot get ID of Setting '{0}' error: '{1}', exit".format('unattended_url and foreman_url', e))
+            sys.exit(1)
+        fm_ip = self.get_fm_ip()
         settingurl_tpl = {
-            'value':         self.get_fm_ip(),
+            'value':         fm_ip,
         }
-        log.log(log.LOG_INFO, "Update Setting unattended_url '{0}'".format('unattended_url and foreman_url'))
+        log.log(log.LOG_INFO, "Update Setting Unattended_url '{0}'".format('unattended_url and foreman_url'))
         self.fm.settings.update(settingurl_tpl, settingunatt_id)
         self.fm.settings.update(settingurl_tpl, settingurl_id)
 
 
     def load_config_smartproxy(self):
         log.log(log.LOG_INFO, "Load Smart Proxies")
-        #simplify it on the future modification
-        foreman_proxyport = ":8443"
-        foreman_proxyip = self.get_fm_ip() + foreman_proxyport
+        fmproxy = self.get_config_section('foreman_proxy')
+        fmproxy_port = fmproxy['port']
+        fm_ip = self.get_fm_ip() 
+        foreman_proxyip = fm_ip + ":" + str(fmproxy_port)
         try:
             proxy_id = self.fm.smart_proxies.show(self.get_fm_hostname())['id']
-            log.log(log.LOG_DEBUG, "Proxy '{0}' (id={1}) already present.".format(self.get_fm_hostname(), proxy_id))
+            log.log(log.LOG_DEBUG, "Proxy '{0}' (id={1}) is already present.".format(self.get_fm_hostname(), proxy_id))
         except:
             log.log(log.LOG_INFO, "Create Smart Proxy '{0}'".format(self.get_fm_hostname()))
             proxy_tpl = {
@@ -170,15 +146,10 @@ class ForemanLoad(ForemanBase):
               'tftp-proxy': self.get_fm_hostname(),
               'boot-mode' : 'Static',
               'network-type': 'IPv4',
-              'dns-proxy': self.get_fm_hostname(),
+#              'dns-proxy': self.get_fm_hostname(),
               'ipam': 'None',
         }
         for subnet in self.get_config_section('subnet'):
-            try:
-                self.validator.subnet(subnet)
-            except MultipleInvalid as e:
-                log.log(log.LOG_ERROR, "Cannot create Subnet '{0}': \n YAML validation Error: {1}".format(subnet, e))
-                sys.exit(1)
             try:
                 subnet_id = self.fm.subnets.show(subnet['name'])['id']
                 log.log(log.LOG_DEBUG, "Subnet '{0}' (id={1}) already present.".format(subnet, subnet_id))
@@ -231,11 +202,6 @@ class ForemanLoad(ForemanBase):
         log.log(log.LOG_INFO, "Load Operating Systems")
         for operatingsystem in self.get_config_section('os'):
             try:
-                self.validator.os(operatingsystem)
-            except MultipleInvalid as e:
-                log.log(log.LOG_ERROR, "Cannot create Operating System '{0}': \n YAML validation Error: {1}".format(operatingsystem, e))
-                sys.exit(1)
-            try:
                 os_id = self.fm.operatingsystems.show(operatingsystem['name'])['id']
                 log.log(log.LOG_DEBUG, "Operating System '{0}' (id={1}) already present.".format(operatingsystem, os_id))
             except:
@@ -252,14 +218,8 @@ class ForemanLoad(ForemanBase):
 
 
     def load_config_os_link(self):
-        log.log(log.LOG_INFO, " Connecting os System Items (Provisioning Templates, Media, Partition Tables)")
+        log.log(log.LOG_INFO, " Connecting OS System Items With (Provisioning Templates, Media, Partition Tables)")
         for operatingsystem in self.get_config_section('os'):
-            try:
-                self.validator.os(operatingsystem)
-            except MultipleInvalid as e:
-                log.log(log.LOG_ERROR, "Cannot update Operating System '{0}': \n YAML validation Error: {1}".format(operatingsystem, e))
-                sys.exit(1)
-
             os_obj = False
             try:
                 os_obj = self.fm.operatingsystems.show(operatingsystem['name'])
@@ -332,56 +292,37 @@ class ForemanLoad(ForemanBase):
 
 
     def load_config_hostgroup(self):
-        log.log(log.LOG_INFO, "Load hostgroups)")
-        hg_parent = hg_os = hg_arch = hg_medium = hg_parttbl = False
-        for hostgroup in self.get_config_section('hostgroup_default'):
-            #validate yaml
-            try:
-                self.validator.hostgroup_default(hostgroup)
-            except MultipleInvalid as e:
-                log.log(log.LOG_ERROR, "Cannot create hostgroup_default '{0}': \n YAML validation Error: {1}".format(hostgroup, e))
-                sys.exit(1)
-            #find parent hostgroup_default
-            try:
-                hg_parent = self.fm.hostgroups.show(hostgroup['parent'])['id']
-            except:
-                log.log(log.LOG_DEBUG, "Cannot get ID of Parent Hostgroup '{0}', skipping".format(hostgroup['parent']))
-
-            # find operatingsystem
-            try:
-                hg_os = self.fm.operatingsystems.show(hostgroup['os'])['id']
-            except:
-                log.log(log.LOG_ERROR, "Cannot get ID of Operating System '{0}'".format(hostgroup['os']))
-                sys.exit(1)
-            # find architecture
-            try:
-                hg_arch = self.fm.architectures.show(hostgroup['architecture'])['id']
-            except:
-                log.log(log.LOG_ERROR, "Cannot get ID of Architecture '{0}'".format(hostgroup['architecture']))
-                sys.exit(1)
-            # find medium
-            medialist = self.fm.media.index(per_page=99999)['results']
-            for mediac in medialist:
-                if (mediac['name'] == hostgroup['medium']):
-                    hg_medium = mediac['id']
-            if not hg_medium:
-                log.log(log.LOG_ERROR, "Cannot get ID of Medium '{0}'".format(hostgroup['medium']))
-                sys.exit(1)
-            # find partition table
-            try:
-                hg_parttbl = self.fm.ptables.show(hostgroup['partition_table'])['id']
-            except:
-                log.log(log.LOG_ERROR, "Cannot get ID of Partition Table '{0}'".format(hostgroup['partition_table']))
-                sys.exit(1)
+        log.log(log.LOG_INFO, "Load Hostgroups)")
+        hg_os = hg_arch = hg_medium = hg_parttbl = False
+        hostgroup = self.get_config_section('hostgroup_system')
+        # find operatingsystem
+        try:
+            hg_os = self.fm.operatingsystems.show(hostgroup['os'])['id']
+        except:
+            log.log(log.LOG_ERROR, "Cannot get ID of Operating System '{0}'".format(hostgroup['os']))
+            sys.exit(1)
+        # find architecture
+        try:
+            hg_arch = self.fm.architectures.show(hostgroup['architecture'])['id']
+        except:
+            log.log(log.LOG_ERROR, "Cannot get ID of Architecture '{0}'".format(hostgroup['architecture']))
+            sys.exit(1)
+        # find medium
+        medialist = self.fm.media.index(per_page=99999)['results']
+        for mediac in medialist:
+            if (mediac['name'] == hostgroup['medium']):
+                hg_medium = mediac['id']
+        if not hg_medium:
+            log.log(log.LOG_ERROR, "Cannot get ID of Medium '{0}'".format(hostgroup['medium']))
+            sys.exit(1)
+        # find partition table***
+        try:
+            hg_parttbl = self.fm.ptables.show(hostgroup['partition_table'])['id']
+        except:
+            log.log(log.LOG_ERROR, "Cannot get ID of Partition Table '{0}'".format(hostgroup['partition_table']))
+            sys.exit(1)
 
         for hostgroup in self.get_config_section('hostgroup'):
-
-            #validate yaml
-            try:
-                self.validator.hostgroup(hostgroup)
-            except MultipleInvalid as e:
-                log.log(log.LOG_ERROR, "Cannot create Hostgroup '{0}': \n YAML validation Error: {1}".format(hostgroup, e))
-                sys.exit(1)
 
             # check if hostgroup already exists
             try:
@@ -409,8 +350,6 @@ class ForemanLoad(ForemanBase):
                 hg_arr = {
                     'name':         hostgroup['name']
                 }
-                if hg_parent:
-                    hg_arr['parent_id']           = hg_parent
                 if hg_os:
                     hg_arr['operatingsystem_id']  = hg_os
                 if hg_arch:
@@ -433,17 +372,19 @@ class ForemanLoad(ForemanBase):
                     log.log(log.LOG_ERROR, "An Error Occured when creating Hostgroup '{0}', api says: '{1}'".format(hostgroup['name'], msg) )
                     sys.exit(1)
 
+    def search_mutual_exclusive(self,section,name):
+        log.log(log.LOG_INFO, "Search Mutual Exclusive Of Sections")
+        for key,value in section.iteritems():
+            if value == name:
+                return section, True
+
+        log.log(log.LOG_INFO, "'{0}'is  not  in the list of YAML section: '{1}', skip it".format(section['name'],name))
+        return section,False
+
 
     def load_config_host(self):
-        log.log(log.LOG_INFO, "Load hosts")
-        for hostc in self.get_config_section('hosts'):
-
-            try:
-                self.validator.host(hostc)
-            except MultipleInvalid as e :
-                log.log(log.LOG_ERROR, "Cannot create hosts '{0}': \n YAML validation Error: {1}".format(hostc, e))
-                sys.exit(1)
-
+        log.log(log.LOG_INFO, "Load Hosts")
+        for hostc in self.get_config_section('primary_hosts'):
             domain = None
             try:
                 hostgroupname = hostc['hostgroup']
@@ -458,17 +399,32 @@ class ForemanLoad(ForemanBase):
                 log.log(log.LOG_DEBUG, "Host '{0}' (id={1}) already present.".format(hostname, host_id))
                 continue
             except:
-                log.log(log.LOG_INFO, "Create Host '{0}'".format(hostname))
+                log.log(log.LOG_INFO, "Set new host '{0}'".format(hostname))
 
-            # temporaty, change it on the future
-            device = self.get_config_section('device_identifier')[0]['name']
+            device = self.get_config_section('primary_interface')['identifier']
             host_tpl = {
                 'build':                'true',
                 'name':                 hostc['name'],
                 'mac':                  hostc['mac'],
                 'ip':                   hostc['ip'],
-                'interfaces_attributes': [{'identifier': device}],
+                'interfaces_attributes': [{'identifier': device,'primary': 1}],
             }
+            if self.ifexist: 
+                domainid = self.fm.domains.show(domain)['id']
+                for sechost in self.get_config_section('secondary_hosts'):
+            	    sec,sec_status=self.search_mutual_exclusive(sechost,hostc['name'])
+                    if sec_status:
+                        subnet = self.fm.subnets.show(sec['subnet'])['id']
+                        secondary_tpl={
+                            'mac':                  sec['mac'],
+                            'identifier':           sec['identifier'],
+                            'primary':              0,            
+                            'name':                 sec['name'],
+                            'domain_id':            domainid,
+                            'subnet_id':            subnet,
+                            'ip':                   sec['ip'],
+                        }
+                        host_tpl['interfaces_attributes'].append(secondary_tpl)
             hostgroup_id = False
             try:
                 hostgroup_id = self.fm.hostgroups.show(hostgroupname)['id']
@@ -484,3 +440,13 @@ class ForemanLoad(ForemanBase):
             except ForemanException as e:
                 msg = self.get_api_error_msg(e)
                 log.log(log.LOG_ERROR, "Error creating new host '{0}' \n error: '{1}'".format(host_tpl,msg))
+
+
+
+
+
+
+
+
+
+

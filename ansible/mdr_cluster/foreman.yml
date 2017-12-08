@@ -4,7 +4,7 @@
 - hosts: 127.0.0.1
   gather_facts: no
   vars_files:
-    - templates/payload.yml
+    - fmconfig/payload.yml.j2
     - vars/fm_database.yml
   roles:
     - { role: common }

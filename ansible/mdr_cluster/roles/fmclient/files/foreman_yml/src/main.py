@@ -16,7 +16,7 @@ from payload import ForemanLoad
 from cleanup import ForemanCleanup
 
 
-cfg_path='/opt/foreman_yml/.system.yml'
+#cfg_path='/opt/foreman_yml/.system.yml'
 
 def fm_cleanup(fm_clean):
     #cleanup global parameters
@@ -24,7 +24,7 @@ def fm_cleanup(fm_clean):
 
     #clean up hosts
     fm_clean.cleanup_hosts()
-
+    
     #cleanup hostgroups
     fm_clean.cleanup_hostgroups()
 
@@ -33,6 +33,9 @@ def fm_cleanup(fm_clean):
 
    #cleanup domain
     fm_clean.cleanup_domains()
+
+   #cleanup smart proxy
+    fm_clean.cleanup_smart_proxy()
 
 def mergeYAML(usercfg, systemcfg):
     if isinstance(usercfg,dict) and isinstance(systemcfg,dict):
@@ -45,6 +48,7 @@ def mergeYAML(usercfg, systemcfg):
     return usercfg
 
 def fm_import(fm_impt):
+     
     # global params
     fm_impt.load_global_params()
 
@@ -80,6 +84,9 @@ def fm_import(fm_impt):
 
     # hostgroup
     fm_impt.load_config_hostgroup()
+     
+    # check secondary host
+    fm_impt.check_secondary_host()
 
     # host
     fm_impt.load_config_host()
@@ -104,7 +111,9 @@ def main():
         except IndexError:
             log.log(log.LOG_ERROR, "No YAML provided")
             sys.exit(1)
-
+   
+    cfg_path = sys.argv[3]
+    cfg_ip = sys.argv[4]
     try:
         config_file = open(config_file, 'r')
         try:
@@ -112,6 +121,7 @@ def main():
         except yaml.YAMLError, exc:
             log.log(log.LOG_ERROR, "Failed to load/parse import config YAML, Error:'{0}'".format(exc))
             log.log(log.LOG_INFO, "Check if '{0}' formatted correctly".format(config_file))
+            sys.exit(1)
         config_file.close()
     except IOError as e:
         log.log(log.LOG_ERROR, "Failed to open/load import config YAML Error:'{0}'".format(e))
@@ -125,8 +135,8 @@ def main():
         except yaml.YAMLError, exc:
             log.log(log.LOG_ERROR, "Failed to load/parse system config YAML, Error:'{0}'".format(exc))
             log.log(log.LOG_INFO, "Check if '{0}' formatted correctly".format(cfg_path))
+            sys.exit(1)
         config_default_file.close()
-
         config = mergeYAML(config, config_default)
     except IOError as e:
         log.log(log.LOG_ERROR, "Failed to open/load system config YAML Error:'{0}'".format(e))
@@ -138,6 +148,7 @@ def main():
         fm_clean.connect()
         fm_cleanup(fm_clean)
         fm_impt = ForemanLoad(config)
+        fm_impt.set_repo_ip(cfg_ip)
         fm_impt.connect()
         fm_import(fm_impt)
 
