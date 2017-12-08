@@ -11,31 +11,6 @@ from voluptuous import Schema, Required, All, Length, Optional, Any, Match
 class Validator:
 
     def __init__(self):
-          
-
-#        self.foreman = Schema({
-#            Required('auth'):                            All(str,msg='\'auth\' section is required in yml file'),
-#            Required('domain'):                          All(dict,msg='\'domain\' section is required in yml file'),
-#            Required('subnet'):                          All(dict,msg='\'subnet\' section is required in yml file'), 
-#            Required('hostgroup'):                       All(dict,msg='\'hostgroup\' section is required in yml file'),
-#            Required('primary_hosts'):                   All(dict,msg='\'hosts\' section is required in yml file') ,
-#            Required('secondary_hosts'):                 All(dict,msg='\'hosts\' section is required in yml file') ,
-#            Required('protocol'):                        All(str,msg='\'protocol\' section is required in yml file'),
-#            Required('foreman_proxy'):                   All(str,msg='\'foreman_proxy\' section is required in system.yml file'), 
-#            Required('architecture'):                    All(dict,msg='\'architecture\' section is required in system.yml file'),
-#            Required('medium'):                          All(dict,msg='\'medium section\' is required in yml system.yml file'),
-#            Required('setting'):                         All(dict,msg='\'setting section\' is required in system.yml file') ,
-#            Required('os'):                              All(dict,msg='\'os\' section is required in system.yml file'),
-#            Required('hostgroup_default'):               All(dict),
-#            Required('device_identifier'):               All(dict,msg='\'device_identifier\' section is required in system.yml file'),
-#
-#        })
-#
-
-#        self.repository = Schema({
-#             Required('url'):                           Match("^(?:(?:^|\.)(?:2(?:5[0-5]|[0-4]\d)|1?\d?\d)){4}$", msg='it should be in url format, ex:http://10.11.12.23'),
-#   
-#        })
 
         self.auth = Schema({
             Required('foreman_fqdn'):                   Match("^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$", msg='must be valid fqdn ex:bootstrap.example.com'),
