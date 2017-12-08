@@ -1,7 +1,7 @@
 ---
-#- name: rake create foreman apipie cache (be patient)
-#  command:
-#    "/usr/sbin/foreman-rake apipie:cache"
+- name: rake create foreman apipie cache (be patient)
+  command:
+    "/usr/sbin/foreman-rake apipie:cache"
 
 - name: install foreman_yml dependencies
   package:
@@ -35,7 +35,7 @@
 - debug: msg="{{ command_output.stdout.split('\n') }}"
 
 - debug:
-      msg: "foreman is ready, start provisioning {{ foreman_repo_url }} {{ fmclient }} {{ fmconfig }}"
+      msg: "foreman is ready, start provisioning"
 
 - name: waiting for the nodes to be ready 
   local_action:
