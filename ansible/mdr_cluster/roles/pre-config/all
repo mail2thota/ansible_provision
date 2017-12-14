@@ -1,0 +1,80 @@
+#Generated from default-all file 
+
+elasticsearch_data_dir: /data1/elasticsearch,/data2/elasticsearch
+use_local_repository: True
+datanode_data_dir: /data1/hadoop/hdfs/data,/data2/hadoop/hdfs/data
+timeline_ldb_store_path: /data1/hadoop/yarn/timeline
+hdp_os_type: redhat7
+namenode_checkpoint_dir: /data1/hadoop/hdfs/namesecondary
+journalnode_edits_dir: /data1/hadoop/hdfs/journalnode
+zookeeper_data_dir: /data1/hadoop/zookeeper
+storm_local_dir: /data1/hadoop/storm
+nodemanager_log_dirs: /data1/hadoop/yarn/log
+namenode_name_dir: /data1/hadoop/hdfs/namenode
+nodemanager_local_dirs: /data1/hadoop/yarn/local
+jhs_recovery_store_ldb_path: /data1/hadoop/mapreduce/jhs
+kafka_log_dirs: /data1/kafka-log
+ambari_server_mem: 512
+timeline_ldb_state_path: /data1/hadoop/yarn/timeline
+
+
+
+#Generated from config.yaml 
+
+#Service :hdp_test
+hdp_test_jobtracker_host: agent2-ambariagent.example.com
+hdp_test_hosts: [{'name': 'agent8-ambariagent.example.com'}]
+hdp_test_oozie_host: agent4-ambariagent.example.com
+hdp_test_namenode_host: agent1-ambariagent.example.com
+
+#Service :ambari
+ambari_password: admin
+ambari_hosts: [{'ip': '10.11.12.24', 'name': 'master1-ambariserver.example.com'}]
+ambari_user: admin
+ambari_version: 2.5.2.0
+ambari_port: 8080
+
+#Service :postgres
+postgres_hosts: [{'ip': '10.11.12.12', 'name': 'agent9-ambariagent.example.com'}]
+
+#Service :hdp
+hdp_blueprint: mdr-ha-blueprint
+hdp_stack_version: 2.6.2.0
+hdp_utils_version: 1.1.0.21
+hdp_multi_node: {'host_groups': [{'master_1': {'cardinality': 1, 'hosts': [{'ip': '10.11.12.4', 'name': 'agent1-ambariagent.example.com'}], 'components': ['master_1'], 'configuration': []}}, {'master_2': {'cardinality': 1, 'hosts': [{'ip': '10.11.12.5', 'name': 'agent2-ambariagent.example.com'}], 'components': ['master_2'], 'configuration': []}}, {'master_3': {'cardinality': 1, 'hosts': [{'ip': '10.11.12.6', 'name': 'agent3-ambariagent.example.com'}], 'components': ['master_3'], 'configuration': []}}, {'master_4': {'cardinality': 1, 'hosts': [{'ip': '10.11.12.7', 'name': 'agent4-ambariagent.example.com'}], 'components': ['master_4'], 'configuration': []}}, {'zk_1': {'cardinality': 3, 'hosts': [{'ip': '10.11.12.8', 'name': 'agent5-ambariagent.example.com'}, {'ip': '10.11.12.9', 'name': 'agent6-ambariagent.example.com'}], 'components': ['zk_1'], 'configuration': []}}, {'edge_1': {'cardinality': 1, 'hosts': [{'ip': '10.11.12.24', 'name': 'master1-ambariserver.example.com'}], 'components': ['edge_1'], 'configuration': []}}, {'edge_3': {'cardinality': 1, 'hosts': [{'ip': '10.11.12.11', 'name': 'agent8-ambariagent.example.com'}], 'components': ['edge_3'], 'configuration': []}}, {'worker_1': {'cardinality': 1, 'hosts': [{'ip': '10.11.12.10', 'name': 'agent7-ambariagent.example.com'}], 'components': ['worker_1'], 'configuration': []}}]}
+hdp_blueprint_configuration: []
+hdp_cluster_type: multi_node
+hdp_cluster_name: mdr
+hdp_default_password: admin
+hdp_component_groups: {'master_3': ['SECONDARY_NAMENODE', 'HCAT', 'HIVE_METASTORE', 'HIVE_SERVER', 'HIVE_CLIENT', 'WEBHCAT_SERVER', 'MYSQL_SERVER', 'METRICS_MONITOR'], 'master_2': ['JOURNALNODE', 'APP_TIMELINE_SERVER', 'RESOURCEMANAGER', 'SPARK_JOBHISTORYSERVER', 'METRICS_MONITOR'], 'master_1': ['JOURNALNODE', 'NAMENODE', 'HISTORYSERVER', 'METRICS_MONITOR'], 'zk_1': ['METRICS_MONITOR', 'ZOOKEEPER_SERVER'], 'master_4': ['OOZIE_SERVER', 'METRICS_MONITOR'], 'edge_1': ['METRICS_MONITOR', 'METRICS_COLLECTOR'], 'worker_1': ['NODEMANAGER', 'DATANODE', 'METRICS_MONITOR'], 'edge_3': ['ZOOKEEPER_CLIENT', 'TEZ_CLIENT', 'SPARK_CLIENT', 'MAPREDUCE2_CLIENT', 'YARN_CLIENT', 'HDFS_CLIENT', 'OOZIE_CLIENT', 'HIVE_CLIENT', 'PIG', 'METRICS_MONITOR']}
+hdp_stack: 2.6
+
+#Service :default
+default_dns_enabled: False
+default_java_vendor: oracle
+
+#Service :mongodb
+mongodb_hosts: [{'ip': '10.11.12.18', 'name': 'agent15-ambariagent.example.com'}]
+
+#Service :kibana
+kibana_hosts: [{'ip': '10.11.12.24', 'name': 'master1-ambariserver.example.com'}]
+kibana_elasticsearch_url: http://master1-ambariserver.example.com:9200/
+
+#Service :ansible_ssh
+ansible_ssh_user: root
+ansible_ssh_pass: as12345678
+
+#Service :es_master
+es_master_hosts: [{'ip': '10.11.12.24', 'name': 'master1-ambariserver.example.com'}]
+
+#Service :es_node
+es_node_hosts: [{'ip': '10.11.12.16', 'name': 'agent13-ambariagent.example.com'}, {'ip': '10.11.12.17', 'name': 'agent14-ambariagent.example.com'}]
+
+#Service :docker-registry
+docker-registry_hosts: [{'ip': '10.11.12.15', 'name': 'agent12-ambariagent.example.com'}]
+
+#Service :activemq
+activemq_hosts: [{'ip': '10.11.12.13', 'name': 'agent10-ambariagent.example.com'}]
+
+#Service :apache-server
+apache-server_hosts: [{'ip': '10.11.12.14', 'name': 'agent11-ambariagent.example.com'}]
