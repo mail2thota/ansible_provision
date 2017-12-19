@@ -1,19 +1,159 @@
 ---
 
 
-ansible_ssh:
-  user: root
-  pass: as12345678
-
 default:
   dns_enabled: no
   java_vendor: oracle
 
 
+common:
+   hostgroups:
+        - name: master_1
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+          partition_table: Kickstart default
+        - name: master_2
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+          partition_table: Kickstart default
+        - name: master_3
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: master_4
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: zk_1
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: edge_1
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: edge_3
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: worker_1
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: postgres
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: activemq
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: kibana
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: es_master
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: es_node
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: apache-server
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: mongodb
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+        - name: docker-registery
+          subnet: subnet1
+          domain: example.com
+          root_pass: as12345678
+
+
+   primary_hosts:
+        - name: agent1-ambariagent
+          hostgroup: master_1
+          ip: 10.11.12.4
+          mac: 0800271AD0DA
+        - name: agent2-ambariagent
+          hostgroup: master_2
+          ip: 10.11.12.5
+          mac: 080027626A0D
+        - name: agent3-ambariagent
+          hostgroup: master_3
+          ip: 10.11.12.6
+          mac: 080027FE1A42
+        - name: agent4-ambariagent
+          hostgroup: master_4
+          ip: 10.11.12.7
+          mac: 08002708D5C2
+        - name: agent5-ambariagent
+          hostgroup: zk_1
+          ip: 10.11.12.8
+          mac: 080027DF8EE5
+        - name: agent6-ambariagent
+          hostgroup: zk_1
+          ip: 10.11.12.9
+          mac: 0800278B2194
+        - name: agent7-ambariagent
+          hostgroup: worker_1
+          ip: 10.11.12.10
+          mac: 08002728805D
+        - name: agent8-ambariagent
+          hostgroup: edge_3
+          ip: 10.11.12.11
+          mac: 08002743CB9C
+        - name: agent9-ambariagent
+          hostgroup: postgres
+          ip: 10.11.12.12
+          mac: 080027A55547
+        - name: agent10-ambariagent
+          hostgroup: activemq
+          ip: 10.11.12.13
+          mac: 080027D25FEE
+        - name: agent11-ambariagent
+          hostgroup: apache-server
+          ip: 10.11.12.14
+          mac: 080027EE643F
+        - name: agent12-ambariagent
+          hostgroup: docker-registery
+          ip: 10.11.12.15
+          mac: 0800275F8125
+        - name: agent13-ambariagent
+          hostgroup: es_node
+          ip: 10.11.12.16
+          mac: 080027ED84FE
+        - name: agent14-ambariagent
+          hostgroup: es_node
+          ip: 10.11.12.17
+          mac: 0800272F3847
+        - name: agent15-ambariagent
+          hostgroup: mongodb
+          ip: 10.11.12.18
+          mac: 080027A5EAB2
+        - name: master1-ambariserver
+          hostgroup: edge_1
+          ip: 10.11.12.24
+          mac: 080027BB1483
+
+   secondary_hosts:
+        - ip: 10.11.12.5
+          mac: 08002744E7DA
+          subnet: subnet1
+          primary: agent1-ambariagent
+        - ip: 10.11.12.7
+          mac: 08002744E7DA
+          subnet: subnet1
+          primary: agent1-ambariagent
+
 ambari:
-  hosts:
-    - name: master1-ambariserver.example.com
-      ip : 10.11.12.24
+  hostgroup: edge_1
   user: admin
   password: admin
   port : 8080
@@ -22,7 +162,8 @@ ambari:
 
 hdp:
   blueprint: mdr-ha-blueprint
-  blueprint_configuration: []
+  blueprint_configuration:
+
   stack: 2.6
   default_password: admin
   stack_version : 2.6.2.0
@@ -74,122 +215,69 @@ hdp:
       - NODEMANAGER
       - DATANODE
       - METRICS_MONITOR
-  multi_node:
-      host_groups:
-        - master_1:
-            components:
-              - master_1
-            hosts:
-                - name: agent1-ambariagent.example.com
-                  ip : 10.11.12.4
-            configuration: []
-            cardinality: 1
-        - master_2:
-            components:
-              - master_2
-            hosts:
-                - name: agent2-ambariagent.example.com
-                  ip: 10.11.12.5
-            configuration: []
-            cardinality: 1
-        - master_3:
-            components:
-              - master_3
-            hosts:
-                - name: agent3-ambariagent.example.com
-                  ip: 10.11.12.6
-
-            configuration: []
-            cardinality: 1
-        - master_4:
-            components:
-              - master_4
-            hosts:
-                - name: agent4-ambariagent.example.com
-                  ip: 10.11.12.7
-            configuration: []
-            cardinality: 1
-        - zk_1:
-            components:
-              - zk_1
-            hosts:
-                - name: agent5-ambariagent.example.com
-                  ip: 10.11.12.8
-                - name: agent6-ambariagent.example.com
-                  ip: 10.11.12.9
-            configuration: []
-            cardinality: 3
-        - edge_1:
-            components:
-               - edge_1
-            hosts:
-                - name: master1-ambariserver.example.com
-                  ip: 10.11.12.24
-            configuration: []
-            cardinality: 1
-        - edge_3:
-            components:
-              - edge_3
-            hosts:
-                - name: agent8-ambariagent.example.com
-                  ip: 10.11.12.11
-            configuration: []
-            cardinality: 1
-        - worker_1:
-            components:
-              - worker_1
-            hosts:
-                - name: agent7-ambariagent.example.com
-                  ip: 10.11.12.10
-            configuration: []
-            cardinality: 1
+  hostgroups:
+    - master_1:
+        components:
+          - master_1
+        hostgroup: master_1
+    - master_2:
+        components:
+          - master_2
+        hostgroup: master_2
+    - master_3:
+        components:
+          - master_3
+        hostgroup: master_3
+    - master_4:
+        components:
+          - master_4
+        hostgroup: master_4
+    - zk_1:
+        components:
+          - zk_1
+        hostgroup: zk_1
+        cardinality: 3
+    - edge_1:
+        components:
+           - edge_1
+        hostgroup: edge_1
+    - edge_3:
+        components:
+          - edge_3
+        hostgroup: edge_3
+    - worker_1:
+        components:
+          - worker_1
+        hostgroup: worker_1
 
 
 postgres:
-   hosts:
-     - name: agent9-ambariagent.example.com
-       ip: 10.11.12.12
+  hostgroup: postgres
 
 activemq:
-  hosts:
-    - name: agent10-ambariagent.example.com
-      ip: 10.11.12.13
+  hostgroup: activemq
 
 kibana:
-  hosts:
-   - name : master1-ambariserver.example.com
-     ip: 10.11.12.24
+  hostgroup: master_3
   elasticsearch_url: http://master1-ambariserver.example.com:9200/
 
 es_master:
-  hosts:
-    - name: master1-ambariserver.example.com
-      ip: 10.11.12.24
+  hostgroup: master_3
 
 es_node:
-  hosts:
-   - name: agent13-ambariagent.example.com
-     ip: 10.11.12.16
-   - name: agent14-ambariagent.example.com
-     ip: 10.11.12.17
+  hostgroup: es_node
+
 apache-server:
-  hosts:
-    - name: agent11-ambariagent.example.com
-      ip: 10.11.12.14
+  hostgroup: apache-server
 
 mongodb:
-  hosts:
-    - name: agent15-ambariagent.example.com
-      ip: 10.11.12.18
+  hostgroup: mongodb
 
 docker-registry:
-  hosts:
-    - name: agent12-ambariagent.example.com
-      ip: 10.11.12.15
+  hostgroup: docker-registery
 
 hdp_test:
-   hosts:
-    - name: agent8-ambariagent.example.com
+   hostgroup: edge_3
    jobtracker_host: agent2-ambariagent.example.com
    namenode_host: agent1-ambariagent.example.com
    oozie_host: agent4-ambariagent.example.com
