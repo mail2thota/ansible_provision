@@ -4,7 +4,7 @@
 - hosts: 127.0.0.1
   gather_facts: no
   vars_files:
-    - fmconfig/payload.yml.j2
+    - config.yml
     - vars/fm_database.yml
   roles:
     - { role: common }
@@ -15,5 +15,4 @@
     - { role: foreman_proxy }
     - { role: passenger_nginx }
     - { role: fmclient }
-  
 

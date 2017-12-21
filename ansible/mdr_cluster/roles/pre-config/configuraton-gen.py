@@ -73,8 +73,14 @@ def generateHdpHostConfig(hdpHostConfig):
 def generateBluePrint(hdpConfig):
     outfile = open(hdpConfig["cluster_type"] + '.yml', 'w+')
 
+    blueprint_configuration = hdpConfig.get("blueprint_configuration")
+
+    if blueprint_configuration is None:
+        blueprint_configuration = []
+
     blueprint = {"cluster_name": hdpConfig["cluster_name"], "blueprint_name": hdpConfig["blueprint"],
-                 "configurations": hdpConfig.get("blueprint_configuration",[])}
+                 "configurations": blueprint_configuration}
+
     if "default_password" in hdpConfig:
         blueprint["blueprint"] = {"default_password": hdpConfig["default_password"], "stack_name": "HDP",
                                   "stack_version": hdpConfig["stack"], "groups": []}

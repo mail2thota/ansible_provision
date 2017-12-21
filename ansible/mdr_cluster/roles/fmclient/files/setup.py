@@ -42,9 +42,7 @@ def find_data(packages, extensions):
                         data[package].append(file_path)
     return data
 
-
-with open('README.rst', 'r') as f:
-    README_TEXT = f.read()
+README_TEXT = ""
 
 setup(
     name = "fmclient",

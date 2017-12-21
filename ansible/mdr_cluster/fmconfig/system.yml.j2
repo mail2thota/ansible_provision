@@ -40,14 +40,25 @@ foreman:
             - name: Kickstart default user data
           medium:
             - name: CentOS7_x86_64
-          partition_table:
-            - name: Kickstart default
 
     hostgroup_system:
           os: CentOS7
           architecture: x86_64
           medium: CentOS7_x86_64
-          partition_table: Kickstart default
 
-    primary_interface:
-          identifier: enp0s3
+    partition_system:
+          disk_minimum: 30
+          boot_size: 500
+          boot_type: ext2
+          swap_size: 1000
+          swap_type: swap
+          home_size: 500
+          home_type: ext4
+          var_size: 500
+          var_type: xfs
+          tmp_size: 500
+          tmp_type: ext4
+          root_size: 16000
+          root_type: ext4
+ 
+

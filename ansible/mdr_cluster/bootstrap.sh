@@ -6,8 +6,19 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 bold=`tput bold`
+
+cp -f  config.yml ./roles/pre-config/
 if [[ $repo_url =~ $regex ]]
-then 
+then
+   if [ -w /etc/yum.conf ]; then
+       sed -i "/^proxy=.*/d" /etc/yum.conf
+       unset http_proxy
+       unset https_proxy
+       unset no_proxy
+       unset HTTP_PROXY
+       unset HTTPS_PROXY
+       unset NO_PROXY
+   fi 
    export repo_url
    echo "${bold}${green}Repository url is set as ${repo_url}${reset}"
 else

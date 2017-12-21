@@ -7,7 +7,7 @@ default:
 
 
 common:
-   hostgroups:
+    hostgroups:
         - name: master_1
           subnet: subnet1
           domain: example.com
@@ -22,61 +22,75 @@ common:
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: master_4
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: zk_1
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: edge_1
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: edge_3
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: worker_1
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: postgres
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: activemq
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: kibana
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: es_master
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: es_node
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: apache-server
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: mongodb
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
         - name: docker-registery
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
+          partition_table: Kickstart default
 
+    primary_hosts:
 
-   primary_hosts:
         - name: agent1-ambariagent
           hostgroup: master_1
           ip: 10.11.12.4
@@ -140,17 +154,90 @@ common:
         - name: master1-ambariserver
           hostgroup: edge_1
           ip: 10.11.12.24
-          mac: 080027BB1483
+          mac: 080027BB1483  
 
-   secondary_hosts:
-        - ip: 10.11.12.5
-          mac: 08002744E7DA
+    secondary_hosts:
+        - ip: 10.11.12.19
+          mac: 0800279B8DDA
           subnet: subnet1
-          primary: agent1-ambariagent
-        - ip: 10.11.12.7
-          mac: 08002744E7DA
+          primary: agent6-ambariagent
+
+        - ip: 10.11.12.20
+          mac: 080027F8D3E8
           subnet: subnet1
-          primary: agent1-ambariagent
+          primary: agent7-ambariagent
+
+foreman:
+   
+    auth:
+        foreman_fqdn: bootstrap.example.com
+        foreman_ip: 10.11.12.23
+        foreman_user: admin
+        foreman_pass: admin
+
+    domain:
+        - name: example.com
+          fullname: this is example.com
+
+    subnet:
+        - name: subnet1
+          network: 10.11.12.0
+          mask: 255.255.255.0
+          gateway: 10.11.12.1
+          dns_primary: 10.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+        - name: subnet2
+          network: 13.11.12.0
+          mask: 255.255.255.0
+          gateway: 13.11.12.1
+          dns_primary: 13.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+    
+    partition_table:
+        - name: Kickstart default
+          boot:
+              fstype: ext2
+              size: 10
+          swap:
+              fstype: swap
+              size: 10
+          tmp:
+              fstype: ext4
+              size: 10
+          var:
+              fstype: xfs
+              size: 10
+          home:
+              fstype: ext4
+              size: 10
+          root:
+              fstype: ext4
+              size: 50
+        - name: Kickstart default2
+          boot:
+              fstype: ext2
+              size: 10
+          swap:
+              fstype: swap
+              size: 10
+          tmp:
+              fstype: ext4
+              size: 10
+          var:
+              fstype: xfs
+              size: 10
+          home:
+              fstype: ext4
+              size: 10
+          root:
+              fstype: ext4
+              size: 50
 
 ambari:
   hostgroup: edge_1
@@ -159,11 +246,9 @@ ambari:
   port : 8080
   version: 2.5.2.0
 
-
 hdp:
   blueprint: mdr-ha-blueprint
   blueprint_configuration:
-
   stack: 2.6
   default_password: admin
   stack_version : 2.6.2.0

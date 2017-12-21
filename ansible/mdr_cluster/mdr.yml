@@ -18,51 +18,51 @@
     - ambari-prereqs
     - hdp-install
 
-- hosts: postgres_hosts
-  become: true
-  roles:
-    - role: postgresql
+#- hosts: postgres
+#  become: true
+#  roles:
+#    - role: postgresql
 
-- hosts: activemq_hosts
-  become: true
-  roles:
-    - role:  activemq
+#- hosts: activemq
+#  become: true
+#  roles:
+#    - role:  activemq
 
-- hosts: docker-registry_hosts
-  become: true
-  roles:
-    - role: docker-registry
+#- hosts: docker-registry
+#  become: true
+#  roles:
+#    - role: docker-registry
 
-- hosts: apache-server_hosts
-  become: true
-  roles:
-    - apache-server
-    - python-pip
+#- hosts: apache-server
+#  become: true
+#  roles:
+#    - apache-server
+#    - python-pip
     
-- hosts: ambari_hosts
-  become: true
-  roles:
-    - role: ambari_server
-  tags:
-    - ambari-server
-    - hdp-install
+#- hosts: ambari
+#  become: true
+#  roles:
+#    - role: ambari_server
+#  tags:
+#    - ambari-server
+#    - hdp-install
 
-- hosts: hdp_hosts
-  become: true
-  roles:
-    - role: ambari_agent
-  tags:
-    - ambari-agent
-    - hdp-install
+#- hosts: hdp
+#  become: true
+#  roles:
+#    - role: ambari_agent
+#  tags:
+#    - ambari-agent
+#    - hdp-install
 
-- hosts: ambari_hosts
+- hosts: ambari
   become: true
   roles:
     - role: ambari_config
   tags:
     - hdp-deploy
 
-- hosts: hdp_test_hosts
+- hosts: hdp_test
   become: true
   roles:
     - role:  hdp_test

@@ -11,7 +11,7 @@ from voluptuous import Schema, Required, All, Length, Optional, Any, Match
 class Validator:
 
     def __init__(self):
-
+          
         self.auth = Schema({
             Required('foreman_fqdn'):                   Match("^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$", msg='must be valid fqdn ex:bootstrap.example.com'),
             Required('foreman_ip'):                     Match("^(?:(?:^|\.)(?:2(?:5[0-5]|[0-4]\d)|1?\d?\d)){4}$",msg='must be valid ipv4 ex:10.11.12.23'),
@@ -45,11 +45,54 @@ class Validator:
 
         self.ptable = Schema({
             Required('name'):                           All(str),
-            Required('layout'):                         All(str),
-            Optional('snippet'):                        Any(bool,None),
-            Optional('os_family'):                      Any(str,None),
-            Optional('audit_comment'):                  Any(str,None),
-            Optional('locked'):                         Any(bool,None),
+
+            Required('boot'):                           Any(Schema({
+                Required('fstype'):                     Any('xfs','ext2','ext3','ext4',msg='support \'xfs,ext2,ext3,ext4\''),                                          
+                Required('size'):                       All(int,msg='size in percentage'),
+            })),
+
+            Required('swap'):                           Any(Schema({
+                Required('fstype'):                     Any('swap',msg='support swap'),
+                Required('size'):                       All(int,msg='size in percentage'),
+            })),
+
+            Required('tmp'):                            Any(Schema({
+                Required('fstype'):                     Any('xfs','ext2','ext3','ext4',msg='support \'xfs,ext2,ext3,ext4\''),                                          
+                Required('size'):                       All(int,msg='size in percentage'),
+            })),
+
+            Required('var'):                            Any(Schema({
+                Required('fstype'):                     Any('xfs','ext2','ext3','ext4',msg='support \'xfs,ext2,ext3,ext4\''),                                          
+                Required('size'):                       All(int,msg='size in percentage'),
+            })),
+
+            Required('home'):                           Any(Schema({
+                Required('fstype'):                     Any('xfs','ext2','ext3','ext4',msg='support \'xfs,ext2,ext3,ext4\''),                                          
+                Required('size'):                       All(int,msg='size in percentage'),
+            })),
+
+            Required('root'):                           Any(Schema({
+                Required('fstype'):                     Any('xfs','ext2','ext3','ext4',msg='support \'xfs,ext2,ext3,ext4\''),                                          
+                Required('size'):                       All(int,msg='size in percentage'),
+            })),
+        })
+
+
+        self.ptable_system = Schema({
+            Required('disk_minimum'):                    All(int,msg='size in gigabyte format, max default disk size'),
+            Required('boot_size'):                       Any(int,msg='size in megabyte format'),
+            Required('boot_type'):                       Any('xfs','ext2','ext3','ext4',msg='support \'xfs,ext2,ext3,ext4\''),
+            Required('swap_size'):                       All(int,msg='size in megabyte format'),
+            Required('swap_type'):                       Any('swap',msg='support swap only'),
+            Required('home_size'):                       All(int,msg='size in megabyte format'),
+            Required('home_type'):                       Any('xfs','ext2','ext3','ext4',msg='support \'xfs,ext2,ext3,ext4\''),
+            Required('var_size'):                        All(int,msg='size in megabyte format'),
+            Required('var_type'):                        Any('xfs','ext2','ext3','ext4',msg='support \'fs,ext2,ext3,ext4\''),
+            Required('tmp_size'):                        All(int,msg='size in megabyte format'),
+            Required('tmp_type'):                        Any('xfs','ext2','ext3','ext4',msg='support \'xfs,ext2,ext3,ext4\''),
+            Required('root_size'):                       All(int,msg='size in megabyte format'),
+            Required('root_type'):                       Any('xfs','ext2','ext3','ext4',msg='support \'fs,ext2,ext3,ext4\''),
+  
         })
 
         self.os = Schema({
@@ -71,9 +114,6 @@ class Validator:
             Required('medium'):                         Any(Schema([{
                 Required('name'):                       All(str,msg='assigned medium name')
             }])),
-            Required('partition_table'):                Any(Schema([{
-                Required('name'):                       All(str, msg='support Kickstart default')
-            }]))
         })
 
         self.primary_hosts = Schema({
@@ -84,11 +124,9 @@ class Validator:
         })
 
         self.secondary_hosts = Schema({
-            Required('name'):                           All(str,msg='required valid hostname'),
             Required('ip'):                             Match("^(?:(?:^|\.)(?:2(?:5[0-5]|[0-4]\d)|1?\d?\d)){4}$",msg='provide valid ipv4'), 
             Required('mac'):                            Match("^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$",msg='provide valid mac address'),
             Required('subnet'):                         Any(str,msg='provide valid subnet ipv4'),
-            Required('identifier'):                     Any(str,msg='provide valid network interface identifier ex: enp0s3,eth0,eth1'),
             Required('primary'):                        All(str,msg='required valid primary hostname'),
 
         })
@@ -98,13 +136,13 @@ class Validator:
             Required('subnet'):                         Any(str,msg='provide valid subnet ipv4'),
             Required('domain'):                         Any(str,msg='assigned valid domain'),
             Required('root_pass'):                      All(str, Length(min=8),msg='password minimum must be 8 character'),
+            Required('partition_table'):                Any(str,msg='assigned valid partition table'),
         })
 
         self.hostgroup_system = Schema({
             Required('os'):                             Any(str,msg='assigned os name'),
             Required('architecture'):                   Any(str,msg='assigned architecture name'),
             Required('medium'):                         Any(str,msg='assigned medium name'),
-            Required('partition_table'):                Any(str,msg='assigned partition table name'),
         })
 
         self.primary_interface = Schema({

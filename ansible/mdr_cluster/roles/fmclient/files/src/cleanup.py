@@ -110,3 +110,70 @@ class ForemanCleanup(ForemanBase):
         except:
             log.log(log.LOG_ERROR, "can not be removed '{0}' id '{1}', check your foreman-proxy config file".format(each['name'],each['id']))
             sys.exit(1)
+
+
+    def cleanup_ptable(self):
+        log.log(log.LOG_INFO, "Processing Cleanup of partition table")
+        try:
+            json_buff = self.fm.ptables.index()['results']
+            if not json_buff:
+                return log.log(log.LOG_WARN, "patition table already absent from list")
+            json_str = json.dumps(json_buff)
+            json_dicts = json.loads(json_str)
+            log.log(log.LOG_INFO, "Delete partition table")
+            for each in json_dicts:
+                log.log(log.LOG_INFO, "remove partition table: '{0}' id '{1}'".format(each['name'],each['id']))
+                self.fm.ptables.destroy(each['id'])
+        except:
+            log.log(log.LOG_ERROR, "can not be removed '{0}' id '{1}', check your partition table YML config file".format(each['name'],each['id']))
+            sys.exit(1)
+
+    def cleanup_os(self):
+         log.log(log.LOG_INFO, "Processing Cleanup of operating systems")
+         try:
+             json_buff = self.fm.operatingsystems.index()['results']
+             if not json_buff:
+                 return log.log(log.LOG_WARN, "operating system already absent from list")
+             json_str = json.dumps(json_buff)
+             json_dicts = json.loads(json_str)
+             log.log(log.LOG_INFO, "Delete operating systems")
+             for each in json_dicts:
+                 log.log(log.LOG_INFO, "remove operating system: '{0}' id '{1}'".format(each['name'],each['id']))
+                 self.fm.operatingsystems.destroy(each['id'])
+         except:
+             log.log(log.LOG_ERROR, "can not be removed '{0}' id '{1}', check your operating system YML config file".format(each['name'],each['id']))
+             sys.exit(1)
+
+
+    def cleanup_media(self):
+         log.log(log.LOG_INFO, "Processing Cleanup of Medium")
+         try:
+             json_buff = self.fm.media.index()['results']
+             if not json_buff:
+                 return log.log(log.LOG_WARN, "mediums already absent from list")
+             json_str = json.dumps(json_buff)
+             json_dicts = json.loads(json_str)
+             log.log(log.LOG_INFO, "Delete mediums")
+             for each in json_dicts:
+                 log.log(log.LOG_INFO, "remove mediums: '{0}' id '{1}'".format(each['name'],each['id']))
+                 self.fm.media.destroy(each['id'])
+         except:
+             log.log(log.LOG_ERROR, "can not be removed '{0}' id '{1}', check your mediums YML config file".format(each['name'],each['id']))
+             sys.exit(1)
+
+    def cleanup_arch(self):
+         log.log(log.LOG_INFO, "Processing Cleanup of Architectures")
+         try:
+             json_buff = self.fm.architectures.index()['results']
+             if not json_buff:
+                 return log.log(log.LOG_WARN, "architecture already absent from list")
+             json_str = json.dumps(json_buff)
+             json_dicts = json.loads(json_str)
+             log.log(log.LOG_INFO, "Delete architectures")
+             for each in json_dicts:
+                 log.log(log.LOG_INFO, "remove architectures: '{0}' id '{1}'".format(each['name'],each['id']))
+                 self.fm.architectures.destroy(each['id'])
+         except:
+             log.log(log.LOG_ERROR, "can not be removed '{0}' id '{1}', check your architectures YML config file".format(each['name'],each['id']))
+             sys.exit(1)
+

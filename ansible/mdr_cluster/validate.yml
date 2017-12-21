@@ -8,7 +8,7 @@
 - hosts: 127.0.0.1
   gather_facts: no
   vars_files:
-    - fmconfig/payload.yml.j2
+    - config.yml
   roles:
     -  fmvalidation 
   tags:

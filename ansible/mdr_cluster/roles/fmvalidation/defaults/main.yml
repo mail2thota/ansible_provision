@@ -1,4 +1,5 @@
 ---
 
 fmconfig: '{{ playbook_dir }}/fmconfig'
+rootdir: '{{ playbook_dir }}'
 fmvalidation: '{{ role_path }}/files/src'
