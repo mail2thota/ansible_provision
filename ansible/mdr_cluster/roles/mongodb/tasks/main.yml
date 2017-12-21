@@ -19,7 +19,7 @@
   shell: echo 'db.stats().ok' | mongo {{ item }}:{{ mongod_port }}/test --quiet
   register: shell
   with_items:  
-      - "{{groups['mongodb_hosts']}}" 
+      - "{{groups['mongodb']}}" 
   failed_when: "'Failed' in shell.stdout"
 - debug: msg="{{shell}}"
   
