@@ -105,25 +105,76 @@ Configuration
 |hostgroup:<ul><li>**name**</li><li>**subnet**</li><li>**domain**</li><li>**root-pass**</li><li>**partition_table**</li></ul>|<ul><li>**name:** hostg_master</li><li>**subnet:** subnet1012</li><li>**domain:** example.com</li><li>**root-pass:** abs12232</li><li>**partition_table:** Kickstart default</li></ul>|<ul><li>**name:** name of hostgroup(str, required)</li><li>**subnet:** name of subnet to be assigned(str, required)</li><li>**domain:** name of domain to be assigned(str, required)</li><li>**root-pass:** default password of nodes(str, required, minimum 8 char)</li><li>**partition_table:** name of partition table to be assigned(str, required)</li></ul>|
 |primary_hosts:<lu><li>**name**</li><li>**hostgroup**</li><li>**ip**</li><li>**mac**</li></lu>|<ul><li>**name:** agent_node</li><li>**hostgroup:** hostg_master</li><li>**ip:** 10.11.12.4</li><li>**mac:** 080027d487f5</li></ul>|<ul><li>**name:** host name(str, required)</li><li>**hostgroup:** assign host group(str, required)</li><li>**ip:** valid of host ip(str, required)</li><li>**mac:** valid of mac address(str, required)</li></ul>|
 |secondary_hosts:<lu><li>**ip**</li><li>**mac**</li><li>**subnet**</li><li>**primary**</li></lu>|<lu><li>**ip:** 10.11.12.6</li><li>**mac:** 080027F8D3E8</li><li>**subnet:** subnet1012</li><li>**primary:** agent_node</li></lu>|<ul><li>**ip:** ip address, must be unique(str, required)</li><li>**mac:** mac address, must be unique(str, required)</li><li>**subnet:** valid subnet to be assigned(str, required)</li><li>**primary:** valid primary node name to be assigned(str, required)</li></ul>|
+|protocol: <ul><li>**type**</li></ul>|<ul><li>**type:** http</li></ul>|<ul><li>**type:** only support http(str, required)</li></ul>|
+|foreman_proxy: <ul><li>**port**</li></ul>|<ul><li>**port:** 8443</li></ul>|<ul><li>**port:** port of foreman_proxy(int, required)</li></ul>|
 |architecture:<ul><li>**name**</li></ul>|<ul><li>**name:** x86_64</li></ul>|<ul><li>**name:** currently only support x86_64 version</lu></ul>|
 |medium:<ul><li>**name**</li><li>**path**</li><li>**os-family**</li></ul>|<ul><li>**name:** Centos7</li><li>**path:** /repos/CentOS_7_x86_64/</li><li>**os-family:** RedHat</li></ul>|<ul><li>**name:** name of os(str, required)</li><li>**path:** location of image(str, required)</li><li>**os-family:** type of os(str, required)</li></ul>|
 |setting:<ul><li>**name**</li><li>**value**</ul></li>|<ul><li>**name:** token_duration</li><li>**value:** 0 </li></ul>|<ul><li>**name:** name of foreman variable setting(str, required)</li><li>**value:** value to be assigned(int/str, required)</li></ul>|
-|os:<ul><li>**name**</li><li>**family**</li><li>**password-hash**</li><li>**architectures:** <ul><li>**name:**</li></ul></li><li>**provisioning-template:** <ul><li>**name:**</li></ul></li><li>**medium:** <ul><li>**name**</li></ul></li></ul>|<ul><li>**name:** centos7</li><li>**family:** RedHat</li><li>**password-hash:** SHA512</li><li>**architectures:** <ul><li>**name:**x86_64</li></ul></li><li>**provisioning-template:** <ul><li>**name:** Kickstart default</li></ul><ul><li>**name:** Kickstart default finish</li></ul><ul><li>**name:** Kickstart default PXELinux</li></ul><ul><li>**name:** Kickstart default iPXE</li></ul><ul><li>**name:** Kickstart default user data</li></ul></li><li>**medium:**<ul><li>**name:**CentOS7]],[partition-table:[name:Kickstart default]]|[name:name of os(str,required)],[family:family of os(str,optional)],[password-hash:hash password(str,optional)],[architectures:[name:name of architectures(str, optional)]],[provisioning-template:[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)],[name:name of provisioning-template(str,optional)]],[medium:[name:name of medium assigned(str,optional)]],[partition-table:[name:name of partition-table assigned(str,optional)]|
-|hostgroup_default(system default):[name,parent,os,architecture,medium,partition-table]|[name:host default],[parent:host default],[os:centos7],[architecture:x86_64],[medium:Centos7],[partition-table:Kickstart default]|[name:name of host assigned(str,required)],[parent:inherit from which parent hostgroup(str,required,can be empty)],[os:os assigned(str,required)],[architecture:architecture assigned(str,required)],[medium:medium assigned(str,required)],[partition-table:partition table assigned(str,required)]
-|device_identifier(system default):[name]|[name:enp0s3]|[name:name of valid device identifier(str,optional)]|
-|timeout_second|timeout_second: 172800|find it in /foreman-ansible/ansible/roles/fmclient/defaults/main.yml. it is timeout(format in second) for foreman waiting to finish node provisioning, default is set for 48 hours waiting for foreman to finish node provisioning.
+|os:<ul><li>**name**</li><li>**family**</li><li>**password-hash**</li><li>**architectures:** <ul><li>**name:**</li></ul></li><li>**provisioning-template:** <ul><li>**name:**</li></ul></li><li>**medium:** <ul><li>**name**</li></ul></li></ul>|<ul><li>**name:** centos7</li><li>**family:** RedHat</li><li>**password-hash:** SHA512</li><li>**architectures:** <ul><li>**name:**x86_64</li></ul></li><li>**provisioning-template:** <ul><li>**name:** Kickstart default</li></ul><ul><li>**name:** Kickstart default finish</li></ul><ul><li>**name:** Kickstart default PXELinux</li></ul><ul><li>**name:** Kickstart default iPXE</li></ul><ul><li>**name:** Kickstart default user data</li></ul></li><li>**medium:**<ul><li>**name:**CentOS7</li></ul>|<ul><li>**name:** name of os(str, required)</li><li>**family:** family of os(str, optional)</li><li>**password-hash:** hash password(str, optional)</li><li>**architectures:** <ul><li>**name:** name of architectures(str, optional)</li></ul></li><li>**provisioning-template:** <ul><li>**name:** name of provisioning-template(str, optional)</li></ul><ul><li>**name:** name of provisioning-template(str, optional)</li></ul><ul><li>**name:** name of provisioning-template(str, optional)</li></ul><ul><li>**name:** name of provisioning-template(str, optional)</li></ul><ul><li>**name:** name of provisioning-template(str, optional)</li></ul></li><li>**medium:** <ul><li>**name:** name of medium assigned(str, optional)</li></ul>|
+
 
 
 Complete YAML User Template
 -------------------------------------
-User is allowed to modified as they like according requirement to do provisiong process.
+User is allowed to modified as they like according to requirement to do provisiong process.you may find it in /mdr_platform_bare_metal/ansible/mdr_cluster/config.yml
+
+    common:
+
+      hostgroups:
+          - name: ambari
+            subnet: subnet1
+            domain: example.com
+            root_pass: as12345678
+            partition_table: Kickstart default
+
+          - name: ambari2
+            subnet: subnet1
+            domain: example.com
+            root_pass: as12345678
+            partition_table: Kickstart default
+
+
+      primary_hosts:
+
+          - name: node1
+            hostgroup: ambari
+            ip: 10.11.12.4
+            mac: 0800271AD0DA
+
+          - name: node2
+            hostgroup: ambari
+            ip: 10.11.12.5
+            mac: 080027626A0D
+
+          - name: node3
+            hostgroup: ambari
+            ip: 10.11.12.6
+            mac: 080027EEF558
+
+          - name: node4
+            hostgroup: ambari
+            ip: 10.11.12.7
+            mac: 08002774D5B0
+
+      secondary_hosts:
+          - ip: 10.11.12.8
+            mac: 0800279B8DDA
+            subnet: subnet1
+            primary: node3
+
+          - ip: 10.11.12.9
+            mac: 080027F8D3E8
+            subnet: subnet1
+            primary: node4
+
 
     foreman:
+
         auth:
-            fqdn: foreman.example.com
-            ip: 10.11.12.5
-            user: admin
-            pass: as123
+            foreman_fqdn: bootstrap.example.com
+            foreman_ip: 10.11.12.23
+            foreman_user: admin
+            foreman_pass: admin
 
         domain:
             - name: example.com
@@ -139,31 +190,76 @@ User is allowed to modified as they like according requirement to do provisiong 
               vlanid:
               domain:
                 - name: example.com
+            - name: subnet2
+              network: 13.11.12.0
+              mask: 255.255.255.0
+              gateway: 13.11.12.1
+              dns_primary: 13.11.12.7
+              dns_secondary: 8.8.8.8
+              vlanid:
+              domain:
+                - name: example.com
 
-        hostgroup:
-            - name: master
-              subnet: subnet1
-              domain: example.com
-              root-pass: as12345678
+        partition_table:
+            - name: Kickstart default
+              boot:
+                  fstype: ext2
+                  size: 10
+              swap:
+                  fstype: swap
+                  size: 10
+              tmp:
+                  fstype: ext4
+                  size: 10
+              var:
+                  fstype: xfs
+                  size: 10
+              home:
+                  fstype: ext4
+                  size: 10
+              root:
+                  fstype: ext4
+                  size: 50
+            - name: Kickstart default2
+              boot:
+                  fstype: ext2
+                  size: 10
+              swap:
+                  fstype: swap
+                  size: 10
+              tmp:
+                  fstype: ext4
+                  size: 10
+              var:
+                  fstype: xfs
+                  size: 10
+              home:
+                  fstype: ext4
+                  size: 10
+              root:
+                  fstype: ext4
+                  size: 50
 
-        hosts:
-            - name: agent1
-              hostgroup: master
-              ip: 10.11.12.05
-              mac: 080027d487f5
 
 
 Complete YAML System Default Template
 -------------------------------------
-It is restricted for user making changes on system.yml file below, but it is configurable and allow to be modified as per user need. before provisioning You may find it in /foreman-ansible/ansible/roles/fmclient/templates/system.yml.j2.
+It is restricted for user making changes on system.yml file below, but it is configurable and allow to be modified as per user need. before provisioning You may find it in /mdr_platform_bare_metal/ansible/mdr_cluster/fmconfig/system.yml.j2.
 
     foreman:
+
+        protocol:
+              type: http
+
+        foreman_proxy:
+              port: 8443
+
         architecture:
             - name: x86_64
 
         medium:
             - name: CentOS7_x86_64
-              path: http://10.129.6.237/repos/CentOS_7_x86_64/
+              path: /repos/CentOS_7_x86_64/
               os_family: Redhat
 
         setting:
@@ -185,38 +281,44 @@ It is restricted for user making changes on system.yml file below, but it is con
                 - name: Kickstart default user data
               medium:
                 - name: CentOS7_x86_64
-              partition_table:
-                - name: Kickstart default
 
         hostgroup_default:
-              - name: hostg_default
-                parent:
-                os: CentOS7
-                architecture: x86_64
-                medium: CentOS7_x86_64
-                partition_table: Kickstart default
+            - os: CentOS7
+              architecture: x86_64
+              medium: CentOS7_x86_64
 
-        device_identifier:
-              - name: enp0s3
+        partition_system:
+             disk_minimum: 500
+             boot_size: 730
+             boot_type: ext2
+             swap_size: 8192
+             swap_type: swap
+             home_size: 5120
+             home_type: ext4
+             var_size: 102400
+             var_type: xfs
+             tmp_size: 102400
+             tmp_type: ext4
+             root_size: 281138
+             root_type: ext4  
+
+
 
 
 
 Installation and Provisioning Foreman
 -------------------------------------
-
     git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
-    * cd /foreman-ansible/ansible
+    * cd /mdr_platform_bare_metal/ansible/mdr_cluster
     * configure:
-          foreman yml:
-          	- /foreman-ansible/ansible/templates/payload.yml
-          repository of url:
-                - /foreman-ansible/ansible/bootup.sh
-          bootstrap address and password:
-                - /foreman-ansible/ansible/inventory
+          config.yml:
+          	- /mdr_platform_bare_metal/ansible/mdr_cluster/config.yml
+          system.yml.j2:
+            - /mdr_platform_bare_metal/ansible/mdr_cluster/fmconfig/system.yml.j2
 
     * launch:
-          - cd /foreman-ansible/ansible/
-          - ./bootup.sh
+          - cd /mdr_platform_bare_metal/ansible/mdr_cluster/
+          - ./bootstrap.sh http://repository_ip
 
     noted:when you see provisioning is ready you might turn up the nodes to be provisioned,
     from bios setting you may choose boot from network and allow boot using PXELinux. After the installation You may find the rest of log and setting in /opt/foreman_yml/ for the further chanages
