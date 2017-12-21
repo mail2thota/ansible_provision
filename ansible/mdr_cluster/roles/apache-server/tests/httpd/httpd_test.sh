@@ -1,5 +1,5 @@
 #!/bin/bash
-httpd_test_web="httpdtest.com"
+httpd_test_web="overallreport.com"
 httpd_test_data="testing httpd"
 mkdir -p /var/www/"${httpd_test_web}"/public_html
 chown -R $USER:$USER /var/www/"${httpd_test_web}"/public_html

@@ -20,3 +20,5 @@
     src: "hadoop-logrotate.yml"
     dest: "/etc/logrotate.d/ambari"
     mode: 0644
+
+

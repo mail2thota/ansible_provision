@@ -6,6 +6,23 @@
 - name: install mongodb-org
   yum: name=mongodb-org state=present
   tags: mongodb
+  register: result
+
+- name: get the version of mongodb
+  shell: yum list installed mongodb-org | grep mongodb-org | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating mongodb
+  shell: whereis mongo | tr " " %
+  register: path
+  
+- name: generate mongodb report
+  shell: "{{ playbook_dir }}/report.sh mongodb {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
 
 - name: configure mongodb
   template: src=mongod.conf.j2 dest=/etc/mongod.conf
@@ -22,4 +39,5 @@
       - "{{groups['mongodb_hosts']}}" 
   failed_when: "'Failed' in shell.stdout"
 - debug: msg="{{shell}}"
+
   

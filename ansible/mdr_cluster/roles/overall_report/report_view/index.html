@@ -1,0 +1,203 @@
+<html>
+   <script src="angular1.6.4.min.js"></script>
+   <head>
+      <style type="text/css">
+         .topcorner{
+         position:absolute;
+         top:0;
+         right:0;
+         }
+         .top{
+         position:absolute;
+         top:0;
+         left:0;
+         background-color: white;
+         width:1000px;
+         height:150px;
+         }
+         .middle{
+         position:absolute;
+         top:150;
+         left:0;
+         }
+         .logo_header{
+         position:absolute;
+         top:63;
+         left:5;
+         height:50px;
+         }
+         .main_header{ 
+         position:absolute; top:0;
+         left:265; 
+         line-height:150px; 
+         text-align:center; 
+         font-size: 180%; 
+         font-family: Helvetica, Arial, sans-serif;
+         font-weight: bold;
+         color: 818683;
+         }
+         .sub_header{ 
+         position:absolute; 
+         top:0;
+         left:265; 
+         line-height:210px;
+         text-align:center; 
+         font-size: 130%; 
+         font-weight: bold;
+         font-family: Helvetica, Arial, sans-serif;
+         color: 818683;
+         }
+         .info_table1{ 
+         text-align:center; 
+         font-family: Helvetica, Arial, sans-serif;
+         margin-left:0px;
+         font-size: 14px;
+         display: inline-table;
+         }
+         .info_table2{
+         text-align:center; 
+         font-family: Helvetica, Arial, sans-serif;
+         margin-left:0px;
+         border: 1px solid black;
+         font-size: 14px;
+         }
+         .info_table3{
+         text-align:center; 
+         font-family: Helvetica, Arial, sans-serif;
+         margin-left:0px;
+         font-size: 14px;
+         }
+         .status{
+         background-color:green; 
+         position: relative;
+         display: inline-block;
+         font-weight: bold;
+         font-style: oblique;
+         font-family: Helvetica, Arial, sans-serif;
+         line-height:30px;
+         background: linear-gradient(#2A9655 0%,#444 100%);
+         width:80px;
+         border-radius: 5px;
+         font-size: 12px;
+         }
+         .copyright{
+         position:absolute; 
+         left:455;
+         line-height:60px;
+         font-size: 12px;
+         font-family: Helvetica, Arial, sans-serif;
+         }
+         .table_header{
+         color: white;
+         }
+         .service_header{
+         color: #494D4B;
+         font-weight: bold;
+         }
+         .service_data{
+         color: #494D4B;
+         font-weight: bold;
+         }
+         .service_status{
+         color: #57EF93;
+         }
+         .service_properties{
+         margin-left:10000000px;
+         }
+         table { 
+         color: #333;
+         font-family: Helvetica, Arial, sans-serif;
+         border-collapse: collapse; border-spacing: 0; 
+         }
+         td, th {  border: 0 none; }
+         th {
+         background: linear-gradient(#989686 0%,#444 100%);
+         color: #FFF; font-weight: bold;
+         }
+         td { background: #FAFAFA;  }
+         tr:first-child th:nth-child(1) { 
+         border-radius: 5px 0 0 0; 
+         } 
+         tr:first-child th:last-child { 
+         border-radius: 0 5px 0 0; 
+         }
+         td {  
+         background: #FAFAFA;
+         }
+         tr:nth-child(even) td { background: #F1F1F1; }   
+         tr:nth-child(odd) td { background: #FEFEFE; }  
+         tr td:hover { background: #666; color: #FFF; }  
+         table:nth-child(even) td { background: #CACACA; } 
+         table:nth-child(odd) td { background: #CACACA; }
+      </style>
+      <script>
+         var app = angular.module('report', []);
+         app.filter('trim', function () {
+             return function(value) {
+                 if(!angular.isString(value)) {
+                     return value;
+                 }  
+                 return value.replace(/^\s+|\s+$/g, '');
+             };
+         });
+         app.filter('break', function () {
+             return function(value) {
+                 if(!angular.isString(value)) {
+                     return value;
+                 }  
+                 return value.replace(/ /g, '\n');
+             };
+         });
+         app.filter('parseUrl', function($sce) {
+         var urls = /(\b(https?|ftp):\/\/[A-Z0-9+&@#\/%?=~_|!:,.;-]*[-A-Z0-9+&@#\/%=~_|])/gim;
+         return function(text) {
+         if(text.match(urls)) {
+            text = text.replace(urls, '<a href="$1">$1</a>');
+         }
+         return $sce.trustAsHtml(text);
+         };
+         });
+         app.controller('overallReport', function($scope, $http) {
+           $http.get("overall_report.json").then(function (response) {
+               $scope.service_reports = response.data.reports;
+           });
+         });
+      </script>
+   </head>
+   <body bgcolor=white>
+      <div class="top"><span class="main_header">MDR Service Information</span><span class="sub_header">Overall software information</span><span class="logo_header"><img src="bae_logo.png"  height="50" width="250" /></span></div>
+      <div class="middle"  ng-app="report" ng-controller="overallReport" style="background-color:white;padding:1px;display:table;width:100%" >
+         <table  class="info_table1"  style="min-width: 100px;" >
+            <tr>
+               <th style="min-width: 100px;" align="center" class="table_header">SERVICE</th>
+               <th style="min-width: 70px;" align="center" class="table_header">VERSION</th>
+               <th style="min-width: 330px;" align="center" class="table_header">URL</th>
+               <th style="min-width: 355px;" align="center" class="table_header">PATH</th>
+               <th style="min-width: 245px;" align="center" class="table_header">HOST</th>
+               <th style="min-width: 125px;" align="center" class="table_header">STATUS</th>
+            </tr>
+            <table ng-repeat="service_report in service_reports" class="info_table2"  style="min-width: 80px;"  >
+               <tr>
+                  <td  style="width: 100px;" align="center" class="service_header">{{ service_report.service }}</td>
+                  <td   style="width: 70px;" align="center" class="service_header">{{ service_report.version }}</td>
+                  <td  style="width: 330px;" align="center" class="service_header">
+                     <p ng-bind-html="service_report.url | parseUrl"></p>
+                  </td>
+                  <td   style="width: 355px;" align="left" class="service_header">
+                     <pre>{{ service_report.path | trim | break }}</pre>
+                  </td>
+                  <td  style="width: 370px;"  align="left" class="service_properties">
+                     <table ng-repeat="service_report_properties in service_report.properties" class="info_table3" style="min-width: 100px;"  >
+                        <tr>
+                           <td   style="width: 250px;" align="center" class="service_data">{{ service_report_properties.host }}</td>
+                           <td   style="width: 100px;" align="center" class="service_status"><span class="status">{{ service_report_properties.status | uppercase }}</span></td>
+                        </tr>
+                     </table>
+                  </td>
+               </tr>
+            </table>
+         </table>
+         <div class="copyright"> Copyright &copy; 2017 BAE Systems. All rights reserved </div>
+      </div>
+   </body>
+</html>
