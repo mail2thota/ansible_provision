@@ -34,8 +34,6 @@ This will automatically updates the required configurations for ansible roles an
 Following Yaml configuration template structure used for configuring the playbooks  
 
 ```
----
-
 
 default:
     dns_enabled: yes or no to update /etc/hosts file if dns server is not available
@@ -118,7 +116,12 @@ kibana:
 
 mongodb:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes mongodb will be installed
-```
+
+
+
+
+
+
 
 ## Variables Description
  Variable |mandatory/optional| example| Description
@@ -163,7 +166,6 @@ mongodb:
  Please refer below example template and the existing   [config template ](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) in code base if needed
 
  ```
- ---
 
 
 default:
@@ -449,7 +451,7 @@ hdp_test:
    namenode_host: agent1-ambariagent.example.com
    oozie_host: agent4-ambariagent.example.com
 
- ```
+
 
 ## Service ports
 ### Hadoop Components
