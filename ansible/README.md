@@ -120,6 +120,7 @@ mongodb:
 ```
 
 ## Variables Description
+
  Variable |mandatory/optional| example| Description
  ---------|-|--------|-------
  default[dns_enabled]|mandatory|no| flag to updated the etc hosts if dns server is not available
