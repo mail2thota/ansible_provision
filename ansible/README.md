@@ -117,11 +117,7 @@ kibana:
 mongodb:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes mongodb will be installed
 
-
-
-
-
-
+```
 
 ## Variables Description
  Variable |mandatory/optional| example| Description
@@ -451,7 +447,7 @@ hdp_test:
    namenode_host: agent1-ambariagent.example.com
    oozie_host: agent4-ambariagent.example.com
 
-
+```
 
 ## Service ports
 ### Hadoop Components
