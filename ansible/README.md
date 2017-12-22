@@ -125,10 +125,10 @@ mongodb:
  ---------|-|--------|-------
  default[dns_enabled]|mandatory|no| flag to updated the etc hosts if dns server is not available
  default[java_vendor]|optional|oracle|Java vendor either openjdk or oracle by default openjdk will be installed
-common[hostgroups]|mandatory| |list of the host groups avaible to use by the Components
-common[hostgroups]|mandatory|[{name: master_1, subnet: subnet1, domain: example.com,  root_pass:as12345678}] |{name: name of the host group,domain: domain name of the group,root_pass: root pass of the hosts belonging to this group}
-common[primaryhosts]|mandatory|| List of hosts mapped to the hosts groups mention in the common[hostsgroups]
-common[primaryhosts]|mandatory|[{name: agent1-ambariagent,hostgroup: master_1,ip: 10.11.12.4}]| {name: hostnmame of the machine,hostgroup: hostgroup name to which it belongs,ip: ip adress of the host }
+ common[hostgroups]|mandatory| |list of the host groups avaible to use by the Components
+ common[hostgroups]|mandatory|[{name: master_1, subnet: subnet1, domain: example.com,  root_pass:as12345678}] |{name: name of the host group,domain: domain name of the group,root_pass: root pass of the hosts belonging to this group}
+ common[primaryhosts]|mandatory|| List of hosts mapped to the hosts groups mention in the common[hostsgroups]
+ common[primaryhosts]|mandatory|[{name: agent1-ambariagent,hostgroup: master_1,ip: 10.11.12.4}]| {name: hostnmame of the machine,hostgroup: hostgroup name to which it belongs,ip: ip adress of the host }
  ambari[hostgroup]|mandatory| master1-ambariserver.example.com| host group name mentioned in the common[hostgroups] and it will be installed on the hosts of the group
  ambari[user]|mandatory| admin| login user name of the ambari interface
  ambari[pass]|mandatory| admin| login password of the ambari interface
