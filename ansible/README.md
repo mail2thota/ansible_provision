@@ -158,8 +158,6 @@ common[primaryhosts]|mandatory|[{name: agent1-ambariagent,hostgroup: master_1,ip
  kibana[elasticsearch_url]|mandatory|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
  apache-server[hostgroup]| mandatory| apache|hostgroup name configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
  docker-registry[hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker-registery and on this group of hosts docker-register will be installed
-
-
 #Default Template
  Please refer below example tempate and the existing   [config template ](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) in code base if needed
 
