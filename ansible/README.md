@@ -122,7 +122,7 @@ mongodb:
 ## Variables Description
 
  Variable |mandatory/optional| example| Description
- ---------|-|--------|-------
+ ---------|---|----|-------
  default[dns_enabled]|mandatory|no| flag to updated the etc hosts if dns server is not available
  default[java_vendor]|optional|oracle|Java vendor either openjdk or oracle by default openjdk will be installed
  common[hostgroups]|mandatory| |list of the host groups avaible to use by the Components
