@@ -165,7 +165,6 @@ mongodb:
  ```
  ---
 
-
 default:
   dns_enabled: no
   java_vendor: oracle
