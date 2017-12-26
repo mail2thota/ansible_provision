@@ -122,6 +122,16 @@
   service:
     name: "activemq"
     state: started
+  register: result
+
+- name: locating activemq
+  shell: whereis activemq | tr " " %
+  register: path
+  
+- name: generate activemq report
+  shell: "{{ playbook_dir }}/report.sh activemq {{ activemq_version }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
 
 - name: run test for activemq
   become: True

@@ -9,6 +9,19 @@
     name: wget
     state: present
   register: result
-  until:  result is defined and result.rc == 0
-  retries: 10
-  delay: 10
+
+- name: get the version of wget
+  shell: yum list installed wget | grep wget | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating wget
+  shell: whereis wget | tr " " %
+  register: path
+  
+- name: generate wget report
+  shell: "{{ playbook_dir }}/report.sh wget {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded

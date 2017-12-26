@@ -13,7 +13,24 @@
   yum:
     name: ambari-agent
     state: installed
+  register: result
+
+- name: get the version of ambari agent
+  shell: yum list installed ambari-agent | grep ambari-agent | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating ambari agent
+  shell: whereis ambari-agent | tr " " %
+  register: path
   
+- name: generate ambari agent report
+  shell: "{{ playbook_dir }}/report.sh ambari-agent {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
+
 - name: create ambari agent hostname script
   template:
     src: "../roles/ambari_agent/files/hostname.sh"

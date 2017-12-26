@@ -8,6 +8,23 @@
 
 - name: Install Kibana.
   package: name=kibana state=present
+  register: result
+
+- name: get the version of kibana
+  shell: yum list installed kibana | grep kibana | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating kibana
+  shell: whereis kibana | tr " " %
+  register: path
+  
+- name: generate kibana report
+  shell: "{{ playbook_dir }}/report.sh kibana {{ version.stdout }} http://{{ kibana_hosts[0]['name'] }}:{{ kibana_port }} {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
 
 - name: Ensure Kibana is started and enabled at boot.
   service:

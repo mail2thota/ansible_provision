@@ -14,6 +14,19 @@
       - pg_repack96
       - postgresql96-server
       - postgresql-jdbc
+    register: result
+
+  - name: get the version of postgresql
+    shell: yum list installed postgresql96 | grep postgresql96 | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+    register: version
+    changed_when: False
+    args:
+      warn: no
+ 
+  - name: generate postgresql report
+    shell: "{{ playbook_dir }}/report.sh postgresql {{ version.stdout }} N/A N/A {{ ansible_fqdn }} success"
+    delegate_to: localhost
+    when: result|succeeded
 
   - name: Change Postgresql-JDBC Permission
     file:

@@ -9,12 +9,28 @@
     name: ntp
     state: present
   register: result
-  until:  result is defined and result.rc == 0
-  retries: 10
-  delay: 10
 
 - name: check ntp is running and enabled
   service:
     name: ntpd
     state: started
     enabled: yes
+
+- name: get the version of ntp
+  shell: yum list installed ntp | grep ntp | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating ntp
+  shell: whereis ntp | tr " " %
+  register: path
+  
+
+- name: generate ntp report
+  shell: "{{ playbook_dir }}/report.sh ntp {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded  
+
+

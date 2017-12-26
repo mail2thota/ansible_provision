@@ -122,3 +122,8 @@
   become: true
   roles:
     - role: cleanup
+
+- hosts: apache-server_hosts
+  become: true
+  roles:
+    - overall_report

@@ -15,6 +15,23 @@
   yum:
     name: ambari-server
     state: installed
+  register: result
+
+- name: get the version of ambari server
+  shell: yum list installed ambari-server | grep ambari-server | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating ambari server
+  shell: whereis ambari-server | tr " " %
+  register: path
+  
+- name: generate ambari server report
+  shell: "{{ playbook_dir }}/report.sh ambari-server {{ version.stdout }} http://{{ ansible_fqdn }}:8080 {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
 
 - name: update ambari agent task timeout
   lineinfile:
