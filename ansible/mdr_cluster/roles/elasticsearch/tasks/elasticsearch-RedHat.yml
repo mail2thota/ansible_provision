@@ -23,6 +23,22 @@
   retries: 5
   delay: 10
 
+- name: get the version of elasticsearch
+  shell: yum list installed elasticsearch | grep elasticsearch | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating elasticsearch
+  shell: whereis elasticsearch | tr " " %
+  register: path
+  
+- name: generate elasticsearch report
+  shell: "{{ playbook_dir }}/report.sh elasticsearch {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: redhat_elasticsearch_install_from_repo|succeeded
+
 - name: RedHat - Install Elasticsearch from url
   become: yes
   yum: name={% if es_custom_package_url is defined %}{{ es_custom_package_url }}{% else %}{{ es_package_url }}-{{ es_version }}.noarch.rpm{% endif %} state=present

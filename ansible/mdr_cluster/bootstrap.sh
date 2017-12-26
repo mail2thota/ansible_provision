@@ -37,6 +37,7 @@ init(){
 	yum clean all
         echo "install ansible"
 	yum install ansible -y
+	gnome-terminal -x ./lnav-0.8.2/lnav /var/log/ansible.*
 }
 
 foreman(){
@@ -53,6 +54,7 @@ ambari_hdp(){
 	echo "execution of ambari and hdp playbook"
 	ansible-playbook mdr.yml
 } 
+
 option1="Node Provision"
 option2="Cluster"
 option3="Node Provision & Cluster"
@@ -65,13 +67,13 @@ do
         "${option1}")
             echo "${bold}${green}Selected ${option1}${reset}"
             init
-	    validate foreman
+			validate foreman
             foreman
             break
             ;;
         "${option2}")
             echo "${bold}${green}Selected ${option2}${reset}"
-	    init
+			init
             validate mdr
             ambari_hdp
             break

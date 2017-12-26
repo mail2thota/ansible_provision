@@ -13,4 +13,17 @@
   yum:
     name: epel-release
     state: installed
+  register: result
+
+- name: get the version of epel-release
+  shell: yum list installed epel-release | grep epel-release | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: generate epel release report
+  shell: "{{ playbook_dir }}/report.sh epel {{ version.stdout }} N/A N/A {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
   

@@ -13,7 +13,36 @@
      - python-devel
      - postgresql-devel
      - gcc
-     
+  register: result
+
+- name: get the version of python
+  shell: yum list installed python | grep python | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating python
+  shell: whereis python | tr " " %
+  register: path
+  
+- name: generate python report
+  shell: "{{ playbook_dir }}/report.sh python {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
+
+- name: get the version of python-pip
+  shell: yum list installed | grep python2-pip | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: generate python-pip report
+  shell: "{{ playbook_dir }}/report.sh python-pip {{ version.stdout }} N/A N/A {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
+   
 - name: create ~/.pip directory  
   file: path=~/.pip state=directory
 

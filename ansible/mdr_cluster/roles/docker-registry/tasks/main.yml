@@ -10,6 +10,7 @@
     name: docker
     state: started
     enabled: yes
+  register: result
 
 - name: Install Docker Regisry.
   package: name={{ docker_registry }} state={{ docker_package_state }}
@@ -27,6 +28,22 @@
     name: docker-registry
     state: started
     enabled: yes
+
+- name: get the version of docker registry
+  shell: yum list installed | grep docker-ce | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating docker registry
+  shell: whereis docker | tr " " %
+  register: path
+
+- name: generate docker registry report
+  shell: "{{ playbook_dir }}/report.sh docker {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
 
 - name: run test for docker-registry
   become: True

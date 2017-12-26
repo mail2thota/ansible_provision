@@ -24,8 +24,13 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
       - cd /mdr_platform_bare_metal/ansible/mdr_cluster/
       - ./bootstrap.sh http://repository_ip
 
-when script prompt you choose the appropriate option
-
+    once you running this scirpt it will promit with Options 
+    1. Node Provision
+    2. Node Provision & Cluster
+    3. Cluster
+    4. Quit
+  
+   and choose option 2  if you want to do Node provision and Cluster setup at once or Option 3 If you need only setup the packages and hdp cluster 
 ```
 This will automatically updates the required configurations for ansible roles and executes playbooks which setups the hdp cluster and remaining packages
 

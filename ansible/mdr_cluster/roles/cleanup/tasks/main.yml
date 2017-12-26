@@ -18,4 +18,5 @@
   become_user: root
   script: ./tasks/all_cleanup/cleanup_config.sh
   when: inventory_hostname != "localhost"
-  
+
+

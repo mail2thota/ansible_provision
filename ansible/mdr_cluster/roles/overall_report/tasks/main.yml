@@ -1,0 +1,36 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- name: compile all overall reports
+  become: True
+  become_user: root
+  script: ./compile_report.sh
+  delegate_to: localhost
+
+- name: copy reports to investigator
+  copy:
+    src: /tmp/overall_report.json
+    dest: /var/www/overallreport.com/public_html/overall_report.json
+
+- name: copy report view to investigator
+  copy:
+    src: "{{ item }}"
+    dest: "/var/www/overallreport.com/public_html/"
+    owner: "root"
+  with_fileglob:
+     - "{{ role_path }}/report_view/*"
+
+- name: clean up for overall report
+  file:
+    state: absent
+    path: /tmp/overall_report.json
+  delegate_to: localhost
+
+- name: trigger overall reports view
+  become: True
+  become_user: root
+  shell: python -m webbrowser -t "http://{{ ansible_fqdn }}"
+  delegate_to: localhost

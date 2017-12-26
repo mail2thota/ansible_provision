@@ -4,13 +4,45 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- name: install open jdk
+- name: install openjdk
   any_errors_fatal: true
   yum: name=java-1.8.0-openjdk state=installed
+  register: result
+  when: default_java_vendor == "openjdk" or default_java_vendor is undefined
+
+- name: get the version of openjdk
+  shell: yum list installed java-1.8.0-openjdk | grep java-1.8.0-openjdk | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: openjdk_version
+  changed_when: False
+  args:
+    warn: no  
   when: default_java_vendor == "openjdk" or default_java_vendor is undefined
 
 - name: install oracle jdk
   any_errors_fatal: true
   yum: name={{ jdk_rpm }} state=present
+  register: result
   when: default_java_vendor == "oracle"
+ 
+- name: get the version of oracle jdk
+  shell: yum list installed | grep jdk1.8.0 | awk '{print $2}'  | cut -d'-' -f1 | cut -d':' -f2
+  register: oracle_version
+  changed_when: False
+  args:
+    warn: no  
+  when: default_java_vendor == "oracle"
+
+- name: locating java
+  shell: whereis java | tr " " %
+  register: path
+ 
+- name: generate openjdk report
+  shell: "{{ playbook_dir }}/report.sh {{ default_java_vendor }} {{ openjdk_version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded and (  default_java_vendor == "openjdk" or default_java_vendor is undefined )
+
+- name: generate oracle jdk report
+  shell: "{{ playbook_dir }}/report.sh {{ default_java_vendor }} {{ oracle_version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded and default_java_vendor == "oracle"
   
