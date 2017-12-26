@@ -18,28 +18,28 @@
     - ambari-prereqs
     - hdp-install
 
-- hosts: postgres_hosts
+- hosts: postgres
   become: true
   roles:
     - role: postgresql
 
-- hosts: activemq_hosts
+- hosts: activemq
   become: true
   roles:
     - role:  activemq
 
-- hosts: docker-registry_hosts
+- hosts: docker-registry
   become: true
   roles:
     - role: docker-registry
 
-- hosts: apache-server_hosts
+- hosts: apache-server
   become: true
   roles:
     - apache-server
     - python-pip
     
-- hosts: ambari_hosts
+- hosts: ambari
   become: true
   roles:
     - role: ambari_server
@@ -47,7 +47,7 @@
     - ambari-server
     - hdp-install
 
-- hosts: hdp_hosts
+- hosts: hdp
   become: true
   roles:
     - role: ambari_agent
@@ -55,21 +55,21 @@
     - ambari-agent
     - hdp-install
 
-- hosts: ambari_hosts
+- hosts: ambari
   become: true
   roles:
     - role: ambari_config
   tags:
     - hdp-deploy
 
-- hosts: hdp_test_hosts
+- hosts: hdp_test
   become: true
   roles:
     - role:  hdp_test
 
 
 
-- hosts: es_master_hosts
+- hosts: es_master
   roles:
     - { role: elasticsearch,es_heap_size: "1g",
     es_config: {
@@ -88,7 +88,7 @@
     es_version_lock: false
     ansible_user: ansible
 
-- hosts: es_node_hosts
+- hosts: es_node
   roles:
     - { role: elasticsearch,  es_data_dirs: "/opt/elasticsearch",
     es_config: {
@@ -108,12 +108,12 @@
     ansible_user: ansible
     es_api_port: 9200
 
-- hosts: kibana_hosts
+- hosts: kibana
   become: true
   roles:
     - role: kibana
 
-- hosts: mongodb_hosts
+- hosts: mongodb
   become: true
   roles:
     - role:  mongodb
@@ -123,7 +123,7 @@
   roles:
     - role: cleanup
 
-- hosts: apache-server_hosts
+- hosts: apache-server
   become: true
   roles:
     - overall_report

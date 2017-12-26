@@ -14,35 +14,73 @@ defaultConfigFile = 'config.yml'
 defaultAllFile = 'default-all'
 globalConfigData = ''
 validator = Validator()
+commonHostGroups = {}
+commonHostGroupMap = {}
+commonHostGroupIpMap = {}
+components = ['all']
 
-def generateHostConfig(hdpHostConfig):
-    log.log(log.LOG_INFO,"Generating ansible host group configuraiton for hdp cluster")
-    hostInfo = []
-    hdpHostInfo = {}
+def gethosts(groupName):
+
+    hostgroup = commonHostGroupMap[groupName]
+    hosts = []
+    for ip in hostgroup:
+        hosts.append(hostgroup[ip]['fqdn'])
+    return hosts
+
+def gethostNameIpMap(groupName):
+    hostgroup = commonHostGroupMap[groupName]
+    data = []
+    for ip in hostgroup:
+        data.append({'ip':ip,'name': hostgroup[ip]['fqdn']})
+    return data
+
+def getCredentials(groupName):
+    hostgroup = commonHostGroups[groupName]
+    return { 'user': 'root','pass': hostgroup['root_pass']}
+
+def gethostGroupName(serviceName):
+
+    return globalConfigData[serviceName]['hostgroup']
+
+def addToEtcHostsList(groupName):
+    hosts = gethostNameIpMap(groupName)
+    for host in hosts:
+        oshostConfig[host['ip']] = host['name']
+
+
+def generateHdpHostConfig(hdpHostConfig):
+
     outfile = open(ansiblehostsfile, 'w')
-    outfile.write("[hdp_hosts]")
-    if hdpHostConfig["cluster_type"] == 'single_node':
-        if "hosts" in globalConfigData["ambari"]:
-            for host in globalConfigData["ambari"]["hosts"]:
-                outfile.write("\n" + host["name"])
-        else:
-            log.log(log.LOG_ERROR, 'hosts are not specified for the service : ambari')
-    else:
-        for groupsInfo in hdpHostConfig[hdpHostConfig["cluster_type"]]["host_groups"]:
-            for groupName in groupsInfo:
-                hosts = groupsInfo[groupName]["hosts"]
-                for host in hosts:
-                    outfile.write('\n' + host["name"])
-                    if 'ip' in host:
-                        oshostConfig[host["ip"]] = host["name"]
-    return
+    outfile.write("[hdp]")
 
+    if hdpHostConfig["cluster_type"] == 'single_node':
+        hostgroup = globalConfigData["ambari"]['hostgroup']
+        credentials = getCredentials(hostgroup)
+        for host in gethosts(hostgroup):
+            outfile.write("\n" + '{0} ansible_ssh_user={1} ansible_ssh_pass={2}'.format(host, credentials['user'],
+                                                                                         credentials['pass']))
+    else:
+        for host_group in hdpHostConfig["hostgroups"]:
+            host_group_name = host_group.keys()[0]
+            credentials = getCredentials(host_group_name)
+            for host in gethosts(host_group_name):
+                outfile.write("\n" + '{0} ansible_ssh_user={1} ansible_ssh_pass={2}'.format(host, credentials['user'],
+                                                                                            credentials['pass']))
+            addToEtcHostsList(host_group_name)
+
+    log.log(log.LOG_INFO, "Create ansible hdp host group configuration file : hosts")
 
 def generateBluePrint(hdpConfig):
     outfile = open(hdpConfig["cluster_type"] + '.yml', 'w+')
 
+    blueprint_configuration = hdpConfig.get("blueprint_configuration")
+
+    if blueprint_configuration is None:
+        blueprint_configuration = []
+
     blueprint = {"cluster_name": hdpConfig["cluster_name"], "blueprint_name": hdpConfig["blueprint"],
-                 "configurations": hdpConfig.get("blueprint_configuration",[])}
+                 "configurations": blueprint_configuration}
+
     if "default_password" in hdpConfig:
         blueprint["blueprint"] = {"default_password": hdpConfig["default_password"], "stack_name": "HDP",
                                   "stack_version": hdpConfig["stack"], "groups": []}
@@ -51,23 +89,21 @@ def generateBluePrint(hdpConfig):
         blueprint["blueprint"] = {"stack_name": "HDP", "stack_version": hdpConfig["stack"], "groups": []}
 
     if hdpConfig['cluster_type'] == 'multi_node':
-        for groupsInfo in hdpConfig[hdpConfig["cluster_type"]]["host_groups"]:
+        for groupsInfo in hdpConfig["hostgroups"]:
             components = []
             for groupName in groupsInfo:
                 groupInfo = groupsInfo[groupName]
                 componentset = groupInfo["components"]
                 for componentName in componentset:
                     if componentName  not in hdpConfig['component_groups']:
-                        log.log(log.LOG_ERROR,'Tried to use the non existance component group ['+componentName+"] in hdp[multi_node][host_groups]["+groupName+"] Please specify existing one")
+                        log.log(log.LOG_ERROR,'hdp: Tried to use the non existance component group ['+componentName+"] in hdp[host_groups]["+groupName+"] Please check and re-run")
                         sys.exit(1)
                     for component in hdpConfig["component_groups"][componentName]:
                         components.append(component)
-            hostslist = []
-            for hostinfo in groupInfo["hosts"]:
-                hostslist.append(hostinfo["name"])
+            hostgroup = groupInfo["hostgroup"]
             components = list(set(components))
             blueprint["blueprint"]["groups"].append(
-                {"name": groupName, "cardinality": groupInfo.get("cardinality",1), "hosts": hostslist,
+                {"name": groupName, "cardinality": groupInfo.get("cardinality",1), "hosts": gethosts(hostgroup),
                  "components": components, "configuration": groupInfo.get("configuration",[])})
 
     elif hdpConfig['cluster_type'] == 'single_node':
@@ -77,12 +113,8 @@ def generateBluePrint(hdpConfig):
             for componentName in componentInfo:
                 components.append(componentName)
         components = list(set(components))
-
-        hostslist = []
-        for hostinfo in globalConfigData['ambari']['hosts']:
-            hostslist.append(hostinfo["name"])
         blueprint["blueprint"]["groups"].append(
-            {"name": "master-1", "cardinality": 1, "hosts": hostslist, "components": components, "configuration": []})
+            {"name": "master-1", "cardinality": 1, "hosts": gethosts(gethostGroupName('ambari')), "components": components, "configuration": []})
 
     yaml.dump(blueprint, outfile, default_flow_style=False, allow_unicode=True)
     log.log(log.LOG_INFO,"blueprint: "+ str(blueprint))
@@ -90,6 +122,7 @@ def generateBluePrint(hdpConfig):
 
 
 def generateCommonDefaultAllConfigFile(config):
+
     with open(defaultAllFile, 'r') as stream:
         try:
             configdata = yaml.load(stream)
@@ -100,35 +133,38 @@ def generateCommonDefaultAllConfigFile(config):
         except yaml.YAMLError as exc:
             log.log(log.LOG_ERROR,"Unalbe to write the all file" +exc)
             sys.exit(1)
+    log.log(log.LOG_INFO, 'Generated ansible all file : config.yml')
 
+def generateEtcHostFile(config,services):
+    osHostsFile = open(etchostsFile, 'w')
+    for host in oshostConfig:
+        osHostsFile.write(host + " " + oshostConfig[host] + "\n")
+    log.log(log.LOG_INFO,'Generated ip & hostname map file to replace  /etc/hosts in all nodes : host_list')
 
-def generateCommonConfigHostsFile(config):
-    fileMode = None
-    # Adding the host groups
+def generateAnsibleHostFile(config,services):
 
-    hostsGroupFIle = os.path.exists(ansiblehostsfile)
-    if hostsGroupFIle:
-        fileMode = 'a'
-    else:
-        fileMode = 'w'
-
-    with open(ansiblehostsfile, fileMode) as hostFile:
+     with open(ansiblehostsfile, 'a') as hostFile:
         for service in config:
             if service == "hdp":
                 continue
             # Creating/Updating ansible hosts group file
-            if "hosts" in config[service]:
-                hostFile.write("\n\n\n[" + service + "_hosts]")
-                for host in config[service]["hosts"]:
-                    hostFile.write("\n" + host["name"])
-                    if 'ip' in host:
-                        oshostConfig[host["ip"]] = host["name"]
-            else:
-                log.log(log.LOG_WARN,'hosts are not specified for the service :' + str(service))
-    hostFile.close()
+            if "hostgroup" in config[service]:
+                if service in services or 'all' in services:
+                    hostFile.write("\n\n\n[" + service + "]")
+                    hostgroup = config[service]['hostgroup']
+                    credentials = getCredentials(hostgroup)
+                    for host in gethosts(hostgroup):
+                        hostFile.write("\n" + '{0} ansible_ssh_user={1} ansible_ssh_pass={2}'.format(host,credentials['user'],credentials['pass']))
 
+                    addToEtcHostsList(hostgroup)
+     log.log(log.LOG_INFO, 'updated ansible hosts file for non hdp components: hosts')
+
+def generateAnsibleAllFile(config,services):
+    fileMode = None
     # Adding the properties to all file
+
     isAllConfigFileExists = os.path.exists(allConfigFile)
+
     if isAllConfigFileExists:
         fileMode = 'a'
     else:
@@ -138,61 +174,79 @@ def generateCommonConfigHostsFile(config):
         for service in config:
             allFile.write("\n\n#Service :" + service)
             for property in config[service]:
-                allFile.write("\n" + service + "_" + property + ": " + str(configdata[service][property]))
+                if property == 'hostgroup':
+                    allFile.write("\n" + service + "_hosts: " + str(gethostNameIpMap(configdata[service][property])))
+                else:
+                    allFile.write("\n" + service + "_" + property + ": " + str(configdata[service][property]))
     allFile.close()
 
 
 def generateHdpConfigration(hdpConfig):
-    if hdpConfig["cluster_type"] in ["multi_node", "single_node"]:
-        generateHostConfig(hdpConfig)
+        generateHdpHostConfig(hdpConfig)
         generateBluePrint(hdpConfig)
-    else:
-        log.log(log.LOG_ERROR, "cluster_type  must be either multi_node or single_node but configured type is :" + hdpConfig[
-            "cluster_type"])
-        sys.exit(1);
-    return
+
+def checkHostGroupNameExists(groupName):
+
+    if groupName not in commonHostGroups:
+        raise Invalid('Hostgroup \'{0}\' doesn\'t exist\'s in {1}'.format(groupName,commonHostGroups))
+
+    if len(commonHostGroupMap[groupName]) == 0:
+        raise Invalid('No hosts mapped to hostgroup \'{0}\' in {1}'.format(groupName,commonHostGroups))
 
 
-def addNodeCredentials(configdata):
-    if "ansible_ssh" in configdata:
-        fileMode = ''
-        hostsGroupFile = os.path.exists(ansiblehostsfile)
-        if hostsGroupFile:
-            fileMode = 'a'
-        else:
-            fileMode = 'w'
-        hostsGroupFIle = open(ansiblehostsfile, fileMode)
-        hostsGroupFIle.write("\n\n\n[all:vars]\n")
-        hostsGroupFIle.write("ansible_ssh_user=" + configdata["ansible_ssh"]["user"] + "\n")
-        hostsGroupFIle.write("ansible_ssh_pass=" + configdata["ansible_ssh"]["pass"])
 
-    else:
-        log.log(log.LOG_ERROR, "Node Credentials are not provided for ansible to deploy")
+def loadcommonHostgroupInfo(configdata):
+    data = configdata.get('common')
+    try:
+       validator.common(data)
+    except MultipleInvalid as e:
+        for error in e.errors:
+            log.log(log.LOG_ERROR, "YAML validation Error: message:{0} in {1}".format(error,data.get('common')))
         sys.exit(1)
 
+    hostgroups = data.get('hostgroups')
+    for hostgroup in hostgroups:
+            try:
+              validator.common_hostgroup(hostgroup)
+              if hostgroup['name'] not in commonHostGroups:
+                commonHostGroups[hostgroup['name']] = hostgroup
+                commonHostGroupMap[hostgroup['name']] = {}
+              else:
+                  raise Invalid('duplicate hostgroup name:'+hostgroup['name'])
+            except MultipleInvalid as e:
+                for error in e.errors:
+                    log.log(log.LOG_ERROR, "YAML validation Error: message:{0} in {1}".format(error,hostgroup))
+                sys.exit(1)
+            except Invalid as e:
+                log.log(log.LOG_ERROR, "YAML validation Error: message:{0} in {1}".format(e, hostgroup))
+                sys.exit(1)
 
-def validateHosts(configService,data):
-    hosts= data.get('hosts')
-    if(len(hosts) == 0):
-        log.log(log.LOG_ERROR,
-                configService + "[hosts] : YAML validation Error: doesn't exists")
-        sys.exit(1)
-
-    for host in hosts:
+    for primary_host in data.get('primary_hosts'):
         try:
-            validator.host(host)
-        except MultipleInvalid as exe:
-            log.log(log.LOG_ERROR,
-                    configService + "[hosts] : YAML validation Error: {0} in  {1}".format(
-                        exe.error_message, host))
+            validator.common_primary_host(primary_host)
+            if primary_host['hostgroup'] not in commonHostGroups:
+                raise Invalid('Unknown hostgroup {0} mapped to host {1}'.format(primary_host['hostgroup'],primary_host['name']))
+            else:
+                if primary_host['ip'] in commonHostGroupIpMap:
+                    raise Invalid('ip \'{0}\' mapped to two host groups {1} & {2}'.format(primary_host['ip'],commonHostGroupIpMap.get(primary_host['ip']),primary_host['hostgroup']))
+                else:
+                    commonHostGroupIpMap[primary_host['ip']] = primary_host['hostgroup']
+                hostGroup = commonHostGroupMap[primary_host['hostgroup']]
+                hostGroup[primary_host['ip']] = primary_host
+                primary_host['fqdn'] = primary_host['name']+'.'+commonHostGroups[primary_host['hostgroup']].get('domain')
+                commonHostGroupIpMap[primary_host.get('ip')] = primary_host['hostgroup']
+        except Invalid as e:
+            log.log(log.LOG_ERROR, "YAML validation Error: common[primary_hosts]:{0} in {1}".format(e, primary_host))
             sys.exit(1)
+
 
 def validateConfigFile(configdata):
 
-    #Validating madatory ansible_ssh section
+
     try:
        validator.config( configdata)
-
+       if 'hdp' or 'ambari' in configdata:
+           validator.hdpambari(configdata)
     except MultipleInvalid as e:
         for error in e.errors:
             log.log(log.LOG_ERROR, "YAML validation Error: message:{0} in {1}".format(error,configdata))
@@ -200,20 +254,21 @@ def validateConfigFile(configdata):
 
     try:
         for configService in configdata:
-                if configService == 'ansible_ssh':
-                   validator.ansible_ssh(configdata.get('ansible_ssh'))
-                elif configService == 'default':
-                    validator.default(configdata.get(configService))
+                serviceData = configdata.get(configService)
+                msg = 'Success'
+                msglevel = log.LOG_INFO_RM
+
+                if configService == 'default':
+                    validator.default(serviceData)
+
                 elif configService == 'ambari':
-                    validator.ambari(configdata.get(configService))
-                    #Verify ambari must have hosts if not it will fail
-                    validateHosts(configService,configdata.get(configService))
+
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+                    validator.hdpambari(configdata)
 
                 elif configService == 'hdp':
-                    #Single level varaibles validation
-                    validator.hdp(configdata.get(configService))
-                    component_groups = configdata.get(configService).get('component_groups')
-                    #Check the each component group for unique elemements
+                    validator.hdp(serviceData)
+                    component_groups = serviceData.get('component_groups')
                     for component_group in component_groups :
                         try:
                             validator.component_group(component_groups.get(component_group))
@@ -222,39 +277,62 @@ def validateConfigFile(configdata):
                            log.log(log.LOG_ERROR, configService +": component_groups[" +component_group+"] : YAML validation Error: {0} in  {1}".format(exe.error_message,component_groups.get(component_group)))
                            sys.exit(1)
 
-                    #Validating host groups recursively
-                    host_groups = configdata.get(configService).get('multi_node').get('host_groups')
+                    host_groups = serviceData.get('hostgroups')
                     for host_group  in host_groups:
                         host_group_name = host_group.keys()[0]
                         try:
-                            validator.host_group(host_group.get(host_group_name))
-                            hosts = host_group.get(host_group_name).get('hosts')
-                            for host in hosts:
-                                try:
-                                  validator.host(host)
-                                except MultipleInvalid as exe:
-                                    log.log(log.LOG_ERROR,
-                                            configService + ": host_groups["+host_group_name+"][hosts] : YAML validation Error: {0} in  {1}".format(
-                                                exe.error_message, host))
-                                    sys.exit(1)
-                        except MultipleInvalid as exe:
+                            validator.host_group(host_group[host_group_name])
+                            checkHostGroupNameExists(host_group[host_group_name]['hostgroup'])
+                        except Invalid as exe:
                             log.log(log.LOG_ERROR,
-                                    configService + ": host_groups["+host_group_name+"][hosts] : YAML validation Error: {0} in  {1}".format(
+                                    configService + ": hostgroups["+host_group_name+"][hostgroup] : YAML validation Error: {0} in  {1}".format(
                                         exe.error_message, host_group))
                             sys.exit(1)
+
                 elif configService == 'hdp_test':
-                        validator.hdp_test(configdata.get(configService))
-                        validateHosts(configService, configdata.get(configService))
+                    validator.hdp_test(serviceData)
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+
                 elif configService == 'kibana':
-                        validator.kibana(configdata.get(configService))
-                        validateHosts(configService, configdata.get(configService))
+                    validator.kibana(serviceData)
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+
+                elif configService == 'postgres':
+                    validator.postgres(serviceData)
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+
+                elif configService == 'activemq':
+                    validator.activemq(serviceData)
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+
+                elif configService == 'es_master':
+                    validator.es_master(serviceData)
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+
+                elif configService == 'es_node':
+                    validator.es_node(serviceData)
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+
+                elif configService == 'apache-server':
+                    validator.apache_server(serviceData)
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+
+                elif configService == 'mongodb':
+                    validator.mongodb(serviceData)
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+
+                elif configService == 'docker-registry':
+                    validator.docker_registry(serviceData)
+                    checkHostGroupNameExists(serviceData.get('hostgroup'))
+                elif configService == 'common':
+                    continue
                 else:
-                        validator.generic(configdata.get(configService))
-                        validateHosts(configService, configdata.get(configService))
+                    msg = 'Skipping'
+                    msglevel = log.LOG_WARN_RM
 
+                log.log(log.LOG_INFO, 'Yaml validation : {0}  {1}!'.format(configService,log.log(msglevel,msg)))
 
-
-    except (MultipleInvalid)as e:
+    except MultipleInvalid as e:
         for error in e.errors:
            log.log(log.LOG_ERROR,configService+" : YAML validation Error:{0} in {1}".format(error,configdata[configService]))
         sys.exit(1)
@@ -264,36 +342,29 @@ def validateConfigFile(configdata):
         sys.exit(1)
     except Invalid as e:
         log.log(log.LOG_ERROR,
-                configService + " : YAML validation Error:{0} in {1}".format(e.error_message,
-                                                                             configdata[configService]))
+                configService + " : YAML validation Error:{0} in {1}".format(e.error_message,configdata[configService]))
         sys.exit(1)
 
 
 
 with open(defaultConfigFile, 'r') as stream:
     try:
+        print str(sys.argv)
         configdata = yaml.load(stream)
         globalConfigData = configdata
+
+        loadcommonHostgroupInfo(configdata)
+
         validateConfigFile(configdata)
-        # Configuration specific to hdp
-        # Generate the host groups
-        if 'hdp' in configdata:
-            generateHdpConfigration(configdata["hdp"])
-        else:
-            log.log(log.LOG_INFO,'Hdp Specification is not mentioned')
+
+        generateHdpConfigration(configdata["hdp"])
 
         generateCommonDefaultAllConfigFile(configdata)
 
-        generateCommonConfigHostsFile(configdata)
-        addNodeCredentials(configdata)
+        generateAnsibleAllFile(configdata,components)
+        generateAnsibleHostFile(configdata,components)
+        generateEtcHostFile(configdata,components)
 
-        # Genearating host configuration to suplly ansible-boot
-        osHostsFile = open(etchostsFile, 'w')
-        for host in oshostConfig:
-        # retriving current host
-            osHostsFile.write(host + " " + oshostConfig[host] + "\n")
-        # retriving current host
     except yaml.YAMLError as exc:
-        print exc
+        log.log(log.LOG_ERROR,exc)
         sys.exit(1)
-

@@ -16,16 +16,26 @@ class ForemanLoad(ForemanBase):
     
     def load_config_template(self):
         log.log(log.LOG_INFO, "Update Global Templates")
-        config_templates.init()
+        full_path = self.get_repo_ip()
+        config_templates.init(full_path)
         try:
             kick_id = self.fm.config_templates.show('Kickstart default')['id']
+            pxelinux_id = self.fm.config_templates.show('Kickstart default PXELinux')['id']
             log.log(log.LOG_DEBUG, "get Kickstarter default id:'{0}'".format(kick_id))
+            log.log(log.LOG_DEBUG, "get Kickstarter PXELinux id:'{0}'".format(pxelinux_id))
+
         except:
             log.log(log.LOG_ERROR, "Kickstarter default id:'{0}' is not exist".format(kick_id))
+            log.log(log.LOG_ERROR, "Kickstarter default PXELinux id:'{0}' is not exist".format(pxelinux_id))
             sys.exit(1)
         self.fm.config_templates.update({'locked': False},kick_id)       
         self.fm.config_templates.update({'template': config_templates.kickstarter_default['template']},kick_id)
         self.fm.config_templates.update({'locked': True},kick_id)
+
+        self.fm.config_templates.update({'locked': False},pxelinux_id)
+        self.fm.config_templates.update({'template': config_templates.kickstarter_pxelinux['template']},pxelinux_id)
+        self.fm.config_templates.update({'locked': True},pxelinux_id)
+
         try:
             build_template = self.fm.config_templates.build_pxe_default()
             log.log(log.LOG_INFO, "Template:'{0}'".format(build_template))
@@ -83,6 +93,28 @@ class ForemanLoad(ForemanBase):
                     'os_family':   medium['os_family']
                     }
                 self.fm.media.create(medium=medium_tpl)
+
+
+    def load_ptable(self):
+        log.log(log.LOG_INFO, "Load Partition Tables")
+        ptable_sys=self.get_config_section('partition_system')
+        for ptable in self.get_config_section('partition_table'):
+            
+            ptable_snippet=config_templates.ptable_init(ptable,ptable_sys)
+            try:
+                ptable_id = self.fm.ptables.show(ptable['name'])['id']
+                log.log(log.LOG_INFO, "Partition Table '{0}' (id={1}) already present.".format(ptable['name'], ptable_id))
+            except:
+                log.log(log.LOG_INFO, "Create Partition Table '{0}'".format(ptable['name']))
+                ptable_tpl = {
+                    'name':             ptable['name'],
+                    'layout':           ptable_snippet['snippet'],
+                    'snippet':          0,
+                    'audit_comment':    'initial import',
+                    'locked':           0,
+                    'os_family':        'Redhat'
+                }
+                self.fm.ptables.create( ptable = ptable_tpl )
 
 
     def load_config_settings(self):
@@ -230,7 +262,7 @@ class ForemanLoad(ForemanBase):
             if os_obj:
                 # link Partition Tables
                 add_pt = []
-                for os_ptable in operatingsystem['partition_table']:
+                for os_ptable in self.get_config_section('partition_table'):
                     try:
                         ptable_id = self.fm.ptables.show(os_ptable['name'])['id']
                         add_pt.append({'id': ptable_id})
@@ -315,14 +347,8 @@ class ForemanLoad(ForemanBase):
         if not hg_medium:
             log.log(log.LOG_ERROR, "Cannot get ID of Medium '{0}'".format(hostgroup['medium']))
             sys.exit(1)
-        # find partition table***
-        try:
-            hg_parttbl = self.fm.ptables.show(hostgroup['partition_table'])['id']
-        except:
-            log.log(log.LOG_ERROR, "Cannot get ID of Partition Table '{0}'".format(hostgroup['partition_table']))
-            sys.exit(1)
 
-        for hostgroup in self.get_config_section('hostgroup'):
+        for hostgroup in self.get_common_section('hostgroups'):
 
             # check if hostgroup already exists
             try:
@@ -346,6 +372,14 @@ class ForemanLoad(ForemanBase):
                 except:
                     log.log(log.LOG_ERROR, "Cannot get ID of Subnet '{0}'".format(hostgroup['subnet']))
                     sys.exit(1)
+
+                 # find partition table***
+                try:
+                    hg_parttbl = self.fm.ptables.show(hostgroup['partition_table'])['id']
+                except:
+                    log.log(log.LOG_ERROR, "Cannot get ID of Partition Table '{0}'".format(hostgroup['partition_table']))
+                    sys.exit(1)
+
                 # build array
                 hg_arr = {
                     'name':         hostgroup['name']
@@ -378,13 +412,13 @@ class ForemanLoad(ForemanBase):
             if value == name:
                 return section, True
 
-        log.log(log.LOG_INFO, "'{0}'is  not  in the list of YAML section: '{1}', skip it".format(section['name'],name))
+        log.log(log.LOG_INFO, "'{0}'is  not subset interface of: '{1}' in YML configuration, skip it".format(section['primary'],name))
         return section,False
 
 
     def load_config_host(self):
         log.log(log.LOG_INFO, "Load Hosts")
-        for hostc in self.get_config_section('primary_hosts'):
+        for hostc in self.get_common_section('primary_hosts'):
             domain = None
             try:
                 hostgroupname = hostc['hostgroup']
@@ -401,25 +435,28 @@ class ForemanLoad(ForemanBase):
             except:
                 log.log(log.LOG_INFO, "Set new host '{0}'".format(hostname))
 
-            device = self.get_config_section('primary_interface')['identifier']
             host_tpl = {
                 'build':                'true',
                 'name':                 hostc['name'],
                 'mac':                  hostc['mac'],
                 'ip':                   hostc['ip'],
-                'interfaces_attributes': [{'identifier': device,'primary': 1}],
+                'interfaces_attributes': [{'identifier': 'eth0','primary': 1}],
             }
+            self.ifexist=True
             if self.ifexist: 
                 domainid = self.fm.domains.show(domain)['id']
-                for sechost in self.get_config_section('secondary_hosts'):
+                count_eth=0
+                for sechost in self.get_common_section('secondary_hosts'):
             	    sec,sec_status=self.search_mutual_exclusive(sechost,hostc['name'])
                     if sec_status:
+                        count_eth +=1
+                        eth_var='eth{0}'.format(count_eth)
+
                         subnet = self.fm.subnets.show(sec['subnet'])['id']
                         secondary_tpl={
                             'mac':                  sec['mac'],
-                            'identifier':           sec['identifier'],
+                            'identifier':           eth_var,
                             'primary':              0,            
-                            'name':                 sec['name'],
                             'domain_id':            domainid,
                             'subnet_id':            subnet,
                             'ip':                   sec['ip'],

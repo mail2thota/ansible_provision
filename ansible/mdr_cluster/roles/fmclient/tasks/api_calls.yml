@@ -9,12 +9,13 @@
     state=present
   with_items: "{{ foreman_yml_pkg }}"
 
-- pip:
+- easy_install:
       name: pyyaml
-- pip:
+
+- easy_install:
       name: requests
 
-- pip:
+- easy_install:
       name: python-foreman
 
 - name: waiting for the foreman server 
@@ -28,7 +29,7 @@
 - name: Configure foreman with fmclient
   shell:
       '/usr/bin/python2 {{ fmclient }}/main.py import 
-      {{ fmconfig }}/payload.yml.j2 {{ fmconfig }}/system.yml.j2 {{ foreman_repo_url }} | cat'
+      {{ rootdir }}/config.yml {{ fmconfig }}/system.yml.j2 {{ foreman_repo_url }}'
   args:
     executable: /bin/bash
   register: command_output
@@ -37,7 +38,7 @@
 - debug:
       msg: "foreman is ready, start provisioning"
 
-- name: waiting for the nodes to be ready 
+- name: waiting for nodes ready
   local_action:
       module: wait_for
       port: 22

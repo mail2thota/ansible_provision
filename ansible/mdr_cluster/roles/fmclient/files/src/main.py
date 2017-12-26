@@ -16,8 +16,6 @@ from payload import ForemanLoad
 from cleanup import ForemanCleanup
 
 
-#cfg_path='/opt/foreman_yml/.system.yml'
-
 def fm_cleanup(fm_clean):
     #cleanup global parameters
     fm_clean.cleanup_global_params()
@@ -37,15 +35,17 @@ def fm_cleanup(fm_clean):
    #cleanup smart proxy
     fm_clean.cleanup_smart_proxy()
 
-def mergeYAML(usercfg, systemcfg):
-    if isinstance(usercfg,dict) and isinstance(systemcfg,dict):
-        for k,v in systemcfg.iteritems():
-            if k not in usercfg:
-                usercfg[k] = v
-            else:
-                usercfg[k] = mergeYAML(usercfg[k],v)
+   #cleanup operating system
+    fm_clean.cleanup_os()
+   
+   #cleanup media
+    fm_clean.cleanup_media()
 
-    return usercfg
+   #cleanup arch
+    fm_clean.cleanup_arch()
+
+   #cleanup partition table
+    fm_clean.cleanup_ptable()
 
 def fm_import(fm_impt):
      
@@ -58,6 +58,9 @@ def fm_import(fm_impt):
     # global settings
     fm_impt.load_config_settings()
     
+    # partition table
+    fm_impt.load_ptable()
+
     # architecture
     fm_impt.load_config_arch()
 
@@ -91,29 +94,40 @@ def fm_import(fm_impt):
     # host
     fm_impt.load_config_host()
 
+def mergeYAML(usercfg, systemcfg):
+    if isinstance(usercfg,dict) and isinstance(systemcfg,dict):
+        for k,v in systemcfg.iteritems():
+            if k not in usercfg:
+                usercfg[k] = v
+            else:
+                usercfg[k] = mergeYAML(usercfg[k],v)
+
+    return usercfg
+
 def main():
     try:
         action = sys.argv[1]
     except:
-        log.log(log.LOG_ERROR, "No action defined (Valid: import /path/filename.yml)")
+        log.log(log.LOG_ERROR, "No action defined")
+        log.log(log.LOG_ERROR,"Valid: import /path/filename.yml /path/system.yml http://repoip")
         sys.exit(1)
-
-    if sys.argv[1] != 'import':
-       log.log(log.LOG_ERROR, "No valid action (Valid: import /path/filename.yml)")
-       sys.exit(1)
 
     if os.path.isfile(sys.argv[1]):
         config_file = sys.argv[1]
+        cfg_path = sys.argv[2]
+        cfg_ip = sys.argv[3]
         action = "import"
     else:
         try:
             config_file = sys.argv[2]
+            cfg_path = sys.argv[3]
+            cfg_ip = sys.argv[4]
+
         except IndexError:
-            log.log(log.LOG_ERROR, "No YAML provided")
+            log.log(log.LOG_ERROR, "No YAML provided") 
+            log.log(log.LOG_ERROR,"pass argument import /path/filename.yml /path/system.yml http://repoip")
             sys.exit(1)
    
-    cfg_path = sys.argv[3]
-    cfg_ip = sys.argv[4]
     try:
         config_file = open(config_file, 'r')
         try:

@@ -5,10 +5,10 @@ foreman_yml_api_password: "{{ foreman.pass }}"
 
 foreman_yml_template: system.yml.j2
 foreman_yml_payload: payload.yml
-hostlist: "{{ foreman.primary_hosts }}"
+hostlist: "{{ common.primary_hosts }}"
 foreman_yml_config: "{{ lookup('template', '{{ foreman_yml_template }}') }}"
 foreman_yml_payload_config: "{{ lookup('template', '{{ foreman_yml_payload }}') }}"
 timeout_second: 172800 
 fmconfig: '{{ playbook_dir }}/fmconfig'
-fmclient: '{{ role_path }}/files/foreman_yml/src/'
-
+rootdir: '{{ playbook_dir }}'
+fmclient: '{{ role_path }}/files/src/'

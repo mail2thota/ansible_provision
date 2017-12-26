@@ -19,6 +19,7 @@ class ForemanBase:
         logging.basicConfig(level=loglevel)
         log.LOGLEVEL = loglevel
         self.config = config['foreman']
+        self.common =  config['common']
         self.loglevel = loglevel
 
     def get_config_section(self, section):
@@ -27,6 +28,16 @@ class ForemanBase:
         except:
             log.log(log.LOG_ERROR, "Cannot find section '{0}' in yml file, it is mandatory".format(section))
             sys.exit(1)
+        return cfg
+
+    def get_common_section(self, section):
+
+        try:
+            cfg = self.common[section]
+        except:
+            log.log(log.LOG_ERROR, "Cannot find section '{0}' in yml file, it is mandatory".format(section))
+            sys.exit(1)
+
         return cfg
 
     def check_secondary_host(self):

@@ -14,20 +14,6 @@ import logging
 import shutil
 from payload import ForemanLoad
 
-
-#cfg_path='/opt/foreman_yml/.system.yml'
-
-
-def mergeYAML(usercfg, systemcfg):
-    if isinstance(usercfg,dict) and isinstance(systemcfg,dict):
-        for k,v in systemcfg.iteritems():
-            if k not in usercfg:
-                usercfg[k] = v
-            else:
-                usercfg[k] = mergeYAML(usercfg[k],v)
-
-    return usercfg
-
 def fm_import(fm_impt):
   
      # main_yml
@@ -35,6 +21,12 @@ def fm_import(fm_impt):
 
     # auth
     fm_impt.validate_auth()
+
+    # ptable_system
+    fm_impt.validate_config_psystem()
+    
+    # ptable
+    fm_impt.validate_config_ptable()
  
     # architecture
     fm_impt.validate_config_arch()
@@ -66,46 +58,56 @@ def fm_import(fm_impt):
     # hostgroup
     fm_impt.validate_config_hostgroup()
 
-    # identifier
-    fm_impt.validate_identifier()
-
     # primary host
     fm_impt.load_config_primaryhosts()
 
     # secondary host
     fm_impt.load_config_secondaryhosts()
+
+    # ip and mac address validation
+    fm_impt.validate_ipmac()
     
-    log.log(log.LOG_INFO, "Validation process is finish")
+    log.log(log.LOG_INFO, "Validation Process Has Finished")
+
+def mergeYAML(usercfg, systemcfg):
+    if isinstance(usercfg,dict) and isinstance(systemcfg,dict):
+        for k,v in systemcfg.iteritems():
+            if k not in usercfg:
+                usercfg[k] = v
+            else:
+                usercfg[k] = mergeYAML(usercfg[k],v)
+
+    return usercfg
+
 
 def main():
     try:
         action = sys.argv[1]
     except:
-        log.log(log.LOG_ERROR, "No action defined (Valid: import /path/filename.yml)")
+        log.log(log.LOG_ERROR, "No action defined")
+        log.log(log.LOG_ERROR,"Valid: import /path/filename.yml /path/system.yml")
         sys.exit(1)
-
-    if sys.argv[1] != 'import':
-       log.log(log.LOG_ERROR, "No valid action (Valid: import /path/filename.yml)")
-       sys.exit(1)
 
     if os.path.isfile(sys.argv[1]):
         config_file = sys.argv[1]
+        cfg_path = sys.argv[2]
         action = "import"
     else:
         try:
             config_file = sys.argv[2]
+            cfg_path = sys.argv[3]
         except IndexError:
             log.log(log.LOG_ERROR, "No YAML provided")
+            log.log(log.LOG_ERROR,"pass argument import /path/filename.yml /path/system.yml")
             sys.exit(1)
     
-    cfg_path = sys.argv[3]
     try:
         config_file = open(config_file, 'r')
         try:
             config = yaml.load(config_file)
         except yaml.YAMLError, exc:
             log.log(log.LOG_ERROR, "Failed to load/parse import config YAML, Error:'{0}'".format(exc))
-            log.log(log.LOG_INFO, "Check if '{0}' formatted correctly".format(config_file))
+            log.log(log.LOG_INFO, "Check if '{0}' is formatted correctly".format(config_file))
             sys.exit(1)
         config_file.close()
     except IOError as e:

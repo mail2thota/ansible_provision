@@ -15,6 +15,9 @@ LOG_DEBUG = 10
 LOG_INFO  = 20
 LOG_WARN  = 30
 LOG_ERROR = 40
+LOG_INFO_RM = 2
+LOG_ERROR_RM = 3
+LOG_WARN_RM = 3
 
 global LOGLEVEL
 LOGLEVEL = LOG_INFO
@@ -30,6 +33,17 @@ def log(level, message, isjson=False):
         pf = "[{0}{1}{2}]".format(bcolors.WARNING, "WARNING", bcolors.ENDC)
     if (level == LOG_ERROR):
         pf = "[{0}{1}{2}]".format(bcolors.FAIL, "ERROR", bcolors.ENDC)
+    if (level == LOG_INFO_RM):
+        pf = "{0}{1}{2}".format(bcolors.OKGREEN, message, bcolors.ENDC)
+        return "{0}".format(pf)
+
+    if (level == LOG_ERROR_RM):
+        pf = "{0}{1}{2}".format(bcolors.FAIL, message, bcolors.ENDC)
+        return "{0}".format(pf)
+    if (level == LOG_WARN_RM):
+        pf = "{0}{1}{2}".format(bcolors.WARNING, message, bcolors.ENDC)
+        return "{0}".format(pf)
+
     if level >= LOGLEVEL:
         if not isjson:
             print("{0} {1}".format(pf, message))
