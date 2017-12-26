@@ -173,8 +173,7 @@
                <th style="min-width: 70px;" align="center" class="table_header">VERSION</th>
                <th style="min-width: 330px;" align="center" class="table_header">URL</th>
                <th style="min-width: 355px;" align="center" class="table_header">PATH</th>
-               <th style="min-width: 245px;" align="center" class="table_header">HOST</th>
-               <th style="min-width: 125px;" align="center" class="table_header">STATUS</th>
+               <th style="min-width: 372px;" align="center" class="table_header">HOST</th>
             </tr>
             <table ng-repeat="service_report in service_reports" class="info_table2"  style="min-width: 80px;"  >
                <tr>
@@ -189,9 +188,8 @@
                   <td  style="width: 370px;"  align="left" class="service_properties">
                      <table ng-repeat="service_report_properties in service_report.properties" class="info_table3" style="min-width: 100px;"  >
                         <tr>
-                           <td   style="width: 250px;" align="center" class="service_data">{{ service_report_properties.host }}</td>
-                           <td   style="width: 100px;" align="center" class="service_status"><span class="status">{{ service_report_properties.status | uppercase }}</span></td>
-                        </tr>
+                           <td   style="width: 350px;height: 36px" align="center" class="service_data">{{ service_report_properties.host }}</td>
+                         </tr>
                      </table>
                   </td>
                </tr>
