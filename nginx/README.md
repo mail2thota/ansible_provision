@@ -58,4 +58,4 @@ PROXY_URL param prior to executing the script which installs NGINX server and do
   ```
 
 ## Licence
-Mdr_Platform_bare_metal - Copyright (c) 2016 BAE Systems Applied Intelligence.
+Mdr_Platform_bare_metal - Copyright (c) 2017 BAE Systems Applied Intelligence.
