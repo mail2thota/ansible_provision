@@ -1,25 +1,25 @@
 # Setting HTTP server (NGINX)
 
-  The HTTP server installation to setup local repository to provide centos iso, yum, epel, foreman, puppet, ansible, ambari, hdp, java and other required softwares and libraries 
+  The HTTP server installation to setup local repository to provide centos iso, yum, epel, foreman, puppet, ansible, ambari, hdp, java and other required softwares and libraries
 
 ## Steps to launch the HTTP Server (NGINX)
 
 ### Run http_repo_setup.sh script from nginx folder in mdr_platform_bare_metal
-   Download mdr_platform_bare_metal repository and execute http_repo_setup.sh from nginx folder, NGINX server will be installed. 
-   
+   Download mdr_platform_bare_metal repository and execute http_repo_setup.sh from nginx folder, NGINX server will be installed.
+
    Options to execute.
    *  with out any argument
    *  with argument 'N'
 
-   
+
 ### OPTION 1 - executing script with out any argument
 
    * create repos folder under /usr/share/: mkdir -p /usr/share/repos
    * download and copy all required repositories to /usr/share/repos: wget -O /usr/share/repos/repos.tar.gz http://10.129.6.237/repos/repo_share/repos.tar.gz
    * unzip file: tar xvfz repos.tar.gz
    * set the PROXY_URL param in ./http_repo_setup.sh: ROXY_URL= http://ip:port/ (where ip and port are your proxy server ip and port)
-   
-   
+
+
   ```
     ./http_repo_setup.sh
   ```
@@ -56,6 +56,6 @@ PROXY_URL param prior to executing the script which installs NGINX server and do
   ```
     ./http_repo_setup.sh N
   ```
-  
-## Licence:
-mdr_platform_bare_metal  - Copyright (c) 2017 BAE Systems Applied Intelligence.
+
+## Licence
+Mdr_Platform_bare_metal - Copyright (c) 2016 BAE Systems Applied Intelligence.

@@ -326,23 +326,36 @@ Installation and Provisioning Foreman
 
 ---
 
-Installation Of Ansible
+Provisioning MDR Platform
 -----------------------
 
     https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible
 
-Installation Of Ambari
-----------------------
 
-    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ambari
+HDP Blueprints (This section contains blueprint design specification and architecture documentation)
+----------------------------------------------------------------------------------------------------
 
-HDP Cluster
-----------------------
+    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/blueprints
+    https://engineering/confluence/display/MSS/Ambari+Blueprint+Design+Specification
 
-    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/hdp/blueprints
+Software Versions
+-----------------
+| Software       | Version        |
+| :------------- | :------------- |
+| ActiveMQ       |     5.15       |
+| Ambari         |     2.5.2      |
+| Apache  Tomcat |     7.0.76     |
+| CentOS         |     7.1        |
+| Elastic Search |     5.5.0      |
+| Foreman        |     1.15.13    |
+| HDP            |     2.5 & 2.6  |
+| Java SE        |     1.8        |
+| Kibana         |     5.5.0      |
+| MySql          |     5.6.38-2   |
+| Python         |     2.7        |
+| Python-pip     |     8.1.2      |
 
-
-License
+Licence
 -------
 
-@BaeSystemsAI
+Mdr_Platform_bare_metal - Copyright (c) 2016 BAE Systems Applied Intelligence.

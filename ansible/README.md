@@ -24,13 +24,13 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
       - cd /mdr_platform_bare_metal/ansible/mdr_cluster/
       - ./bootstrap.sh http://repository_ip
 
-    once you running this scirpt it will promit with Options 
+    once you running this scirpt it will promit with Options
     1. Node Provision
     2. Node Provision & Cluster
     3. Cluster
     4. Quit
-  
-   and choose option 2  if you want to do Node provision and Cluster setup at once or Option 3 If you only need to setup the packages and hdp cluster 
+
+   and choose option 2  if you want to do Node provision and Cluster setup at once or Option 3 If you only need to setup the packages and hdp cluster
 ```
 This will automatically updates the required configurations for ansible roles and executes playbooks which setups the hdp cluster and remaining packages
 
@@ -164,8 +164,8 @@ mongodb:
  apache-server[hostgroup]| mandatory| apache|hostgroup name configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
  docker-registry[hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker-registery and on this group of hosts docker-register will be installed
 
-##Default Template
- Please refer below example template and the existing   [config template ](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/roles/pre-config/config.yml) in code base if needed
+## Default Template
+ Please refer below example template and the existing   [config template ](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/config.yml) in code base if needed
 
  ```
 
@@ -484,6 +484,5 @@ httpd|80
 mongodb| 27017
 
 
-## Licence:
-mdr_platform_bare_metal - ansible - Copyright (c) 2016 BAE Systems Applied Intelligence.
-
+## Licence
+Mdr_Platform_bare_metal - Copyright (c) 2016 BAE Systems Applied Intelligence.
