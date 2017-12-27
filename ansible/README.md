@@ -1,16 +1,16 @@
-# Project:
+# Project
 mdr_platform_bare_metal
-## Synopsis:
+## Synopsis
 Ansible package/playbooks for setting up ambari,hdp cluster,tomcat,docker registery,postgres database,mongodb and activemq
 
-## Motivation:
+## Motivation
 To abstrct complexity of provising hdp cluster usig ansible playbooks.
 
-## Origin Repo:
+## Origin Repo
 https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/bootstrap.sh
 
 
-## Quickstart:
+## Quickstart
 Assuming that the nodes are provisioned with OS and dependencies using foreman  or manually,thereby run below command
 
 ```
@@ -34,7 +34,7 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
 ```
 This will automatically updates the required configurations for ansible roles and executes playbooks which setups the hdp cluster and remaining packages
 
-## Configuration:
+## Configuration
 
 Following Yaml configuration template structure used for configuring the playbooks  
 

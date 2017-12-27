@@ -23,7 +23,7 @@
   ```
     ./http_repo_setup.sh
   ```
-#### Software listing:
+#### Software listing
 Following are the required softwares and libraries in repository
 
 | Software/library       |  URL to download           |
