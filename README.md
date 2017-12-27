@@ -42,7 +42,7 @@ Prerequisite
                 * install pypi server:
                       pip install pypiserver
                 * download packages.tar.gz :
-                      wget -N http://10.129.6.237/repos/repo_share/packages.tar.gz
+                      wget -N http://10.129.6.237/repos/zip_repo/packages.tar.gz
                 * unzip file:
                       tar xvfz packages.tar.gz ~/
                 * run command:
