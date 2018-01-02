@@ -7,8 +7,6 @@
 
 pgsql_repo_url: "{{ default_repo_site}}/postgresql"
 postgres_data_location: "/var/lib/pgsql/{{ postgresql_version }}/data"
-postgresql_version: 9.6
+postgresql_version: "{{ postgres_version }}"
 postgresql_service_name: "postgresql-{{ postgresql_version }}"
-postgres_url: "{{ pgsql_repo_url }}/pgdg-centos96-9.6-3.noarch.rpm"
-postgresql_short_version: 96
 postgresql_port: 5432

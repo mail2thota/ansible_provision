@@ -38,9 +38,9 @@ class Validator:
             Optional('kibana'): All(dict),
             Optional('es_master'): All(dict),
             Optional('es_node'): All(dict),
-            Optional('apache-server'): All(dict),
+            Optional('apache'): All(dict),
             Optional('mongodb'): All(dict),
-            Optional('docker-registry'): All(dict),
+            Optional('docker'): All(dict),
             Optional('postgres'): All(dict)
         },extra=ALLOW_EXTRA)
 
@@ -91,29 +91,37 @@ class Validator:
         })
         self.kibana = Schema({
             Required('hostgroup',msg='kibana[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
-            Required('elasticsearch_url',msg='kibana[elasticsearch_url] doesn\'t exists'):           All(FqdnUrl(),msg='Doesn\'t match with expected elastic search url')
+            Required('elasticsearch_url',msg='kibana[elasticsearch_url] doesn\'t exists'):           All(FqdnUrl(),msg='Doesn\'t match with expected elastic search url'),
+            Required('version',msg='kibana[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='kibana version doesn''t match with expected version format( Ex: 5.5.0) but configured value')
         })
         self.postgres = Schema({
             Required('hostgroup',msg='postgres[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
+            Required('version',msg='postgres[version] doesn\'t existis'):                                   Any(Number(precision=2, scale=1,yield_decimal=False,msg='postgres[version] doesn\'t match with the exptected version format (Ex: 9.6) but configured value') )
         })
         self.es_master = Schema({
             Required('hostgroup',msg='es_master[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
+            Required('version',msg='es_master[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='elastic search version doesn''t match with expected version format( Ex: 5.5.0) but configured value')
         })
         self.es_node = Schema({
             Required('hostgroup',msg='es_node[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
         })
-        self.apache_server = Schema({
-            Required('hostgroup',msg='apache-server[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
+        self.apache = Schema({
+            Required('hostgroup',msg='apache[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
+ Required('httpd_version',msg='apache[httpd_version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='httpd version doesn''t match with expected version format( Ex: 2.4.6) but configured value'),
+Required('tomcat_version',msg='apache[tomcat_version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='tomcat version doesn''t match with expected version format( Ex: 7.0.76) but configured value')
         })
         self.mongodb = Schema({
             Required('hostgroup',msg='mongodb[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
+             Required('version',msg='mongodb[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='mongodb version doesn''t match with expected version format( Ex: 3.4.10) but configured value')
         })
         self.activemq = Schema({
             Required('hostgroup', msg='activemq[hosts] doesn\t exists'): All(str, msg='hostgroup must be a string'),
+           Required('version',msg='activemq[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='activemq version doesn''t match with expected version format( Ex: 5.15.0) but configured value')
         })
 
-        self.docker_registry = Schema({
-            Required('hostgroup',msg='docker-registry[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
+        self.docker = Schema({
+            Required('hostgroup',msg='docker[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
+            Required('version',msg='docker[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='docker version doesn''t match with expected version format( Ex: 17.09.0) but configured value')
         })
 
 

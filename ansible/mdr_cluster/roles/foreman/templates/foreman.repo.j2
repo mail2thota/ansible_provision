@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 [foreman]
-name=Foreman 1.15 - Repo
+name=Foreman {{ foreman_version }} - Repo
 baseurl={{ foreman_yum_main_baseurl }}
 gpgcheck={{ foreman_yum_main_gpg }}
 enabled=1

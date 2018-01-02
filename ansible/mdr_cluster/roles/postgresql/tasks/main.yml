@@ -4,20 +4,31 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
+  - name: Copy postgres repo template
+    template:
+     src: "postgres.repo"
+     dest: "/etc/yum.repos.d/postgres.repo"
+
+  - shell: echo "{{ postgresql_version }}" | tr -d .
+    register: postgresql_short_version
+  
+  - set_fact:  
+      postgresql_short_version: "{{ postgresql_short_version.stdout }}" 
+
   - name: Install New Postgresql Dependencies
     yum:
       name: "{{ item }}"
       state: latest
     with_items:
-      - postgresql96
-      - postgresql96-contrib
-      - pg_repack96
-      - postgresql96-server
+      - postgresql{{ postgresql_short_version }}
+      - postgresql{{ postgresql_short_version }}-contrib
+      - pg_repack{{ postgresql_short_version }}
+      - postgresql{{ postgresql_short_version }}-server
       - postgresql-jdbc
     register: result
 
   - name: get the version of postgresql
-    shell: yum list installed postgresql96 | grep postgresql96 | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+    shell: yum list installed postgresql{{ postgresql_short_version }} | grep postgresql{{ postgresql_short_version }} | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
     register: version
     changed_when: False
     args:

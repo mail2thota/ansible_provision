@@ -9,12 +9,6 @@
   ignore_errors: yes
   service: name=firewalld state=stopped enabled=no
 
-  
-- name: Copy pgdg-96-centos repo template
-  template:
-     src: "pgdg-96-centos.repo"
-     dest: "/etc/yum.repos.d/pgdg-96-centos.repo"
-
 - name: create logrotate script for hadoop services
   template:
     src: "hadoop-logrotate.yml"
