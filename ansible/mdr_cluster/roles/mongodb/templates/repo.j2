@@ -1,5 +1,5 @@
 [mongodb]
-name=MongoDB Repository version 3.4.10
-baseurl={{ default_repo_site }}/mongodb/$basearch
+name=MongoDB Repository version {{ mongodb_version }}
+baseurl={{ default_repo_site }}/mongodb/{{ mongodb_version }}/$basearch
 gpgcheck=0
 enabled=1

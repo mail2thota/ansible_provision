@@ -9,12 +9,12 @@
     name: "{{ item }}"
     state: installed
   with_items:
-    - httpd
-    - tomcat
-    - tomcat-admin-webapps.noarch 
-    - tomcat-docs-webapp.noarch 
-    - tomcat-javadoc.noarch 
-    - tomcat-webapps.noarch
+    - httpd-{{ apache_httpd_version }}
+    - tomcat-{{ apache_tomcat_version }}
+    - tomcat-admin-webapps-{{ apache_tomcat_version }} 
+    - tomcat-docs-webapp-{{ apache_tomcat_version }} 
+    - tomcat-javadoc-{{ apache_tomcat_version }} 
+    - tomcat-webapps-{{ apache_tomcat_version }}
   register: result
 
 - name: ensure the tomcat service is enabled and running

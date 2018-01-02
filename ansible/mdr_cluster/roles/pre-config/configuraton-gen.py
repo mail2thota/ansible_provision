@@ -313,16 +313,16 @@ def validateConfigFile(configdata):
                     validator.es_node(serviceData)
                     checkHostGroupNameExists(serviceData.get('hostgroup'))
 
-                elif configService == 'apache-server':
-                    validator.apache_server(serviceData)
+                elif configService == 'apache':
+                    validator.apache(serviceData)
                     checkHostGroupNameExists(serviceData.get('hostgroup'))
 
                 elif configService == 'mongodb':
                     validator.mongodb(serviceData)
                     checkHostGroupNameExists(serviceData.get('hostgroup'))
 
-                elif configService == 'docker-registry':
-                    validator.docker_registry(serviceData)
+                elif configService == 'docker':
+                    validator.docker(serviceData)
                     checkHostGroupNameExists(serviceData.get('hostgroup'))
                 elif configService == 'common':
                     continue

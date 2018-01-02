@@ -17,12 +17,6 @@ activemq_skip_checksum: true
 activemq_repo_url: "{{ default_repo_site }}/activemq"
 activemq_url_prefix: "{{ activemq_repo_url }}"
 
-# calculate version
-activemq_version_major: "5"
-activemq_version_minor: "15"
-activemq_version_patch: "0"
-
-activemq_version: "{{ activemq_version_major }}.{{ activemq_version_minor }}.{{ activemq_version_patch }}"
 activemq_url: "{{ activemq_url_prefix }}/apache-activemq-{{ activemq_version }}-bin.tar.gz"
 
 activemq_env_vars:

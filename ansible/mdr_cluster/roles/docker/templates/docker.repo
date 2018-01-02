@@ -1,6 +1,6 @@
 [docker-ce-stable]
 name=Docker CE Stable - $basearch
-baseurl={{ default_repo_site }}/docker/centos/7/$basearch/stable
+baseurl={{ default_repo_site }}/docker/{{ docker_version }}/centos/7/$basearch/stable
 enabled=1
 gpgcheck=0
 
