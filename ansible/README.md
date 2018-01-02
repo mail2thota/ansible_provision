@@ -100,17 +100,24 @@ hdp_test:
 
 postgres:
    hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes postgres will be installed
+   version: postgres version number
+   
 activemq:
    hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes activemq will be installed
-
-apache-server:
+   version: activemq version number
+   
+apache:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes apache and tomcat server will be installed
-
-docker-registry:
+  httpd_version: httpd version number
+  tomcat_version: tomcat version number
+  
+docker:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of docker registery will be installed
-
+  version: docker version number
+  
 es_master:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search master nodes will be installed
+  version: elasticsearch version number
 
 es_node:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search worker nodes will be installed
@@ -118,10 +125,11 @@ es_node:
 kibana:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes kibana will be installed
   elasticsearch_url: elasticsearch master host adddress to use
+  version: kibana version number
 
 mongodb:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes mongodb will be installed
-
+  version: mongodb version number
 ```
 
 ## Variables Description
@@ -156,18 +164,27 @@ mongodb:
  hdp_test[namenode_host]|mandatory|agent1-ambariagent.example.com| Namenode host to be used by test case job
  hdp_test[oozie_host]|mandatory|agent10-ambariagent.example.com|oozie server host to be used by test case job
  postgres[hostgroup]| mandatory|postgress| hostgroup name configured in common[hostgroups] to install postgres  and on this group of hosts postgres will be installed
+ postgres[version]| mandatory|9.6| postgres version number
  activemq[hostgroup]| mandatory|activemq| hostgroup name configured in common[hostgroups] to install activemq  and on this group of hosts activemq will be installed
+ activemq[version]| mandatory|5.15.0| activemq version number
  es_master[hostgroup]|mandatory|es_master| hostgroup name configured in common[hostgroups] to install elastic search  and on this group of hosts elastic search masters will be installed
+ es_master[version]| mandatory|5.5.0| elasticsearch version number
  es_node[hostgroup]| mandatory|es_node| hostgroup name configured in common[hostgroups] to install elastic search worker nodes and on this group of hosts elastic search nodes will be installed
  kibana[hostgroup]| mandatory|kibana| hostgroup name configured/availble in common[hostgroups] to install kibana and on this group of hosts kibana will be installed
  kibana[elasticsearch_url]|mandatory|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
- apache-server[hostgroup]| mandatory| apache|hostgroup name configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
- docker-registry[hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker-registery and on this group of hosts docker-register will be installed
-
+ kibana[version]| mandatory|5.5.0| kibana version number
+ apache[hostgroup]| mandatory| apache|hostgroup name configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
+ apache[httpd_version]| mandatory|2.4.6| httpd version number
+ apache[tomcat_version]| mandatory|7.0.76| tomcat version number
+ docker[hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker and on this group of hosts docker will be installed
+ docker[version]| mandatory|17.09.0| docker version number
 ## Default Template
  Please refer below example template and the existing   [config template ](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/config.yml) in code base if needed
 
  ```
+
+
+---
 
 
 default:
@@ -242,7 +259,7 @@ common:
           domain: example.com
           root_pass: as12345678
           partition_table: Kickstart default
-        - name: apache-server
+        - name: apache
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
@@ -252,7 +269,7 @@ common:
           domain: example.com
           root_pass: as12345678
           partition_table: Kickstart default
-        - name: docker-registery
+        - name: docker
           subnet: subnet1
           domain: example.com
           root_pass: as12345678
@@ -262,68 +279,150 @@ common:
 
         - name: agent1-ambariagent
           hostgroup: master_1
-          ip: 10.11.12.4
+          ip: 10.11.12.19
           mac: 0800271AD0DA
         - name: agent2-ambariagent
           hostgroup: master_2
-          ip: 10.11.12.5
+          ip: 10.11.12.4
           mac: 080027626A0D
         - name: agent3-ambariagent
           hostgroup: master_3
-          ip: 10.11.12.6
+          ip: 10.11.12.5
           mac: 080027FE1A42
         - name: agent4-ambariagent
           hostgroup: master_4
-          ip: 10.11.12.7
+          ip: 10.11.12.6
           mac: 08002708D5C2
         - name: agent5-ambariagent
           hostgroup: zk_1
-          ip: 10.11.12.8
+          ip: 10.11.12.7
           mac: 080027DF8EE5
         - name: agent6-ambariagent
           hostgroup: zk_1
-          ip: 10.11.12.9
+          ip: 10.11.12.8
           mac: 0800278B2194
         - name: agent7-ambariagent
           hostgroup: worker_1
-          ip: 10.11.12.10
+          ip: 10.11.12.9
           mac: 08002728805D
         - name: agent8-ambariagent
           hostgroup: edge_3
-          ip: 10.11.12.11
+          ip: 10.11.12.10
           mac: 08002743CB9C
         - name: agent9-ambariagent
           hostgroup: postgres
-          ip: 10.11.12.12
+          ip: 10.11.12.11
           mac: 080027A55547
         - name: agent10-ambariagent
           hostgroup: activemq
-          ip: 10.11.12.13
+          ip: 10.11.12.12
           mac: 080027D25FEE
         - name: agent11-ambariagent
-          hostgroup: apache-server
-          ip: 10.11.12.14
+          hostgroup: apache
+          ip: 10.11.12.13
           mac: 080027EE643F
         - name: agent12-ambariagent
-          hostgroup: docker-registery
-          ip: 10.11.12.15
+          hostgroup: docker
+          ip: 10.11.12.14
           mac: 0800275F8125
         - name: agent13-ambariagent
           hostgroup: es_node
-          ip: 10.11.12.16
+          ip: 10.11.12.15
           mac: 080027ED84FE
         - name: agent14-ambariagent
           hostgroup: es_node
-          ip: 10.11.12.17
+          ip: 10.11.12.16
           mac: 0800272F3847
         - name: agent15-ambariagent
           hostgroup: mongodb
-          ip: 10.11.12.18
+          ip: 10.11.12.17
           mac: 080027A5EAB2
         - name: master1-ambariserver
           hostgroup: edge_1
           ip: 10.11.12.24
           mac: 080027BB1483  
+
+    secondary_hosts:
+        - ip: 10.11.12.21
+          mac: 0800279B8DDA
+          subnet: subnet1
+          primary: agent6-ambariagent
+
+        - ip: 10.11.12.20
+          mac: 080027F8D3E8
+          subnet: subnet1
+          primary: agent7-ambariagent
+
+foreman:
+    auth:
+        foreman_fqdn: bootstrap.example.com
+        foreman_ip: 10.11.12.23
+        foreman_user: admin
+        foreman_pass: admin
+
+    domain:
+        - name: example.com
+          fullname: this is example.com
+
+    subnet:
+        - name: subnet1
+          network: 10.11.12.0
+          mask: 255.255.255.0
+          gateway: 10.11.12.1
+          dns_primary: 10.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+        - name: subnet2
+          network: 13.11.12.0
+          mask: 255.255.255.0
+          gateway: 13.11.12.1
+          dns_primary: 13.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+    
+    partition_table:
+        - name: Kickstart default
+          boot:
+              fstype: ext2
+              size: 10
+          swap:
+              fstype: swap
+              size: 10
+          tmp:
+              fstype: ext4
+              size: 10
+          var:
+              fstype: xfs
+              size: 10
+          home:
+              fstype: ext4
+              size: 10
+          root:
+              fstype: ext4
+              size: 50
+        - name: Kickstart default2
+          boot:
+              fstype: ext2
+              size: 10
+          swap:
+              fstype: swap
+              size: 10
+          tmp:
+              fstype: ext4
+              size: 10
+          var:
+              fstype: xfs
+              size: 10
+          home:
+              fstype: ext4
+              size: 10
+          root:
+              fstype: ext4
+              size: 50
 
 ambari:
   hostgroup: edge_1
@@ -424,34 +523,45 @@ hdp:
 
 postgres:
   hostgroup: postgres
+  version: 9.6
 
 activemq:
   hostgroup: activemq
+  version: 5.15.0
 
 kibana:
   hostgroup: master_3
-  elasticsearch_url: http://master1-ambariserver.example.com:9200/
+  elasticsearch_url: http://agent3-ambariagent.example.com:9200/
+  version: 5.5.0
+
 
 es_master:
   hostgroup: master_3
+  version: 5.5.0
 
 es_node:
   hostgroup: es_node
+  
 
-apache-server:
-  hostgroup: apache-server
+apache:
+  hostgroup: apache
+  httpd_version: 2.4.6
+  tomcat_version: 7.0.76
 
 mongodb:
   hostgroup: mongodb
+  version: 3.4.10
 
-docker-registry:
-  hostgroup: docker-registery
+docker:
+  hostgroup: docker
+  version: 17.09.0
 
 hdp_test:
    hostgroup: edge_3
    jobtracker_host: agent2-ambariagent.example.com
    namenode_host: agent1-ambariagent.example.com
    oozie_host: agent4-ambariagent.example.com
+
 
 ```
 
@@ -478,7 +588,7 @@ activemq|61616
 postgres|5432
 elasticsearch api|9200
 kibana webinterface|5601
-docker-registry|5000
+docker|5000
 tomcat|8080
 httpd|80
 mongodb| 27017
