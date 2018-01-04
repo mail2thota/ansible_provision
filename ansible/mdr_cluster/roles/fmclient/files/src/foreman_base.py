@@ -68,7 +68,6 @@ class ForemanBase:
         authsection = self.get_config_section('auth')
         fmip = authsection['foreman_ip']
         fmprotocolip = "{0}://".format(self.get_protocol())
-        #fmfqdn = fmprotocolip+self.get_fm_hostname()
         fmprotocolip += fmip
         return fmprotocolip
 
@@ -77,6 +76,19 @@ class ForemanBase:
 
     def get_repo_ip(self):
         return self.repo_ip          
+
+    def set_node_pass(self, npass):
+        self.node_pass = npass
+
+    def get_node_pass(self):
+        return self.node_pass
+  
+    def set_foreman_auth(self, fmuser, fmpass):
+        self.fm_pass = fmpass
+        self.fm_user=fmuser
+
+    def get_foreman_auth(self):
+        return self.fm_user, self.fm_pass
  
     def connect(self):
         log.log(log.LOG_INFO, "Establish connection to Foreman server")
@@ -84,8 +96,8 @@ class ForemanBase:
         try:
             logging.disable(logging.WARNING)
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-            authsection = self.get_config_section('auth')
-            self.fm = Foreman(fm_ip, (authsection['foreman_user'], authsection['foreman_pass']), api_version=2, use_cache=False, strict_cache=False)
+            user,password = self.get_foreman_auth()
+            self.fm = Foreman(fm_ip, (user, password), api_version=2, use_cache=False, strict_cache=False)
             # this is nescesary for detecting faulty credentials in yaml
             self.fm.architectures.index()
             logging.disable(self.loglevel-1)

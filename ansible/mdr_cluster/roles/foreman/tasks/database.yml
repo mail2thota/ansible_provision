@@ -24,7 +24,7 @@
 
 - name: rake reset foreman admin password
   command:
-    "/usr/sbin/foreman-rake permissions:reset username={{ foreman_admin_username }} password={{ foreman_admin_password }}"
+    "/usr/sbin/foreman-rake permissions:reset username={{ fmusername }} password={{ fmpassword }}"
 
 - name: enable foreman service
   service:

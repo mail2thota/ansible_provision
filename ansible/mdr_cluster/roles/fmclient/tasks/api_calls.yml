@@ -29,7 +29,8 @@
 - name: Configure foreman with fmclient
   shell:
       '/usr/bin/python2 {{ fmclient }}/main.py import 
-      {{ rootdir }}/config.yml {{ fmconfig }}/system.yml.j2 {{ foreman_repo_url }}'
+      {{ rootdir }}/config.yml {{ fmconfig }}/system.yml.j2 
+      {{ foreman_repo_url }} {{ nodepass }} {{ fmusername }} {{ fmpassword }}'
   args:
     executable: /bin/bash
   register: command_output

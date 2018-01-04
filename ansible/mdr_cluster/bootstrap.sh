@@ -40,25 +40,102 @@ init(){
 	gnome-terminal -x ./lnav-0.8.2/lnav /var/log/ansible.*
 }
 
+passwordFm()
+{
+    echo "Enter Foreman Authentication"
+    read -p "Username: " fmusername
+    while true; do
+        read -s -p "Password: " fmpassword
+        echo
+        read -s -p "Password (again): " fmpassword2
+        echo
+        [ "$fmpassword" = "$fmpassword2" ] && break
+        echo "Please try again"
+    done
+    echo
+}
+passwordNodes()
+{
+    echo "Enter Nodes Password"
+    echo "Minimum 8 characters required"
+    while true; do
+        read -s -p "Password: " nodepassword
+        echo
+        read -s -p "Password (again): " nodepassword2
+        echo
+        len=`echo ${#nodepassword}`
+        if [[ $len -ge 8 ]] ; then
+            [ "$nodepassword" = "$nodepassword2" ] && break
+        fi
+        echo "password length should be greater than or equal 8 and must be match"
+        echo "Please try again"
+    done
+    echo
+}
+
+passwordAmbari()
+{
+    echo "Enter Ambari Authentication"
+    read -p "Username: " ambusername
+    while true; do
+        read -s -p "Password: " ambpassword
+        echo
+        read -s -p "Password (again): " ambpassword2
+        echo
+        [ "$ambpassword" = "$ambpassword2" ] && break
+        echo "Please try again"
+    done
+    echo
+}
+
+passwordHDP()
+{
+    echo "Enter HDP Password"
+    while true; do
+        read -s -p "Password: " hdppassword
+        echo
+        read -s -p "Password (again): " hdppassword2
+        echo
+        [ "$hdppassword" = "$hdppassword2" ] && break
+        echo "Please try again"
+    done
+    echo
+}
+
 foreman(){
 	echo "execution of foreman playbook"
-        ansible-playbook foreman.yml 
+        ansible-playbook foreman.yml --extra-vars "fmusername=$fmusername
+        fmpassword=$fmpassword nodepass=$nodepassword" 
 }
 
 validate(){
         echo "Validating Config files"
-	ansible-playbook validate.yml --tags=$1
+	ansible-playbook validate.yml --tags=$1 
 }
 
 ambari_hdp(){
 	echo "execution of ambari and hdp playbook"
-	ansible-playbook mdr.yml
+	ansible-playbook mdr.yml --extra-vars "ambari_user=$ambusername
+        ambari_password=$ambpassword hdp_password=$hdppassword ansible_user=root
+        ansible_ssh_pass=$nodepassword" 
+}
+
+updatehdp(){ 
+	rm -f ./roles/updatehdp/update_hdp_cluster.yml
+	cp update_hdp_cluster.yml ./roles/updatehdp/
+        ansible-playbook updatehdp.yml --tags=config "ambari_user=$ambusername
+        ambari_password=$ambpassword ansible_user=root
+        ansible_ssh_pass=$nodepassword"
+        ansible-playbook updatehdp.yml --tags=hdp-install "ambari_user=$ambusername
+        ambari_password=$ambpassword ansible_user=root
+        ansible_ssh_pass=$nodepassword"
 } 
 
 option1="Node Provision"
 option2="Cluster"
 option3="Node Provision & Cluster"
-option4="Quit"
+option4="Add/Remove hosts"
+option5="Quit"
 PS3='Please enter your choice: '
 options=("${option1}" "${option2}" "${option3}" "${option4}")
 select opt in "${options[@]}"
@@ -66,20 +143,29 @@ do
     case $opt in
         "${option1}")
             echo "${bold}${green}Selected ${option1}${reset}"
+            passwordFm
+            passwordNodes
             init
-			validate foreman
+	    validate foreman
             foreman
             break
             ;;
         "${option2}")
             echo "${bold}${green}Selected ${option2}${reset}"
-			init
+            passwordAmbari
+            passwordHDP
+            passwordNodes
+            init
             validate mdr
             ambari_hdp
             break
             ;;
         "${option3}")
             echo "${bold}${green}Selected ${option3}${reset}"
+            passwordFm
+            passwordAmbari
+            passwordHDP
+            passwordNodes
             init
             validate mdr,foreman
             foreman
@@ -87,6 +173,14 @@ do
             break
             ;;
         "${option4}")
+            echo "${bold}${green}Selected ${option4}${reset}"
+            passwordAmbari
+            passwordNodes
+            init
+            updatehdp
+            break
+            ;;
+        "${option5}")
             exit 1
             ;;
         *) echo "${bold}${red}ERROR! Invalid option${reset}";;

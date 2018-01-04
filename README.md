@@ -12,11 +12,17 @@ and set the operating system image to be installed. All of process take place in
 Prerequisite
 ------------
 
-    1. Setup SE Linux permissive or disabled
+    1. Bootstrap machine
+          - support centos 7
+          - gnome UI must be installed
+          - at least 20 GB hardisk and 2 GB ram
+          - log in as a root user
+
+    2. Setup SE Linux permissive or disabled
           - modified: /etc/sysconfig/selinux
           - restart machine
 
-    2. Setup firewall or disable it
+    3. Setup firewall or disable it
           - disable
                 sudo systemctl stop firewalld
                 sudo systemctl disable firewalld
@@ -30,7 +36,7 @@ Prerequisite
                 sudo firewall-cmd --permanent --add-port=5432/tcp
                 sudo firewall-cmd --permanent --add-port=8443/tcp
 
-	  3. Install local yum and pypi Repository setup on bootstrap machine
+	  4. Install local yum and pypi Repository setup on bootstrap machine
 
           - installation of Nginx Repository
 	              https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
@@ -51,7 +57,7 @@ Prerequisite
                       http://repo_url:8008/packages
                 * pypi local repository must be bind using port 8008.
 
-    4. If DNS required, Making sure your DNS address is resolveable
+    5. If DNS required, Making sure your DNS address is resolveable
           - you may check on:
                  /etc/resolv.conf
           - if not set yet you may set manually or you may configure using nmtui,
@@ -63,16 +69,17 @@ Prerequisite
                 - click 'OK', and following by click "back" to close the nmtui windows.
                 - restart network; "systemctl restart network"
 
-    5. Making sure that you don't have any DHCP server available which is been connecting to the subnet network
+    6. Making sure that you don't have any DHCP server available which is been connecting to the subnet network
 
-    6. Making sure that your network device interface or network interface in bootstrap machine e.g; "eth0" is
+    7. Making sure that your network device interface or network interface in bootstrap machine e.g; "eth0" is
        dedicated only for single Ip
 
-    7. Make sure your http_proxy and https_proxy is disabled, check as well in /etc/yum.conf
+    8. Make sure your http_proxy and https_proxy is disabled, check as well in /etc/yum.conf
 
-    8. If you have existing Ansible, Required Ansible version : ansible 2.3.1.0
+    9. If you have existing Ansible, Required Ansible version : ansible 2.3.1.0
 
-    9. The best approach is for having static Ip for bootstrap machine, check how to setup static Ip below:
+    10. The best approach is for having static Ip for bootstrap machine, check how to setup static Ip below:
+
 --------------
 Static IP
 -------------
@@ -97,12 +104,12 @@ Configuration
 
 | Variable       |  Example           | Description  |
 |:------------- |:-------------|:-----|
-|auth: <ul><li>**foreman_fqdn**</li><li>**foreman_ip**</li><li>**foreman_user**</li><li>**foreman_pass**</ul></li>|<ul><li>**foreman_fqdn:** foreman.example.com</li><li>**foreman_ip:** 10.11.12.7</li><li>**foreman_user:** admin</li><li>**foreman_pass:** bae4533</li></ul>|<ul><li>**foreman_fqdn:** fqdn of foreman(resolvable of fqdn, required)</li><li>**foreman_ip:** ip of bootstrap machine(valid ip, required)</li><li>**foreman_user:** user name of foreman(string, required)</li><li>**foreman_pass:** password of foreman(string, required)</li></ul>|
+|auth: <ul><li>**foreman_fqdn**</li><li>**foreman_ip**</li>|<ul><li>**foreman_fqdn:** foreman.example.com</li><li>**foreman_ip:** 10.11.12.7</li></ul>|<ul><li>**foreman_fqdn:** fqdn of foreman(resolvable of fqdn, required)</li><li>**foreman_ip:** ip of bootstrap machine(valid ip, required)</li></ul>|
 |domain: <ul><li>**name**</li><li>**fullname**</li></ul>|<ul><li>**name:** baesystemdemo.com</li><li>**fullname:** full description</li></ul>|<ul><li>**name:** valid of domain's name(str, required)</li><li>**fullname:** clear of description(str, optional)</li></ul>|
 |subnet:<ul><li>**name**</li><li>**network**</li><li>**mask**</li><li>**gateway**</li><li>**dns-primary**</li><li>**dns-secondary**</li><li>**vlanid**</li><li>**domain:**<ul><li>**name**</ul></li></ul></li>|<ul><li>**name:** subnet1012</li><li>**network:** 10.11.12.0</li><li>**mask:** 255.255.255.0</li><li>**gateway:** 10.11.12.1</li><li>**dns-primary:** 10.11.12.7</li><li>**dns-secondary:** 8.8.8.8</li><li>**vlanid:** 1</li><li>**domain:**  <ul><li>**name:** example.com</li></ul></li></ul>|<ul><li>**name:** name of subnet(str, required)</li><li>**network:** valid of subnet network ip(str, required)</li><li>**mask:** valid of mask address(str, required)</li><li>**gateway:** valid of gateway address(str, optional)</li><li>**dns-primary:** valid of dns ip(str, optional)</li><li>**dns-secondary:** valid of dns ip(str, optional)</li><li>**vlanid:** valid of vlanid(int, optional)</li><li>**domain:** <ul><li>**name:** domain name(str, required)</li></ul></li></ul>|
 |partition_table:<ul><li>**name**</li><li>**boot:**<ul><li>**fstype**</li></ul><ul><li>**size**</li></ul></li><li>**swap:** <ul><li>**fstype**</li></ul><ul><li>**size**</li></ul></li><li>**tmp:** <ul><li>**fstype**</li></ul><ul><li>**size**</li></ul></li><li>**var:** <ul><li>**fstype**</li></ul><ul><li>**size**</li></ul></li><li>**home:** <ul><li>**fstype**</li></ul><ul><li>**size**</li></ul></li><li>**root:** <ul><li>**fstype**</li></ul><ul><li>**size**</li></ul></li></ul>|<ul><li>**name**</li><li>**boot:**<ul><li>**fstype:** ext2</li></ul><ul><li>**size:** 10</li></ul></li><li>**swap:**<ul><li>**fstype:** swap</li></ul><ul><li>**size:** 10</li></ul></li><li>**tmp:** <ul><li>**fstype:** ext4</li></ul><ul><li>**size:** 10</li></ul></li><li>**var:** <ul><li>**fstype:** xfs</li></ul><ul><li>**size:** 10</li></ul></li><li>**home:** <ul><li>**fstype:** ext4</li></ul><ul><li>**size:** 10</li></ul></li><li>**root:** <ul><li>**fstype:** ext4</li></ul><ul><li>**size:** 50</li></ul></li></ul>| <ul><li>**name**</li><li>**boot:** boot partition</li><li>**swap:** swap partition</li><li>**tmp:** tmp partition </li><li>**var:** var partition</li><li>**home:** home partition</li><li>**root:** root partition</li><li>**fstype:** file system type</li><li>**size:** size in percentage format</li><li>**noted:** <ul><li>**partition support:** xfs,ext2,ext3,ext4, swap for swap</li></ul><ul><li>**size:** size must be in percentage digit and total accumulation size must be 100%</li></ul></li></ul>
 |hostgroup_system:<ul><li>**os**</li><li>**architecture**</li><li>**medium**</li></ul>|<ul><li>**os:** centos7</li><li>**architecture:** x86_64</li><li>**medium:** Centos7</li></ul>|<ul><li>**os:** assign operating system name(str, required)</li><li>**architecture:** assign architecture name (str, required)</li><li>**medium:** assign medium name(str, required)</li></ul>
-|hostgroup:<ul><li>**name**</li><li>**subnet**</li><li>**domain**</li><li>**root-pass**</li><li>**partition_table**</li></ul>|<ul><li>**name:** hostg_master</li><li>**subnet:** subnet1012</li><li>**domain:** example.com</li><li>**root-pass:** abs12232</li><li>**partition_table:** Kickstart default</li></ul>|<ul><li>**name:** name of hostgroup(str, required)</li><li>**subnet:** name of subnet to be assigned(str, required)</li><li>**domain:** name of domain to be assigned(str, required)</li><li>**root-pass:** default password of nodes(str, required, minimum 8 char)</li><li>**partition_table:** name of partition table to be assigned(str, required)</li></ul>|
+|hostgroup:<ul><li>**name**</li><li>**subnet**</li><li>**domain**</li><li>**partition_table**</li></ul>|<ul><li>**name:** hostg_master</li><li>**subnet:** subnet1012</li><li>**domain:** example.com</li><li>**partition_table:** Kickstart default</li></ul>|<ul><li>**name:** name of hostgroup(str, required)</li><li>**subnet:** name of subnet to be assigned(str, required)</li><li>**domain:** name of domain to be assigned(str, required)</li><li>**partition_table:** name of partition table to be assigned(str, required)</li></ul>|
 |primary_hosts:<lu><li>**name**</li><li>**hostgroup**</li><li>**ip**</li><li>**mac**</li></lu>|<ul><li>**name:** agent_node</li><li>**hostgroup:** hostg_master</li><li>**ip:** 10.11.12.4</li><li>**mac:** 080027d487f5</li></ul>|<ul><li>**name:** host name(str, required)</li><li>**hostgroup:** assign host group(str, required)</li><li>**ip:** valid of host ip(str, required)</li><li>**mac:** valid of mac address(str, required)</li></ul>|
 |secondary_hosts:<lu><li>**ip**</li><li>**mac**</li><li>**subnet**</li><li>**primary**</li></lu>|<lu><li>**ip:** 10.11.12.6</li><li>**mac:** 080027F8D3E8</li><li>**subnet:** subnet1012</li><li>**primary:** agent_node</li></lu>|<ul><li>**ip:** ip address, must be unique(str, required)</li><li>**mac:** mac address, must be unique(str, required)</li><li>**subnet:** valid subnet to be assigned(str, required)</li><li>**primary:** valid primary node name to be assigned(str, required)</li></ul>|
 |protocol: <ul><li>**type**</li></ul>|<ul><li>**type:** http</li></ul>|<ul><li>**type:** only support http(str, required)</li></ul>|
@@ -124,13 +131,11 @@ User is allowed to modified as they like according to requirement to do provisio
           - name: ambari
             subnet: subnet1
             domain: example.com
-            root_pass: as12345678
             partition_table: Kickstart default
 
           - name: ambari2
             subnet: subnet1
             domain: example.com
-            root_pass: as12345678
             partition_table: Kickstart default
 
 
@@ -173,8 +178,6 @@ User is allowed to modified as they like according to requirement to do provisio
         auth:
             foreman_fqdn: bootstrap.example.com
             foreman_ip: 10.11.12.23
-            foreman_user: admin
-            foreman_pass: admin
 
         domain:
             - name: example.com
@@ -304,7 +307,37 @@ It is restricted for user making changes on system.yml file below, but it is con
 
 
 
+Installation Menu
+------------------
 
+| Variable      | Description  |
+|:------------- |:-------------|:-----|
+| Node Provision| proceed with nodes provisioning only|
+| Cluster| presume nodes already exist and proceed with ambari and hdp cluster|
+| Node Provision & Cluster | proceed with node provisioning and followed by ambari and hdp cluster |
+| Add/Remove hosts | adding and removing pre-existing nodes and components|
+
+
+Authentication Menu
+-------------------
+    Enter Foreman Authentication
+    Username: foreman_username
+    Password: foreman_password
+    Password (again): confirm foreman_password
+
+    Enter Ambari Authentication
+    Username: ambari_username
+    Password: ambari_passport
+    Password (again): confirm ambari_passport
+
+    Enter HDP Password
+    Password: hdp_passport
+    Password (again): confirm hdp_passport
+
+    Enter Nodes Password
+    Minimum 8 characters required
+    Password: node_password
+    Password (again): confirm node_password
 
 Installation and Provisioning Foreman
 -------------------------------------
@@ -319,10 +352,21 @@ Installation and Provisioning Foreman
     * launch:
           - cd /mdr_platform_bare_metal/ansible/mdr_cluster/
           - ./bootstrap.sh http://repository_ip
+          - select options
 
     noted:when you see provisioning is ready you might turn up the nodes to be provisioned,
-    from bios setting you may choose boot from network and allow boot using PXELinux. After the installation You may find the rest of log and setting in /opt/foreman_yml/ for the further chanages
+    from bios setting you may choose boot from network and allow boot using PXELinux. After the installation You may find the rest of log in /var/log/ansible.log
 
+
+Foreman URL and Ambari Server
+-----------------------------
+    web interface can be accessed through:
+    foreman:
+        http://bootstrap.example.com/users/login
+    ambari server:
+        http://master1-ambariserver.example.com:8080
+
+    noted:check your particular host name for bootstrap and ambari server
 
 ---
 

@@ -34,10 +34,6 @@ def gethostNameIpMap(groupName):
         data.append({'ip':ip,'name': hostgroup[ip]['fqdn']})
     return data
 
-def getCredentials(groupName):
-    hostgroup = commonHostGroups[groupName]
-    return { 'user': 'root','pass': hostgroup['root_pass']}
-
 def gethostGroupName(serviceName):
 
     return globalConfigData[serviceName]['hostgroup']
@@ -55,17 +51,13 @@ def generateHdpHostConfig(hdpHostConfig):
 
     if hdpHostConfig["cluster_type"] == 'single_node':
         hostgroup = globalConfigData["ambari"]['hostgroup']
-        credentials = getCredentials(hostgroup)
         for host in gethosts(hostgroup):
-            outfile.write("\n" + '{0} ansible_ssh_user={1} ansible_ssh_pass={2}'.format(host, credentials['user'],
-                                                                                         credentials['pass']))
+            outfile.write("\n" + '{0}'.format(host))
     else:
         for host_group in hdpHostConfig["hostgroups"]:
             host_group_name = host_group.keys()[0]
-            credentials = getCredentials(host_group_name)
             for host in gethosts(host_group_name):
-                outfile.write("\n" + '{0} ansible_ssh_user={1} ansible_ssh_pass={2}'.format(host, credentials['user'],
-                                                                                            credentials['pass']))
+                outfile.write("\n" + '{0}'.format(host))
             addToEtcHostsList(host_group_name)
 
     log.log(log.LOG_INFO, "Create ansible hdp host group configuration file : hosts")
@@ -81,12 +73,7 @@ def generateBluePrint(hdpConfig):
     blueprint = {"cluster_name": hdpConfig["cluster_name"], "blueprint_name": hdpConfig["blueprint"],
                  "configurations": blueprint_configuration}
 
-    if "default_password" in hdpConfig:
-        blueprint["blueprint"] = {"default_password": hdpConfig["default_password"], "stack_name": "HDP",
-                                  "stack_version": hdpConfig["stack"], "groups": []}
-    else:
-        log.log(log.LOG_WARN, "default_password not mentioned in the blue print")
-        blueprint["blueprint"] = {"stack_name": "HDP", "stack_version": hdpConfig["stack"], "groups": []}
+    blueprint["blueprint"] = {"stack_name": "HDP", "stack_version": hdpConfig["stack"], "groups": []}
 
     if hdpConfig['cluster_type'] == 'multi_node':
         for groupsInfo in hdpConfig["hostgroups"]:
@@ -152,9 +139,8 @@ def generateAnsibleHostFile(config,services):
                 if service in services or 'all' in services:
                     hostFile.write("\n\n\n[" + service + "]")
                     hostgroup = config[service]['hostgroup']
-                    credentials = getCredentials(hostgroup)
                     for host in gethosts(hostgroup):
-                        hostFile.write("\n" + '{0} ansible_ssh_user={1} ansible_ssh_pass={2}'.format(host,credentials['user'],credentials['pass']))
+                        hostFile.write("\n" + '{0}'.format(host))
 
                     addToEtcHostsList(hostgroup)
      log.log(log.LOG_INFO, 'updated ansible hosts file for non hdp components: hosts')

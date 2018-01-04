@@ -24,7 +24,7 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
       - cd /mdr_platform_bare_metal/ansible/mdr_cluster/
       - ./bootstrap.sh http://repository_ip
 
-    once you running this scirpt it will prompt with Options
+    once you running this scirpt it will promit with Options
     1. Node Provision
     2. Node Provision & Cluster
     3. Cluster

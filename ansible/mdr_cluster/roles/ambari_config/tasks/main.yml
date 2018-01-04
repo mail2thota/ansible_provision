@@ -11,13 +11,13 @@
     name: python-requests
     state: installed
   
-
 - name: deploy cluster with ambari; http://{{ ambari_hosts[0]['name'] }}:{{ ambari_port }}
   ambari_cluster_state:
     host: "{{ ambari_hosts[0]['name'] }}"
     port: "{{ ambari_port }}"
     username: "{{ ambari_user }}"
     password: "{{ ambari_password }}"
+    hdp_password: "{{ hdp_password }}"
     cluster_name: "{{ cluster_name }}"
     cluster_state: present
     blueprint_name: "{{ blueprint_name }}"

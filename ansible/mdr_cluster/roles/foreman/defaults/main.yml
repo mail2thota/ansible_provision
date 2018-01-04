@@ -23,6 +23,4 @@ foreman_db_timeout: 5000
 
 foreman_domain: "{{ ansible_domain }}"
 foreman_fqdn: "{{ ansible_fqdn }}"
-foreman_admin_username: "{{ foreman.auth.foreman_user }}"
-foreman_admin_password: "{{ foreman.auth.foreman_pass }}"
 foreman_admin_email: "admin@{{ ansible_fqdn }}"
