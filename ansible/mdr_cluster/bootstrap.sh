@@ -37,7 +37,7 @@ init(){
 	yum clean all
         echo "install ansible"
 	yum install ansible -y
-	gnome-terminal -x ./lnav-0.8.2/lnav /var/log/ansible.*
+	#gnome-terminal -x ./lnav-0.8.2/lnav /var/log/ansible.*
 }
 
 foreman(){
@@ -52,28 +52,38 @@ validate(){
 
 ambari_hdp(){
 	echo "execution of ambari and hdp playbook"
-	ansible-playbook mdr.yml
+	rm -f ./roles/pre-config/config.yml
+	cp config.yml ./roles/pre-config/
+	ansible-playbook  mdr.yml
 } 
+
+updatehdp(){ 
+	rm -f ./roles/updatehdp/update_hdp_cluster.yml
+	cp update_hdp_cluster.yml ./roles/updatehdp/
+        ansible-playbook updatehdp.yml --tags=config
+        ansible-playbook updatehdp.yml --tags=hdp-install 
+}
 
 option1="Node Provision"
 option2="Cluster"
 option3="Node Provision & Cluster"
-option4="Quit"
+option4="Add/Remove hosts"
+option5="Quit"
 PS3='Please enter your choice: '
-options=("${option1}" "${option2}" "${option3}" "${option4}")
+options=("${option1}" "${option2}" "${option3}" "${option4}" "${option5}")
 select opt in "${options[@]}"
 do
     case $opt in
         "${option1}")
             echo "${bold}${green}Selected ${option1}${reset}"
             init
-			validate foreman
+	    validate foreman
             foreman
             break
             ;;
         "${option2}")
             echo "${bold}${green}Selected ${option2}${reset}"
-			init
+	    init
             validate mdr
             ambari_hdp
             break
@@ -87,6 +97,12 @@ do
             break
             ;;
         "${option4}")
+            echo "${bold}${green}Selected ${option4}${reset}"
+            init
+            updatehdp
+            break
+            ;;
+         "${option5}")
             exit 1
             ;;
         *) echo "${bold}${red}ERROR! Invalid option${reset}";;

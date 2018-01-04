@@ -1,0 +1,25 @@
+#
+## Software Copyright BAE Systems plc 2017. All Rights Reserved.
+## BAE SYSTEMS, DETICA are trademarks of BAE Systems
+## plc and may be registered in certain jurisdictions.
+##
+#---
+## Create Config Files
+
+- include: env.yml
+  when:
+   - action == 'env'
+
+
+- include: config.yml
+  when:
+   - action == 'config'
+
+- include: etchost.yml
+  when:
+   - action == 'etchost'
+
+- include: add_hdp.yml
+  when:
+   - action == 'add_hdp'
+

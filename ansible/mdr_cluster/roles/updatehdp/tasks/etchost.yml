@@ -1,0 +1,34 @@
+#
+## Software Copyright BAE Systems plc 2017. All Rights Reserved.
+## BAE SYSTEMS, DETICA are trademarks of BAE Systems
+## plc and may be registered in certain jurisdictions.
+##
+#---
+## Create Config Files
+
+
+- name: copying etc host file from ambari
+  fetch: 
+    src: /etc/hosts 
+    dest: "{{ role_path }}/ambari_etc_hosts"
+    flat: yes
+  when: inventory_hostname in groups["ambari"]   
+    
+- name: copying etc host file to new nodes
+  copy:
+    src: "{{ role_path}}/ambari_etc_hosts"
+    dest: "/etc/hosts"
+  when: inventory_hostname in groups["hdp_add"]
+
+- name: copy add host file to all nodes
+  become: True
+  become_user: root
+  copy:
+    src: "{{ role_path }}/add_hosts"
+    dest: /home/add_hosts
+    mode: 0777
+
+- name: Append to existing hosts file
+  shell: "cat /home/add_hosts >> /etc/hosts"
+
+

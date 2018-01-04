@@ -1,0 +1,25 @@
+default:
+  java_vendor: oracle
+  dns_enabled: no
+common:
+
+  node_pass: as12345678
+ambari:
+   host : master1-ambariserver.example.com
+   port : 8080
+   user: admin
+   password: admin
+   version: 2.5.2.0
+
+hdp:
+  clustername: mdr
+  blueprint: mdr-ha-blueprint
+  add:
+    hosts:
+       - name: agent15-ambariagent.example.com
+         ip: 10.11.12.13
+       - name: agent1-ambariagent.example.com
+    hostgroup: worker_1
+  remove:
+     hosts:
+       - name: agent7-ambariagent.example.com

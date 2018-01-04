@@ -1,0 +1,54 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+
+- hosts: localhost
+  become: true
+  roles:
+    - { role: updatehdp, action : 'config'}
+  tags:
+    - config
+
+
+
+- hosts: localhost
+  become: true
+  roles:
+    - { role: updatehdp, action: 'env' }
+  tags:
+    - hdp-install
+
+- hosts: ambari
+  become: true
+  roles:
+    - {role: updatehdp, action: 'etchost'}
+  tags:
+    - hdp-install
+
+- hosts: hdp_add,hdp
+  become: true
+  roles:
+    - {role: updatehdp, action: 'etchost'}
+  tags:
+    - hdp-install
+    
+- hosts: hdp_add
+  become: true
+  roles:
+    - {role: updatehdp, action: 'env'}
+    - {role: mdr_common}
+    - {role: ambari_agent}
+  tags:
+    - hdp-install
+ 
+- hosts: localhost
+  become: true
+  roles:
+    - { role: updatehdp, action: 'add_hdp'}
+  tags:
+    - hdp-install
+
+
