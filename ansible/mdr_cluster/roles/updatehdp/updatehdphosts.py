@@ -69,7 +69,7 @@ def generateHostFile(configData):
         
    with open('add_hosts','w') as hostFile:
        for host in hostsipmap:
-                hostFile.write("\n"'{0} {1}'.format(host,hostsipmap[host]))
+                hostFile.write('{0} {1}"\n"'.format(host,hostsipmap[host]))
 
 def generateAllFile(config):
     with open('all', 'w') as allFile:
