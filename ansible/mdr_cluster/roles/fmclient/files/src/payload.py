@@ -396,7 +396,7 @@ class ForemanLoad(ForemanBase):
                     hg_arr['ptable_id']           = hg_parttbl
                 if hg_subnet:
                     hg_arr['subnet_id']           = hg_subnet
-                hg_arr['root_pass']               = hostgroup['root_pass']
+                hg_arr['root_pass']               = self.get_node_pass()
 
                 # send to foreman-api
                 try:

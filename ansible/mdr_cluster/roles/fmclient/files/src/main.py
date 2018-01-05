@@ -116,12 +116,18 @@ def main():
         config_file = sys.argv[1]
         cfg_path = sys.argv[2]
         cfg_ip = sys.argv[3]
+        node_pass = sys.argv[4]
+        fm_user = sys.argv[5]
+        fm_pass = sys.argv[6]
         action = "import"
     else:
         try:
             config_file = sys.argv[2]
             cfg_path = sys.argv[3]
             cfg_ip = sys.argv[4]
+            node_pass = sys.argv[5]
+            fm_user = sys.argv[6]
+            fm_pass = sys.argv[7]
 
         except IndexError:
             log.log(log.LOG_ERROR, "No YAML provided") 
@@ -159,10 +165,14 @@ def main():
 
     if (action == "import"):
         fm_clean = ForemanCleanup(config)
+        fm_clean.set_node_pass(node_pass)
+        fm_clean.set_foreman_auth(fm_user,fm_pass)
         fm_clean.connect()
         fm_cleanup(fm_clean)
         fm_impt = ForemanLoad(config)
         fm_impt.set_repo_ip(cfg_ip)
+        fm_impt.set_node_pass(node_pass)
+        fm_impt.set_foreman_auth(fm_user,fm_pass)
         fm_impt.connect()
         fm_import(fm_impt)
 

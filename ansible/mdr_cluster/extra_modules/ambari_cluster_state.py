@@ -21,6 +21,7 @@ def main():
         port=dict(type='int', default=None, required=True),
         username=dict(type='str', default=None, required=True),
         password=dict(type='str', default=None, required=True),
+        hdp_password=dict(type='str', default=None, required=True),
         cluster_name=dict(type='str', default=None, required=True),
         cluster_state=dict(type='str', default=None, required=True,
                            choices=['present', 'absent', 'started', 'stopped']),
@@ -48,6 +49,7 @@ def main():
     port = p.get('port')
     username = p.get('username')
     password = p.get('password')
+    hdp_password = p.get('hdp_password')
     cluster_name = p.get('cluster_name')
     cluster_state = p.get('cluster_state')
     blueprint_name = p.get('blueprint_name')
@@ -93,7 +95,6 @@ def main():
 
             blueprint_var = p.get('blueprint_var')
             blueprint, host_map = blueprint_var_to_ambari_converter(blueprint_var)
-	    default_password = blueprint_var['default_password']
             created_blueprint = False
 
             if not blueprint_exists(ambari_url, username, password, blueprint_name):
@@ -108,9 +109,9 @@ def main():
                 clusterenv['cluster-env'] = {}
                 clusterenv['cluster-env']['repo_suse_rhel_template'] = "[{{repo_id}}]\nname={{repo_id}}\n{% if mirror_list %}mirrorlist={{mirror_list}}{% else %}baseurl={{base_url}}{% endif %}\n\npath=/\nenabled=1\ngpgcheck=0\nproxy=_none_"
                 configurations.append(clusterenv)
-            data1 = json.dumps({'blueprint': blueprint_name, 'default_password': default_password, 'configurations': configurations, 'host_groups': host_map})
+            data1 = json.dumps({'blueprint': blueprint_name, 'default_password': hdp_password, 'configurations': configurations, 'host_groups': host_map})
 
-            request = create_cluster(ambari_url, username, password, cluster_name, blueprint_name, configurations, host_map,default_password)
+            request = create_cluster(ambari_url, username, password, cluster_name, blueprint_name, configurations, host_map,hdp_password)
             request_id = json.loads(request.content)['Requests']['id']
             if wait_for_complete:
                 status = wait_for_request_complete(ambari_url, username, password, cluster_name, request_id,10)

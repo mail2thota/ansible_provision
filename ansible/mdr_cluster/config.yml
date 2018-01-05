@@ -5,88 +5,71 @@ default:
   dns_enabled: no
   java_vendor: oracle
 
-
 common:
     hostgroups:
         - name: master_1
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: master_2
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: master_3
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: master_4
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: zk_1
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: edge_1
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: edge_3
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: worker_1
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: postgres
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: activemq
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: kibana
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: es_master
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: es_node
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: apache
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: mongodb
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
         - name: docker
           subnet: subnet1
           domain: example.com
-          root_pass: as12345678
           partition_table: Kickstart default
 
     primary_hosts:
@@ -171,8 +154,6 @@ foreman:
     auth:
         foreman_fqdn: bootstrap.example.com
         foreman_ip: 10.11.12.23
-        foreman_user: admin
-        foreman_pass: admin
 
     domain:
         - name: example.com
@@ -240,8 +221,6 @@ foreman:
 
 ambari:
   hostgroup: edge_1
-  user: admin
-  password: admin
   port : 8080
   version: 2.5.2.0
 
@@ -249,7 +228,6 @@ hdp:
   blueprint: mdr-ha-blueprint
   blueprint_configuration:
   stack: 2.6
-  default_password: admin
   stack_version : 2.6.2.0
   utils_version: 1.1.0.21
   cluster_type: multi_node

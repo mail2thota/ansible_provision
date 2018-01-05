@@ -15,8 +15,6 @@ class Validator:
         self.auth = Schema({
             Required('foreman_fqdn'):                   Match("^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$", msg='must be valid fqdn ex:bootstrap.example.com'),
             Required('foreman_ip'):                     Match("^(?:(?:^|\.)(?:2(?:5[0-5]|[0-4]\d)|1?\d?\d)){4}$",msg='must be valid ipv4 ex:10.11.12.23'),
-            Required('foreman_user'):                   All(str,Length(max=20),msg='\'foreman_user\'  max is 20 character'),
-            Required('foreman_pass'):                   All(Length(max=16),msg='\'foreman_pass\' max is 16 character'),
         })
 
 
@@ -135,7 +133,6 @@ class Validator:
             Required('name'):                           All(str,msg='provide hostgroup name'),
             Required('subnet'):                         Any(str,msg='provide valid subnet ipv4'),
             Required('domain'):                         Any(str,msg='assigned valid domain'),
-            Required('root_pass'):                      All(str, Length(min=8),msg='password minimum must be 8 character'),
             Required('partition_table'):                Any(str,msg='assigned valid partition table'),
         })
 

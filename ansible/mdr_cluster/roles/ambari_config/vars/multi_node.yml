@@ -1,5 +1,4 @@
 blueprint:
-  default_password: admin
   groups:
   - cardinality: 1
     components:
@@ -20,7 +19,7 @@ blueprint:
     - METRICS_MONITOR
     configuration: []
     hosts:
-    - agent2-ambariagent.example.com
+    - agent99-ambariagent.example.com
     name: master_2
   - cardinality: 1
     components:
@@ -34,7 +33,7 @@ blueprint:
     - HIVE_SERVER
     configuration: []
     hosts:
-    - agent3-ambariagent.example.com
+    - agent100-ambariagent.example.com
     name: master_3
   - cardinality: 1
     components:

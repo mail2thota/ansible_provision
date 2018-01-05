@@ -2,5 +2,14 @@
 mysql_root_username: root
 mysql_root_password: root
 
-mysql_databases: []
-mysql_users: []
+mysql_databases:
+  - name: foreman
+    collation: utf8_unicode_ci
+    encoding: utf8
+
+mysql_users:
+  - name: foreman
+    host: localhost
+    password: foreman
+    priv: "foreman.*:ALL"
+

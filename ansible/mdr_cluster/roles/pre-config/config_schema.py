@@ -17,7 +17,6 @@ class Validator:
         self.common_hostgroup = Schema({
             Required('name','host group name is required in common[hostgroups]'): All(str,msg='hostgroup name must be a string'),
             Required('domain', 'domain name is required in common[hostgroups]'): Match('^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$',msg='domain doesn\'t match expected value ex: example.com but configured value'),
-            Required('root_pass','root_pass is required in common[hostgroups]'): All(str,msg='root_pass must be av valid string')
         },extra=ALLOW_EXTRA)
 
         self.common_primary_host = Schema({
@@ -25,7 +24,6 @@ class Validator:
             Required('ip','ip is required for in common[primary_hosts]'): Match(
                 '^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',msg='host ip does''t match with expcted ip4 version but Configured Value'),
 
-            Required('hostgroup', 'root_pass is required in common[hostgroups]'): All(str,msg='root_pass must be av valid string')
         }, extra=ALLOW_EXTRA)
 
         self.config = Schema( {
@@ -55,8 +53,6 @@ class Validator:
                                                                                          msg='hdp configuratin doesn\'t match the expected format expected is dictionary')
         },extra=ALLOW_EXTRA)
         self.ambari = Schema({
-            Required('user',msg='ambari[user] doesn\'t exists'):                           Any(str,msg='ambari username name must be a string'),
-            Required('password',msg='ambari[password] doesn\'t exists'):                   All(str,msg='password must be a string'),
             Required('port',msg='ambari[port] doesn\'t exists'):                                                              Any(int,msg='Port Number must be integer (Ex: 8080) but configured value'),
             Required('version',msg='ambari[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){3}?$',msg='ambari version doesn''t match with expected version format( Ex: 2.5.2.0) but configured value'),
             Required('hostgroup',msg='ambari must have hosts configuration'):              All(str,msg='hostgroup in ambari must be a string and must configured in common[hostgroups] as well')
@@ -65,8 +61,7 @@ class Validator:
         self.hdp = Schema({
             Required('blueprint',msg='hdp[blueprint] doesn\'t exists'):                             All(str,msg='blueprint shuld be string ex: mdr-ha-blueprint'),
             Required('stack',msg='hdp[statck] doesn\'t existis'):                                   Any(Number(precision=2, scale=1,yield_decimal=False,msg='hdp[stack] doesn\'t match with the exptected version format (Ex: 2.5) but configured value :') ),
-            Required('default_password',msg='hdp[default_password] doesn\'t exists'):               All(str,msg='default_pasword must be a string'),
-            Required('stack_version',msg='hdp[default_password] doesn\'t exists'):                  Match('^[0-9]*.(\.[0-9]*){3}?$',msg='hdp[stack_version] doesn\'t match with expected version format( Ex: 2.5.2.0) but configured value: '),
+            Required('stack_version',msg='hdp_stackversion doesn\'t exists'):                  Match('^[0-9]*.(\.[0-9]*){3}?$',msg='hdp[stack_version] doesn\'t match with expected version format( Ex: 2.5.2.0) but configured value: '),
             Required('utils_version',msg='hdp[utils_version] doesn\'t exists'):                     Match('^[0-9]*.(\.[0-9]*){3}?$',msg='hdp[utils_version] doesn\'t match with expected version format( Ex: 1.1.0.21) but configured value: '),
             Required('cluster_name',msg='hdp[cluster_name] doensn\'t exists'):                      All(str,msg='cluster_name must be a string ex: mdr'),
             Optional('blueprint_configuration',msg='hdp[blueprint_configuration] doesn\'t exists'): Any(list,None,msg='Blueprint configuration is specific to cluster, please make sure to test it before providing here'),
