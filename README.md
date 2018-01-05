@@ -339,6 +339,48 @@ Authentication Menu
     Password: node_password
     Password (again): confirm node_password
 
+Disk Partition Logic
+-------------------
+    Disk partition logic and configuration can be modified as below:
+
+    partition_system(default minimum size):
+    mdr_platform_bare_metal/ansible/mdr_cluster/fmconfig/system.yml.j2
+
+    partition_table:
+    mdr_platform_bare_metal/ansible/mdr_cluster/config.yml
+
+    logic requirement:
+    if  real disk size >=  disk_minimum
+        set disk from patition_table
+    else
+        set auto default which is:
+        /boot= 270 mb
+        /swap=
+            if memory less then 2GB
+                /swap=double size of memory
+            else
+                /swap=memory size + 2GB
+        /root= remaining size of disk
+
+    if one of disk percentage size in partition_table < one of disk size in partition_system
+       /root,/swap,/home,/var,/boot,/tmp = set base on partition_system
+    else
+       /root,/swap,/home,/var,/boot,/tmp =  set base on partition_system
+
+
+    recommand minimum size:
+        minimum size of disk is = 500 GB for each of node/host
+        recommand minimum size of patition(in MB):
+            boot_size=730
+            swap_size=8192
+            home_size=5120
+            var_size=102400
+            tmp_size=102400
+            root_size=281138
+
+
+
+
 Installation and Provisioning Foreman
 -------------------------------------
     git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
