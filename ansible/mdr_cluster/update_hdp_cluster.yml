@@ -12,9 +12,10 @@ hdp:
   add:
     hosts:
        - name: agent15-ambariagent.example.com
-         ip: 10.11.12.13
+         ip: 10.11.12.17
        - name: agent1-ambariagent.example.com
     hostgroup: worker_1
   remove:
      hosts:
        - name: agent7-ambariagent.example.com
+       - name: agent9-ambariagent.example.com
