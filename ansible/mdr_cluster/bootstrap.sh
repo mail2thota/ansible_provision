@@ -115,8 +115,8 @@ validate(){
 
 ambari_hdp(){
 	echo "execution of ambari and hdp playbook"
-	ansible-playbook mdr.yml --extra-vars "ambari_user=$ambusername
-        ambari_password=$ambpassword hdp_password=$hdppassword ansible_user=root
+	ansible-playbook mdr.yml --extra-vars "ambari_user=admin
+        ambari_password=admin hdp_password=$hdppassword ansible_user=root
         ansible_ssh_pass=$nodepassword" 
 }
 
@@ -152,7 +152,6 @@ do
             ;;
         "${option2}")
             echo "${bold}${green}Selected ${option2}${reset}"
-            passwordAmbari
             passwordHDP
             passwordNodes
             init
@@ -163,7 +162,6 @@ do
         "${option3}")
             echo "${bold}${green}Selected ${option3}${reset}"
             passwordFm
-            passwordAmbari
             passwordHDP
             passwordNodes
             init
