@@ -354,7 +354,7 @@ Disk Partition Logic
         set disk from patition_table
     else
         set auto default which is:
-        /boot= 270 mb
+        /boot= 750 mb
         /swap=
             if memory less then 2GB
                 /swap=double size of memory
