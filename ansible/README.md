@@ -28,9 +28,13 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
     1. Node Provision
     2. Node Provision & Cluster
     3. Cluster
+    4. Add/Remove Data nodes
     4. Quit
 
-   and choose option 2  if you want to do Node provision and Cluster setup at once or Option 3 If you only need to setup the packages and hdp cluster
+   and choose option
+   2  If you want to do Node provision and Cluster setup at once
+   3  If you only need to setup the packages and hdp cluster
+   4  If you want to Add/Remove data nodes
 ```
 This will automatically updates the required configurations for ansible roles and executes playbooks which setups the hdp cluster and remaining packages
 
@@ -101,20 +105,20 @@ hdp_test:
 postgres:
    hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes postgres will be installed
    version: postgres version number
-   
+
 activemq:
    hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes activemq will be installed
    version: activemq version number
-   
+
 apache:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes apache and tomcat server will be installed
   httpd_version: httpd version number
   tomcat_version: tomcat version number
-  
+
 docker:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of docker registery will be installed
   version: docker version number
-  
+
 es_master:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search master nodes will be installed
   version: elasticsearch version number
@@ -383,7 +387,7 @@ foreman:
           vlanid:
           domain:
             - name: example.com
-    
+
     partition_table:
         - name: Kickstart default
           boot:
@@ -541,7 +545,7 @@ es_master:
 
 es_node:
   hostgroup: es_node
-  
+
 
 apache:
   hostgroup: apache
@@ -564,6 +568,93 @@ hdp_test:
 
 
 ```
+
+## Add/Remove nodes
+
+  Datanodes can be added/removed with option 4 and currently supports the nodes which has components DATANODE,NODEMANAGER,METRICS_MONITOR and it first New nodes will be added and then existing nodes will be removed if any configured
+  Default template been used fo this  [Update Datanodes Template](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml)
+
+### Adding Datanodes
+
+ Configured nodes will be added to the hdp host group mentioned and only remommeded is Datanodes
+
+
+### Removing Datanodes
+ Datanodes can be removed from the hdp cluster by configuring in list of datanodes needs to be removed section and Cluster must have one data node
+
+### Configuration
+ ```
+ default:
+   java_vendor: Java vendor to be installed on ambari agent either oracle or openjdk
+   dns_enabled: yes or no to update cluster nodes /etc/host file if dns server not available
+
+ ambari:
+    host : Hostname of the ambari
+    port : Port number of the ambari
+    user: Ambari username
+    password: Ambari Password
+    version: Ambari Version
+
+ hdp:
+   clustername: CluserName ex : mdr
+   blueprint: blueprint name
+   add:
+     hosts:
+        - name: hostnmae of the new node 1 to be added
+          ip: ip address of the node 1
+        - name: hostnmae of the new node 2 to be added
+          ip: ip adress of node 2
+     hostgroup: hdp hostgroup name to attach the nodes in hosts section
+   remove:
+      hosts:
+        - name: Hostname of the node to be removed
+ ```
+
+### Example/Default Template
+
+  Please refer the below example template for better understanding
+```
+default:
+  java_vendor: oracle
+  dns_enabled: no
+ambari:
+   host : master1-ambariserver.example.com
+   port : 8080
+   version: 2.5.2.0
+
+hdp:
+  clustername: mdr
+  blueprint: mdr-ha-blueprint
+  add:
+    hosts:
+       - name: agent15-ambariagent.example.com
+         ip: 10.11.12.13
+       - name: agent1-ambariagent.example.com
+    hostgroup: worker_1
+  remove:
+     hosts:
+       - name: agent7-ambariagent.example.com
+
+
+```
+### Variable Description
+
+ Variable |mandatory/optional| example| Description
+ ---------|---|----|-------
+  default[java_vendor]|optional|oracle| Java/jdk vendor to be installed on New data nodes default is opendk, Only supported oracle or openjdk
+  default[dns_enabled]|mandatory|no| yes or no, To update the etc/host files in all the nodes of cluster if we dont have dns server in network
+  ambari[host]|mandatory|master1-ambariserver.example.com| Ambari host name for Sumbiting to node adding/deleting requests
+  ambari[port]|mandatory|8080| Port Number of the ambari
+  ambari[version]|mandatory|2.5.2.0| Ambari version number to setupo the ambari agent on the newly added Datanodes
+  hdp[clustername]|mandatory|mdr| configured clusternmae during inital lauch of cluster
+  hdp[bluerprintn]|mandatory|mdr-ha-blueprint| blueprint name used for deploying the hdp cluster during intial lauch of cluster
+  hdp[add]|optional|| config subsection for Newly adding hosts and its optional if you dont need to add Datanodes
+  hdp[add][hosts]|optional| Newly adding hosts configuration section and its optional if you dont need to add Datanodes
+  hdp[add][hosts]|optional|{name: mandatory,ip: optional}| Yaml array of hosts with optional ip adress those needs to be added to Datanodes hostgroup
+  hdp[add][hostgroup]|mandatory in case if you need to add hosts| exisitng hostgroup name in the cluster to assign the hosts in the host specification
+  hdp[remove]|optional||config subsection for datanodes to be removed
+  hdp[remove][hosts]|optional|[{name:agent7-ambariagent.example.com}]| Hostnames of the datanodes to be removed
+
 
 ## Service ports
 ### Hadoop Components
