@@ -11,7 +11,7 @@
   shell: 'cd {{ role_path }} && rm -f all && rm -f hosts'
   
 - name: Generate Config files  
-  shell: 'cd {{ role_path }}  && python updatehdphosts.py update_hdp_cluster.yml'
+  shell: 'cd {{ role_path }}  && python updatehdphosts.py update_hdp_cluster.yml {{ ambari_user}} {{ambari_password}}'
   register: scriptlog
 
 - debug:

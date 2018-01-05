@@ -7,7 +7,7 @@
 ## Create Config Files
   
 - name: Update cluster hosts via ambari
-  shell: 'cd {{ role_path }}  && python updatehdpcluster.py update_hdp_cluster.yml'
+  shell: 'cd {{ role_path }}  && python updatehdpcluster.py update_hdp_cluster.yml {{ambari_user}} {{ ambari_password}}'
   register: curllogs
 
 - debug:

@@ -41,10 +41,10 @@ def getClusterHosts(configdata):
 
    with open('hosts','w') as hostFile:
        hostFile.write("\n[hdp]")
-       node_user = configdata['common'].get('node_user','root')
-       node_pass = configdata['common'].get('node_pass')
+       #node_user = configdata['common'].get('node_user','root')
+       #node_pass = configdata['common'].get('node_pass')
        for host in hdphosts:
-                hostFile.write("\n"'{0} ansible_ssh_user={1} ansible_ssh_pass={2}'.format(host,node_user,node_pass))
+                hostFile.write("\n"'{0}'.format(host))
   
 
 def generateHostFile(configData):
@@ -57,14 +57,14 @@ def generateHostFile(configData):
         return
    with open('hosts','a') as hostFile:
 	       hostFile.write("\n[hdp_add]")
-	       node_user = configData['common'].get('node_user','root')
-	       node_pass = configData['common'].get('node_pass')
+	       #node_user = configData['common'].get('node_user','root')
+	       #node_pass = configData['common'].get('node_pass')
 	       for host in hosts['add']['hosts']:
-			hostFile.write("\n"'{0} ansible_ssh_user={1} ansible_ssh_pass={2}'.format(host['name'],node_user,node_pass))
-               if 'ip' in  host:
-                   hostsipmap[host['ip']] = host['name']  
+		    hostFile.write("\n"'{0}'.format(host['name']))
+   	            if 'ip' in  host:
+        	           hostsipmap[host['ip']] = host['name']  
                hostFile.write("\n[ambari]")
-               hostFile.write("\n"'{0} ansible_ssh_user={1} ansible_ssh_pass={2}'.format(configData['ambari']['host'],node_user,node_pass))
+               hostFile.write("\n"'{0}'.format(configData['ambari']['host']))
 
         
    with open('add_hosts','w') as hostFile:
@@ -91,6 +91,7 @@ def main():
     config_file = ''
     if os.path.isfile(sys.argv[1]):
         config_file = sys.argv[1]
+    
     else:
         log.log(log.LOG_ERROR,"Please suply the update_hdp_cluster.yml")
         log.log(log.LOG_ERROR, "No YAML provided")
@@ -99,6 +100,8 @@ def main():
         config_file = open(config_file, 'r')
         try:
             config = yaml.load(config_file)
+            config['ambari']['user'] = sys.argv[2] 
+            config['ambari']['password'] = sys.argv[3]
             generateAllFile(config)   
             getClusterHosts(config)      
             generateHostFile(config) 

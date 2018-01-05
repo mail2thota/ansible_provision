@@ -250,6 +250,8 @@ def main():
         config_file = open(config_file, 'r')
         try:
             config = yaml.load(config_file)
+            config['ambari']['user'] = sys.argv[2]
+            config['ambari']['password'] = sys.argv[3]
             addHosts(config)   
             removeHosts(config)     
         except yaml.YAMLError, exc:
