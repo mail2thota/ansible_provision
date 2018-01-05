@@ -134,7 +134,7 @@ updatehdp(){
 option1="Node Provision"
 option2="Cluster"
 option3="Node Provision & Cluster"
-option4="Add/Remove hosts"
+option4="Add/Remove hdp worker nodes"
 option5="Quit"
 PS3='Please enter your choice: '
 options=("${option1}" "${option2}" "${option3}" "${option4}")
