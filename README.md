@@ -326,8 +326,8 @@ Authentication Menu
     Password (again): confirm foreman_password
 
     Enter Ambari Authentication
-    Username: ambari_username
-    Password: ambari_passport
+    Username: ambari_username(default 'admin')
+    Password: ambari_passport(default 'admin')
     Password (again): confirm ambari_passport
 
     Enter HDP Password
@@ -405,8 +405,15 @@ Foreman URL and Ambari Server
     web interface can be accessed through:
     foreman:
         http://bootstrap.example.com/users/login
+        default authentication:
+        username = 'admin'
+        password = 'input password'
+
     ambari server:
         http://master1-ambariserver.example.com:8080
+        default authentication:
+        username = 'admin'
+        password = 'admin'
 
     noted:check your particular host name for bootstrap and ambari server
 

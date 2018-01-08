@@ -54,6 +54,7 @@ passwordFm()
     done
     echo
 }
+
 passwordNodes()
 {
     echo "Enter Nodes Password"
@@ -73,18 +74,29 @@ passwordNodes()
     echo
 }
 
+passwordAccess()
+{
+    echo "Enter Nodes Authentication"
+    echo "Password, minimum 8 characters required"
+    read -p "Username: " nodeusername
+    while true; do
+        read -s -p "Password: " nodepassword
+        echo
+        len=`echo ${#nodepassword}`
+        if [[ $len -ge 8 ]] ; then
+            break
+        fi
+        echo "password length should be greater than or equal 8 and must be match"
+        echo "Please try again"
+    done
+    echo
+}
+
 passwordAmbari()
 {
     echo "Enter Ambari Authentication"
     read -p "Username: " ambusername
-    while true; do
-        read -s -p "Password: " ambpassword
-        echo
-        read -s -p "Password (again): " ambpassword2
-        echo
-        [ "$ambpassword" = "$ambpassword2" ] && break
-        echo "Please try again"
-    done
+    read -s -p "Password: " ambpassword
     echo
 }
 
@@ -116,7 +128,7 @@ validate(){
 ambari_hdp(){
 	echo "execution of ambari and hdp playbook"
 	ansible-playbook mdr.yml --extra-vars "ambari_user=admin
-        ambari_password=admin hdp_password=$hdppassword ansible_user=root
+        ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername
         ansible_ssh_pass=$nodepassword" 
 }
 
@@ -153,7 +165,7 @@ do
         "${option2}")
             echo "${bold}${green}Selected ${option2}${reset}"
             passwordHDP
-            passwordNodes
+            passwordAccess
             init
             validate mdr
             ambari_hdp
@@ -173,7 +185,7 @@ do
         "${option4}")
             echo "${bold}${green}Selected ${option4}${reset}"
             passwordAmbari
-            passwordNodes
+            passwordAccess
             init
             updatehdp
             break
