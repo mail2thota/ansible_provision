@@ -365,7 +365,7 @@ Disk Partition Logic
     if one of disk percentage size in partition_table < one of disk size in partition_system
        /root,/swap,/home,/var,/boot,/tmp = set base on partition_system
     else
-       /root,/swap,/home,/var,/boot,/tmp =  set base on partition_system
+       /root,/swap,/home,/var,/boot,/tmp =  set base on partition_table
 
 
     recommand minimum size:
