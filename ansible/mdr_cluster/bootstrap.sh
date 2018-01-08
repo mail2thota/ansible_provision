@@ -123,10 +123,10 @@ ambari_hdp(){
 updatehdp(){ 
 	rm -f ./roles/updatehdp/update_hdp_cluster.yml
 	cp update_hdp_cluster.yml ./roles/updatehdp/
-        ansible-playbook updatehdp.yml --tags=config "ambari_user=$ambusername
+        ansible-playbook updatehdp.yml --tags=config --extra-vars "ambari_user=$ambusername
         ambari_password=$ambpassword ansible_user=root
         ansible_ssh_pass=$nodepassword"
-        ansible-playbook updatehdp.yml --tags=hdp-install "ambari_user=$ambusername
+        ansible-playbook updatehdp.yml --tags=hdp-install --extra-vars "ambari_user=$ambusername
         ambari_password=$ambpassword ansible_user=root
         ansible_ssh_pass=$nodepassword"
 } 
@@ -137,7 +137,7 @@ option3="Node Provision & Cluster"
 option4="Add/Remove hdp worker nodes"
 option5="Quit"
 PS3='Please enter your choice: '
-options=("${option1}" "${option2}" "${option3}" "${option4}")
+options=("${option1}" "${option2}" "${option3}" "${option4}" "${option5}")
 select opt in "${options[@]}"
 do
     case $opt in
