@@ -370,7 +370,7 @@ Disk Partition Logic
 
     recommand minimum size:
         minimum size of disk is = 500 GB for each of node/host
-        recommand minimum size of patition(in MB):
+        recommand minimum size of partition(in MB):
             boot_size=730
             swap_size=8192
             home_size=5120
