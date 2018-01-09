@@ -14,10 +14,6 @@
     default_pip_repo_site: "{{ hostvars['localhost']['repo_site'] }}"
     default_repo_site: "{{ hostvars['localhost']['repo_site'] }}/repos"
 
-- name: creating the /tmp/report_json
-  file: path=/tmp/report_json state=directory
-  when: inventory_hostname == "localhost"
-  
 - name: copy init files to nodes
   become: True
   become_user: root
