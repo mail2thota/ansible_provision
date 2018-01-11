@@ -37,7 +37,11 @@ init(){
 	yum clean all
         echo "install ansible"
 	yum install ansible -y
-	gnome-terminal -x ./lnav-0.8.2/lnav /var/log/ansible.*
+	is_shell_login=$(shopt -q login_shell && echo 'yes' || echo 'no')
+	if [ "$DESKTOP_SESSION" = "gnome-classic" -a "$is_shell_login" == "no" ]
+	then
+ 	   sudo gnome-terminal -x ./lnav-0.8.2/lnav /var/log/ansible.*
+	fi
 }
 
 passwordFm()
