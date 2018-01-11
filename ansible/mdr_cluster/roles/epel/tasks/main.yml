@@ -8,7 +8,7 @@
   template:
     src: "epel.repo"
     dest: "/etc/yum.repos.d/epel.repo"
-
+    force: yes
 - name: install epel release
   yum:
     name: epel-release
