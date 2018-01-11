@@ -442,7 +442,6 @@ class ForemanLoad(ForemanBase):
                 'ip':                   hostc['ip'],
                 'interfaces_attributes': [{'identifier': 'eth0','primary': 1}],
             }
-            self.ifexist=True
             if self.ifexist: 
                 domainid = self.fm.domains.show(domain)['id']
                 count_eth=0

@@ -33,7 +33,7 @@
 
 - name: create ambari agent hostname script
   template:
-    src: "../roles/ambari_agent/files/hostname.sh"
+    src: "{{ role_path }}/files/hostname.sh"
     dest: "/var/lib/ambari-agent/hostname.sh"
     mode: 0744
     owner: "{{ ambari_installation_user }}"

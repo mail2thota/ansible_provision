@@ -6,8 +6,8 @@
 ---
 dependencies:
   - libselinux-python
+  - centos
   - epel
   - ntp
   - wget
-  - centos
   - java_jdk

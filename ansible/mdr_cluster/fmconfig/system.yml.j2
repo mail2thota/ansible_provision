@@ -47,18 +47,18 @@ foreman:
           medium: CentOS7_x86_64
 
     partition_system:
-          disk_minimum: 30
-          boot_size: 500
+          disk_minimum: 500
+          boot_size: 730
           boot_type: ext2
-          swap_size: 1000
+          swap_size: 8192
           swap_type: swap
-          home_size: 500
+          home_size: 5120
           home_type: ext4
-          var_size: 500
+          var_size: 102400
           var_type: xfs
-          tmp_size: 500
+          tmp_size: 102400
           tmp_type: ext4
-          root_size: 16000
+          root_size: 281138
           root_type: ext4
  
 

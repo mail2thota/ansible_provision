@@ -326,8 +326,8 @@ Authentication Menu
     Password (again): confirm foreman_password
 
     Enter Ambari Authentication
-    Username: ambari_username
-    Password: ambari_passport
+    Username: ambari_username(default 'admin')
+    Password: ambari_passport(default 'admin')
     Password (again): confirm ambari_passport
 
     Enter HDP Password
@@ -365,12 +365,12 @@ Disk Partition Logic
     if one of disk percentage size in partition_table < one of disk size in partition_system
        /root,/swap,/home,/var,/boot,/tmp = set base on partition_system
     else
-       /root,/swap,/home,/var,/boot,/tmp =  set base on partition_system
+       /root,/swap,/home,/var,/boot,/tmp =  set base on partition_table
 
 
     recommand minimum size:
         minimum size of disk is = 500 GB for each of node/host
-        recommand minimum size of patition(in MB):
+        recommand minimum size of partition(in MB):
             boot_size=730
             swap_size=8192
             home_size=5120
@@ -405,8 +405,15 @@ Foreman URL and Ambari Server
     web interface can be accessed through:
     foreman:
         http://bootstrap.example.com/users/login
+        default authentication:
+        username = 'admin'
+        password = 'input password'
+
     ambari server:
         http://master1-ambariserver.example.com:8080
+        default authentication:
+        username = 'admin'
+        password = 'admin'
 
     noted:check your particular host name for bootstrap and ambari server
 

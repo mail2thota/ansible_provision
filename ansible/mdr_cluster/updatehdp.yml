@@ -9,17 +9,16 @@
   become: true
   roles:
     - { role: updatehdp, action : 'config'}
+    - { role: updatehdp,action: 'etchost', update_file: True}
   tags:
     - config
 
-
-
 - hosts: localhost
-  become: true
   roles:
-    - { role: updatehdp, action: 'env' }
+    - {role: updatehdp, action: 'env'}
   tags:
     - hdp-install
+
 
 - hosts: ambari
   become: true
@@ -28,17 +27,17 @@
   tags:
     - hdp-install
 
+
 - hosts: hdp_add,hdp
-  become: true
   roles:
-    - {role: updatehdp, action: 'etchost'}
+    - {role: updatehdp, action: 'etchost',update_file: True}
   tags:
     - hdp-install
-    
+
 - hosts: hdp_add
   become: true
   roles:
-    - {role: updatehdp, action: 'env'}
+    - {role: updatehdp,action: 'env'}
     - {role: mdr_common}
     - {role: ambari_agent}
   tags:

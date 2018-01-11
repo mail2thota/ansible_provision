@@ -6,20 +6,5 @@
 #---
 ## Create Config Files
 
-- include: env.yml
-  when:
-   - action == 'env'
-
-
-- include: config.yml
-  when:
-   - action == 'config'
-
-- include: etchost.yml
-  when:
-   - action == 'etchost'
-
-- include: add_hdp.yml
-  when:
-   - action == 'add_hdp'
+- include: "{{action}}.yml"
 

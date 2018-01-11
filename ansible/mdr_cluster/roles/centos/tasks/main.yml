@@ -8,5 +8,6 @@
   template:
     src: "CentOS-Base.repo"
     dest: "/etc/yum.repos.d/CentOS-Base.repo"
+    force: yes
  
 
