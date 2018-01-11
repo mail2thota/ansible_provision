@@ -126,6 +126,8 @@ validate(){
 }
 
 ambari_hdp(){
+	rm -f ./roles/pre-config/config.yml
+	cp config.yml  ./roles/pre-config/
 	echo "execution of ambari and hdp playbook"
 	ansible-playbook mdr.yml --extra-vars "ambari_user=admin
         ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername
