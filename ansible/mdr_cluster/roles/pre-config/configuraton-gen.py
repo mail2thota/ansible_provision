@@ -231,8 +231,6 @@ def validateConfigFile(configdata):
 
     try:
        validator.config( configdata)
-       if 'hdp' or 'ambari' in configdata:
-           validator.hdpambari(configdata)
     except MultipleInvalid as e:
         for error in e.errors:
             log.log(log.LOG_ERROR, "YAML validation Error: message:{0} in {1}".format(error,configdata))
@@ -342,8 +340,9 @@ with open(defaultConfigFile, 'r') as stream:
         loadcommonHostgroupInfo(configdata)
 
         validateConfigFile(configdata)
-
-        generateHdpConfigration(configdata["hdp"])
+        hdpConfig = configdata.get('hdp',None)
+        if hdpConfig != None:
+           generateHdpConfigration(configdata["hdp"])
 
         generateCommonDefaultAllConfigFile(configdata)
 
