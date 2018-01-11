@@ -7,6 +7,9 @@
 ## Create Config Files
 
 
+- name: Validating config file
+  shell: 'cd {{ role_path }}  && python validateconfig.py update_hdp_cluster.yml'
+
 - name: Delete if any existing files
   shell: 'cd {{ role_path }} && rm -f all && rm -f hosts'
   
