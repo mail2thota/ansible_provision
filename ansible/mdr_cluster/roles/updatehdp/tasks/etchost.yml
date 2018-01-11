@@ -6,19 +6,36 @@
 #---
 ## Create Config Files
 
+- name: Dns Enabled
+  set_fact:
+     dns_enabled: "{{ default_dns_enabled | default(False) }}"
+
+- name: Update_file
+  set_fact:
+     update_file: "{{ update_file | default(False) }}"
+
+
+- name: "Echo"
+  shell: echo "test {{ dns_enabled }}"
 
 - name: copying etc host file from ambari
   fetch: 
     src: /etc/hosts 
     dest: "{{ role_path }}/ambari_etc_hosts"
     flat: yes
-  when: inventory_hostname in groups["ambari"]   
-    
+  when: 
+    - inventory_hostname in groups["ambari"]
+    - dns_enabled == False
+    - update_file == False
+ 
 - name: copying etc host file to new nodes
   copy:
     src: "{{ role_path}}/ambari_etc_hosts"
     dest: "/etc/hosts"
-  when: inventory_hostname in groups["hdp_add"]
+  when:
+   -  inventory_hostname in groups["hdp_add"] 
+   -  dns_enabled == False
+   -  update_file == True
 
 - name: copy add host file to all nodes
   become: True
@@ -26,18 +43,28 @@
   copy:
     src: "{{ role_path }}/add_hosts"
     dest: /home/add_hosts
+    force: yes
     mode: 0777
+  when: 
+    - dns_enabled == False
+    - update_file == True
 
-- become_user: root
+
+- name: run config_hosts.sh
+  become_user: root
   script: ./config_hosts.sh
-  
+  when: 
+    - dns_enabled == False
+    - update_file == True
+ 
+- name: Clean Temp File
+  file:
+    state: absent
+    path: /home/add_hosts
+  when:
+    - dns_enabled == False
+    - update_file == True
 
-- name: update /etc/hosts 
-  lineinfile:
-    dest: /etc/hosts
-    line: "{{ item }}"
-    insertafter: "#mdr_hosts_begins"
-    backup: yes
-  with_lines: cat /home/add_hosts
-
-
+ 
+ 
+ 

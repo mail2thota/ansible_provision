@@ -31,4 +31,3 @@
 - debug: 
      msg="{{ inventoryfiles.stderr }}"
   
-
