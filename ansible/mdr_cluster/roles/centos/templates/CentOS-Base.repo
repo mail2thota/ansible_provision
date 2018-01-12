@@ -1,9 +1,9 @@
 [base]
-name=CentOS-$releasever - Base
+name=CentOS-7-Base
 gpgcheck=0
-baseurl={{ default_repo_site }}/centos/$releasever/os/$basearch
+baseurl={{ default_repo_site }}/centos/7/os/$basearch
 
 [update]
-name=CentOS-$releasever - Updates
+name=CentOS-7-Updates
 gpgcheck=0
-baseurl={{ default_repo_site }}/centos/$releasever/updates/$basearch
+baseurl={{ default_repo_site }}/centos/7/updates/$basearch

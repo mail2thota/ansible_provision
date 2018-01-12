@@ -1,4 +1,4 @@
 [epel]
 name=Extra Packages for Enterprise Linux 7 - $basearch
 gpgcheck=0
-baseurl={{ default_repo_site }}/epel/$releasever/$basearch
+baseurl={{ default_repo_site }}/epel/7/$basearch

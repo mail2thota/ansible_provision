@@ -1,5 +1,5 @@
 [pgdg96]
-name=PostgreSQL {{ postgres_version }} $releasever - $basearch
+name=PostgreSQL {{ postgres_version }} 7- $basearch
 baseurl={{ pgsql_repo_url }}/yum/{{ postgres_version }}/redhat/rhel-7-x86_64/
 enabled=1
 gpgcheck=0
