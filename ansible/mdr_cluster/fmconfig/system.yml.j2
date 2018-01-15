@@ -27,7 +27,7 @@ foreman:
           value: 360
 
     os:
-        - name: CentOS7
+        - name: RedHat7
           family: Redhat
           password_hash: SHA512
           architecture:
@@ -39,12 +39,12 @@ foreman:
             - name: Kickstart default iPXE
             - name: Kickstart default user data
           medium:
-            - name: CentOS7_x86_64
+            - name: RedHat_7_x86_64
 
     hostgroup_system:
-          os: CentOS7
+          os: RedHat&
           architecture: x86_64
-          medium: CentOS7_x86_64
+          medium: RedHat_7_x86_64
 
     partition_system:
           disk_minimum: 500
