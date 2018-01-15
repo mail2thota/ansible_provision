@@ -12,6 +12,21 @@
   - shell: echo "{{ postgresql_version }}" | tr -d .
     register: postgresql_short_version
   
+  - set_fact:
+     network: "{{ ansible_default_ipv4.network }}"
+  
+  - set_fact:
+     netmask: "{{ ansible_default_ipv4.netmask }}"
+  
+  - set_fact:
+     network_mask: "{{ network }}/{{ netmask }}"
+  
+  - set_fact:
+     prefix: "{{ network_mask | ipaddr('prefix') }}"
+  
+  - set_fact:
+     postgres_subnet_access: "{{ network }}/{{ prefix }}"
+
   - set_fact:  
       postgresql_short_version: "{{ postgresql_short_version.stdout }}" 
 
