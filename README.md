@@ -1,6 +1,11 @@
 
-# Foreman And Bare Metal Provisioning
+# Bare Metal Provisioning and Cluster Setup
 
+There are two terminologies to be understood before going into actual steps of installation
+◆	Bootstrap machine: Machine which is expected to be fresh, without any software which is going to installed by mdr_platform_bare_metal such as ansible and foreman
+◆	Target  machine: These are the machine which has to be provisioned by foreman and which needed to be installed the softwares such as  activemq,ambari-agent,ambari-server,docker,elasticsearch,httpd,kibana,mongodb,ntp,java,postgresql,python-pip,tomcat,wget.Also all other HDP components for example JOURNALNODE, NAMENODE . Foreman is normally used to install the centOS in bare metal machine, this is optional. It can be skipped if the machine is already provisioned.
+
+## Foreman Usage
 Automated provisioning using foreman configuration as easy as pie.
 This solution automatically help you to automate the installation of foreman on premises, bringing
 up DHCP server, TFTP server, and DNS local server.
@@ -80,6 +85,7 @@ Prerequisite
 
     10. The best approach is for having static Ip for bootstrap machine, check how to setup static Ip below:
 
+
 --------------
 Static IP
 -------------
@@ -99,8 +105,8 @@ Static IP
     DNS1="10.11.12.7"
 
 
-Configuration
--------------
+Configuration for foreman
+-------------------------
 
 | Variable       |  Example           | Description  |
 |:------------- |:-------------|:-----|
@@ -121,8 +127,8 @@ Configuration
 
 
 
-Complete YAML User Template
--------------------------------------
+Complete YAML User Template for foreman
+---------------------------------------
 User is allowed to modified as they like according to requirement to do provisiong process.you may find it in /mdr_platform_bare_metal/ansible/mdr_cluster/config.yml
 
     common:
@@ -245,8 +251,8 @@ User is allowed to modified as they like according to requirement to do provisio
 
 
 
-Complete YAML System Default Template
--------------------------------------
+Complete YAML System Default Template for foreman
+-------------------------------------------------
 It is restricted for user making changes on system.yml file below, but it is configurable and allow to be modified as per user need. before provisioning You may find it in /mdr_platform_bare_metal/ansible/mdr_cluster/fmconfig/system.yml.j2.
 
     foreman:
@@ -307,8 +313,8 @@ It is restricted for user making changes on system.yml file below, but it is con
 
 
 
-Installation Menu
-------------------
+Installation Menu for foreman
+-----------------------------
 
 | Variable      | Description  |
 |:------------- |:-------------|:-----|
@@ -318,26 +324,21 @@ Installation Menu
 | Add/Remove hosts | adding and removing pre-existing nodes and components|
 
 
-Authentication Menu
+Authentication Menu 
 -------------------
     Enter Foreman Authentication
     Username: foreman_username
     Password: foreman_password
     Password (again): confirm foreman_password
 
-    Enter Ambari Authentication
-    Username: ambari_username(default 'admin')
-    Password: ambari_passport(default 'admin')
-    Password (again): confirm ambari_passport
-
     Enter HDP Password
     Password: hdp_passport
     Password (again): confirm hdp_passport
 
-    Enter Nodes Password
+    Enter Nodes Username and Password
     Minimum 8 characters required
+    Username: node_user
     Password: node_password
-    Password (again): confirm node_password
 
 Disk Partition Logic
 -------------------
@@ -379,26 +380,279 @@ Disk Partition Logic
             root_size=281138
 
 
+## Configuration for cluster
+
+Following Yaml configuration template structure used for configuring the playbooks  
+
+```
+
+default:
+    dns_enabled: yes or no to update /etc/hosts file if dns server is not available
+    java_vendor: oracle or openjdk,this variable is to install java according to the vendor mentioned,if it is not mentioned then by default it takes openjdk     
+
+common:
+    hostgroups:
+        - name: name of the hostgroup
+          domain: domain for the hosts in this group
+          root_pass: root password for all hosts attached to this group
+   primary_hosts:
+      - name: name of the host excluding domain name
+        hostgroup: hostgroup name to map this host mentioned in the common[hostgroups] section
+        ip: ip adress of the host
+
+ambari:
+    hostgroup: hostgroup mentioned in the above common[hostgroups]
+    user: ambari username
+    password: ambari password
+    port : ambari port
+    version: ambari version number
+
+hdp:
+  blueprint: blueprint name
+  blueprint_configuration: blueprint specfic configuration
+  stack: hdp_stack version
+  default_password: cluster default  password
+  stack_version : hdp stack full version
+  utils_version: hdp utils version
+  cluster_type: hdp cluster type i.e multi node or single node
+  cluster_name: cluste name ex:- mdr
+  component_groups :
+    component_group 1 :
+      - component1
+      - component2
+    component_group 2:
+      - component3
+      - component4
+  host_groups:
+        - host group 1:
+            components:
+              - component_group 1
+            hostgroup: configured hostgroup name in the common[hostgroups] and hosts belonging to this group will be added to blueprint
+            configuration: hostgroup specific configuration i.e default is empty or you can skip if you don't have any
+            cardinality: cardinality of the groupi.e default =1  or
+        - host group 2:
+            components:
+              - component group 1
+              - component group 2
+            hostgroup: configured hostgroup name in the common[hostgroups]
+            configuration: hostgroup specific configuration
+            cardinality: ardinality of the groupi.e default =1
+
+hdp_test:
+   hostgroup: configured hostgroup name in the common[hostgroups] on that test cases will be executed make sure to all clients are installed on that hosts  
+   jobtracker_host: job tracker  host
+   namenode_host: name node host
+   oozie_host: oozie server host
+
+postgres:
+   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes postgres will be installed
+   version: postgres version number
+
+activemq:
+   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes activemq will be installed
+   version: activemq version number
+
+apache:
+  hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes apache and tomcat server will be installed
+  httpd_version: httpd version number
+  tomcat_version: tomcat version number
+
+docker:
+  hostgroup: configured hostgroup name in the common[hostgroups] on this group of docker registery will be installed
+  version: docker version number
+
+es_master:
+  hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search master nodes will be installed
+  version: elasticsearch version number
+
+es_node:
+  hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search worker nodes will be installed
+
+kibana:
+  hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes kibana will be installed
+  elasticsearch_url: elasticsearch master host adddress to use
+  version: kibana version number
+
+mongodb:
+  hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes mongodb will be installed
+  version: mongodb version number
+```
+
+## Variables Description
+
+ Variable |mandatory/optional| example| Description
+ ---------|---|----|-------
+ default[dns_enabled]|mandatory|no| flag to updated the etc hosts if dns server is not available
+ default[java_vendor]|optional|oracle|Java vendor either openjdk or oracle by default openjdk will be installed
+ common[hostgroups]|mandatory| |list of the host groups avaible to use by the Components
+ common[hostgroups]|mandatory|[{name: master_1, subnet: subnet1, domain: example.com,  root_pass:as12345678}] |{name: name of the host group,domain: domain name of the group,root_pass: root pass of the hosts belonging to this group}
+ common[primaryhosts]|mandatory|| List of hosts mapped to the hosts groups mention in the common[hostsgroups]
+ common[primaryhosts]|mandatory|[{name: agent1-ambariagent,hostgroup: master_1,ip: 10.11.12.4}]| {name: hostnmame of the machine,hostgroup: hostgroup name to which it belongs,ip: ip adress of the host }
+ ambari[hostgroup]|mandatory| master1-ambariserver.example.com| host group name mentioned in the common[hostgroups] and it will be installed on the hosts of the group
+ ambari[user]|mandatory| admin| login user name of the ambari interface
+ ambari[pass]|mandatory| admin| login password of the ambari interface
+ ambari[version]|mandatory| 2.5.2.0| Ambari version number
+ hdp[blueprint]|mandatory| mdr-ha-blueprint| hdp cluster blueprint name
+ hdp[blueprint_configuration]|optional|zoo.cfg: [autopurge.purgeInterval: 24]| configurations specific here will be replaced in blue print configuration default its empty
+ hdp[stack]|mandatory|2.5| hdp stack number to be setup
+ hdp[stack_version]|mandatory|2.6.2.0| Full version of hdp including minimum version
+ hdp[utils_version]|mandatory|1.1.10.21| Full Hdp utils version
+ hdp[cluster_type]|mandatory|multi_node|Hdp cluster type to be formed it must be either multi_node or single_node in case of single node all compnents listed in component groups added to blueprint
+ hdp[component_groups]|mandatory|hive_components,[HIVE_METASTORE,HIVE_SERVER,HCAT,WEBHCAT_SERVER,HIVE_CLIENT,MYSQL_SERVER]| Component Groups is group of key as group name and array of values with the components. and this can be used in any where in any host_groups[components]. Group name based on user preference
+ hdp[component_groups][component_group_name][components]|mandatory|hive_components| Array of the components of that group
+ hdp[host_groups]|mandatory||host groups specification and its configuration mentioned here added to the blue print
+ hdp[host_group_name][components]|mandatory|hive_components|List of the component groups mentioned in hdp[component_groups] to be added to blue print and for single node it has not effect
+ hdp[host_groups][host_group_name][hostgroup]|mandatory|master_1| host group configured in common[hostgroups] and hosts will beloning to this group will be added to this host group in blueprint
+ hdp[host_groups][host_group_name][configuration]|optional|| Configurations mentioned here will be applied to hostgroup specific configuration in the blueprint
+ hdp[host_groups][hosts_group_name][cardinality]|optional|1| cardinality of the host group to be added in blueprint default is 1
+ hdp_test[hostgroup]|mandatory|edge_1| hostgroup name configured in common[hostgroups] to run hdp test cases and make sure to have all required clients istalled in that hosts
+ hdp_test[jobtracker_host]|mandatory|agent8-ambariagent.example.com|Job tracker host to be used by test case job
+ hdp_test[namenode_host]|mandatory|agent1-ambariagent.example.com| Namenode host to be used by test case job
+ hdp_test[oozie_host]|mandatory|agent10-ambariagent.example.com|oozie server host to be used by test case job
+ postgres[hostgroup]| mandatory|postgress| hostgroup name configured in common[hostgroups] to install postgres  and on this group of hosts postgres will be installed
+ postgres[version]| mandatory|9.6| postgres version number
+ activemq[hostgroup]| mandatory|activemq| hostgroup name configured in common[hostgroups] to install activemq  and on this group of hosts activemq will be installed
+ activemq[version]| mandatory|5.15.0| activemq version number
+ es_master[hostgroup]|mandatory|es_master| hostgroup name configured in common[hostgroups] to install elastic search  and on this group of hosts elastic search masters will be installed
+ es_master[version]| mandatory|5.5.0| elasticsearch version number
+ es_node[hostgroup]| mandatory|es_node| hostgroup name configured in common[hostgroups] to install elastic search worker nodes and on this group of hosts elastic search nodes will be installed
+ kibana[hostgroup]| mandatory|kibana| hostgroup name configured/availble in common[hostgroups] to install kibana and on this group of hosts kibana will be installed
+ kibana[elasticsearch_url]|mandatory|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
+ kibana[version]| mandatory|5.5.0| kibana version number
+ apache[hostgroup]| mandatory| apache|hostgroup name configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
+ apache[httpd_version]| mandatory|2.4.6| httpd version number
+ apache[tomcat_version]| mandatory|7.0.76| tomcat version number
+ docker[hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker and on this group of hosts docker will be installed
+ docker[version]| mandatory|17.09.0| docker version number
+## Default Template
+ Please refer below example template and the existing   [config template ](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/config.yml) in code base if needed
+
+ ```
+
+ ## Add/Remove nodes for HDP cluster
+
+  Datanodes can be added/removed with option 4 and currently supports the nodes which has components DATANODE,NODEMANAGER,METRICS_MONITOR and it first New nodes will be added and then existing nodes will be removed if any configured
+  Default template been used fo this  [Update Datanodes Template](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml)
+
+### Adding Datanodes for HDP cluster
+
+ Configured nodes will be added to the hdp host group mentioned and only remommeded is Datanodes
 
 
-Installation and Provisioning Foreman
--------------------------------------
-    git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
-    * cd /mdr_platform_bare_metal/ansible/mdr_cluster
-    * configure:
-          config.yml:
-          	- /mdr_platform_bare_metal/ansible/mdr_cluster/config.yml
-          system.yml.j2:
-            - /mdr_platform_bare_metal/ansible/mdr_cluster/fmconfig/system.yml.j2
+### Removing Datanodes for HDP cluster
+ Datanodes can be removed from the hdp cluster by configuring in list of datanodes needs to be removed section and Cluster must have one data node
 
-    * launch:
-          - cd /mdr_platform_bare_metal/ansible/mdr_cluster/
-          - ./bootstrap.sh http://repository_ip
-          - select options
+### Configuration for Add/Remove HDP cluster
+ ```
+ default:
+   java_vendor: Java vendor to be installed on ambari agent either oracle or openjdk
+   dns_enabled: yes or no to update cluster nodes /etc/host file if dns server not available
 
-    noted:when you see provisioning is ready you might turn up the nodes to be provisioned,
-    from bios setting you may choose boot from network and allow boot using PXELinux. After the installation You may find the rest of log in /var/log/ansible.log
+ ambari:
+    host : Hostname of the ambari
+    port : Port number of the ambari
+    user: Ambari username
+    password: Ambari Password
+    version: Ambari Version
 
+ hdp:
+   clustername: CluserName ex : mdr
+   blueprint: blueprint name
+   add:
+     hosts:
+        - name: hostnmae of the new node 1 to be added
+          ip: ip address of the node 1
+        - name: hostnmae of the new node 2 to be added
+          ip: ip adress of node 2
+     hostgroup: hdp hostgroup name to attach the nodes in hosts section
+   remove:
+      hosts:
+        - name: Hostname of the node to be removed
+ ```
+
+### Example/Default Template for Add/Remove HDP cluster
+
+  Please refer the below example template for better understanding
+ https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml
+```
+### Variable Description for Add/Remove HDP cluster
+
+ Variable |mandatory/optional| example| Description
+ ---------|---|----|-------
+  default[java_vendor]|optional|oracle| Java/jdk vendor to be installed on New data nodes default is opendk, Only supported oracle or openjdk
+  default[dns_enabled]|mandatory|no| yes or no, To update the etc/host files in all the nodes of cluster if we dont have dns server in network
+  ambari[host]|mandatory|master1-ambariserver.example.com| Ambari host name for Sumbiting to node adding/deleting requests
+  ambari[port]|mandatory|8080| Port Number of the ambari
+  ambari[version]|mandatory|2.5.2.0| Ambari version number to setupo the ambari agent on the newly added Datanodes
+  hdp[clustername]|mandatory|mdr| configured clusternmae during inital lauch of cluster
+  hdp[bluerprintn]|mandatory|mdr-ha-blueprint| blueprint name used for deploying the hdp cluster during intial lauch of cluster
+  hdp[add]|optional|| config subsection for Newly adding hosts and its optional if you dont need to add Datanodes
+  hdp[add][hosts]|optional| Newly adding hosts configuration section and its optional if you dont need to add Datanodes
+  hdp[add][hosts]|optional|{name: mandatory,ip: optional}| Yaml array of hosts with optional ip adress those needs to be added to Datanodes hostgroup
+  hdp[add][hostgroup]|mandatory in case if you need to add hosts| exisitng hostgroup name in the cluster to assign the hosts in the host specification
+  hdp[remove]|optional||config subsection for datanodes to be removed
+  hdp[remove][hosts]|optional|[{name:agent7-ambariagent.example.com}]| Hostnames of the datanodes to be removed
+
+## Service ports
+### Hadoop Components
+Service | Port number
+--------|------------
+App TimeLine Server Interface| 8188
+Job History Service Interface|19888
+NameNode WebUI|50070
+DataNode WebUI|50075
+Resource Manager|8025
+Hive Web Ui|9999
+Hive Metastore|9083
+Mysql Server|3306
+Oozie Jobs Interface|11000
+
+For additional default ports information can be found at [hortonworks website](https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.6.2/bk_reference/content/reference_chap2.html)
+### Non Hadoop components
+Service | Port number
+--------|------------
+activemq|61616
+postgres|5432
+elasticsearch api|9200
+kibana webinterface|5601
+docker|5000
+tomcat|8080
+httpd|80
+mongodb| 27017
+
+## Quickstart
+Assuming that the nodes are provisioned with OS and dependencies using foreman  or manually,thereby run below command
+
+```
+git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
+* cd /mdr_platform_bare_metal/ansible/mdr_cluster
+* configure:
+      config.yml:
+      	- /mdr_platform_bare_metal/ansible/mdr_cluster/config.yml
+
+* launch:
+      - cd /mdr_platform_bare_metal/ansible/mdr_cluster/
+      - ./bootstrap.sh http://<repo_url> ,example as below
+	    ./bootstrap.sh http://10.129.6.237
+
+    once you running this scirpt it will promit with Options
+    1. Node Provision
+    2. Node Provision & Cluster
+    3. Cluster
+    4. Add/Remove Data nodes
+    5. Quit
+
+   and choose option
+   1) Node provisioning: This does only the provisioning task which is basic software installation in a bare metal machine giving with MAC address. By triggering this option it installs the ansible and foreman in bootstrap machine and thereby foreman provisions the nodes supplied by the MAC address which has be mentioned in config.yml as highlighted before.
+   2) Cluster: This skips the installation of foreman and installs only ansible in bootstrap machine ,thereby ansible takes care of  triggering the installation of software  which has been mentioned in config.yml to the target nodes
+   3) Node provisioning & Cluster: This does foreman provisioning followed by cluster setup on those machines which has been provisioned by foreman.
+   4) Add/Remove Data nodes: This allows to add/remove the data nodes from HDP cluster
+   5) Quit: Terminate the process
+
+```
+This will automatically updates the required configurations for ansible roles and executes playbooks which setups the hdp cluster and remaining packages
+
+note:While choosing Node provisioning option, you see provisioning is ready you might turn up the nodes to be provisioned,from bios setting you may choose boot from network and allow boot using PXELinux. After the installation You may find the rest of log in /var/log/ansible.log
 
 Foreman URL and Ambari Server
 -----------------------------
@@ -415,7 +669,7 @@ Foreman URL and Ambari Server
         username = 'admin'
         password = 'admin'
 
-    noted:check your particular host name for bootstrap and ambari server
+    note:check your particular host name for bootstrap and ambari server
 
 ---
 
