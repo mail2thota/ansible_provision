@@ -355,14 +355,30 @@ apache:
 docker:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of docker registery will be installed
   version: docker version number
-
+  
 es_master:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search master nodes will be installed
   version: elasticsearch version number
-
+  es_config: 
+    network.host: network address within which es_master cluster should be available
+    cluster.name: es_master cluster name
+    http.port: accessing port of es_master
+    transport.tcp.port: transportation port of es_master
+    node.data: determine whether es_master allows to store data or not
+    node.master: determine whether es_master is master or not
+    bootstrap.memory_lock: it tries to lock the process address space into RAM, preventing any es_master memory from being swapped out
+  es_heap_size: to specify the maximum size of total heap space for es_master
 es_node:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search worker nodes will be installed
-
+   es_config: 
+    network.host: network address within which es_node cluster should be available
+    cluster.name: es_node cluster name
+    http.port: accessing port of es_node
+    transport.tcp.port: transportation port of es_node
+    node.data: determine whether es_node allows to store data or not
+    node.master: determine whether es_node is master or not
+    bootstrap.memory_lock: it tries to lock the process address space into RAM, preventing any es_node memory from being swapped out
+  es_api_port: interaction port of es_node
 kibana:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes kibana will be installed
   elasticsearch_url: elasticsearch master host adddress to use
@@ -411,7 +427,23 @@ mongodb:
  activemq[version]| mandatory|5.15.0| activemq version number
  es_master[hostgroup]|mandatory|es_master| hostgroup name configured in common[hostgroups] to install elastic search  and on this group of hosts elastic search masters will be installed
  es_master[version]| mandatory|5.5.0| elasticsearch version number
+ es_master[es_config][network.host]| mandatory|0.0.0.0|network address within which es_master cluster should be available
+ es_master[es_config][cluster.name]| mandatory|es-cluster|es_master cluster name
+ es_master[es_config][http.port]| mandatory|9200| accessing port of es_master
+ es_master[es_config][transport.tcp.port]| mandatory|9300| transportation port of es_master
+  es_master[es_config][node.data]| mandatory|true| determine whether es_master allows to store data or not
+ es_master[es_config][node.master]| mandatory|true|determine whether es_master is master or not
+ es_master[es_config][bootstrap.memory_lock]| mandatory|false| it tries to lock the process address space into RAM, preventing any es_master memory from being swapped out
+ es_master[es_heap_size]| mandatory|1g| to specify the maximum size of total heap space for es_master
  es_node[hostgroup]| mandatory|es_node| hostgroup name configured in common[hostgroups] to install elastic search worker nodes and on this group of hosts elastic search nodes will be installed
+ es_node[es_config][network.host]| mandatory|0.0.0.0|network address within which es_node cluster should be available
+ es_node[es_config][cluster.name]| mandatory|es-cluster|es_node cluster name
+ es_node[es_config][http.port]| mandatory|9200| accessing port of es_node
+ es_node[es_config][transport.tcp.port]| mandatory|9300| transportation port of es_node
+  es_node[es_config][node.data]| mandatory|true| determine whether es_node allows to store data or not
+ es_node[es_config][node.master]| mandatory|false|determine whether es_node is master or not
+ es_node[es_config][bootstrap.memory_lock]| mandatory|false| it tries to lock the process address space into RAM, preventing any es_node memory from being swapped out
+ es_node[es_api_port]| mandatory|9200| interaction port of es_node
  kibana[hostgroup]| mandatory|kibana| hostgroup name configured/availble in common[hostgroups] to install kibana and on this group of hosts kibana will be installed
  kibana[elasticsearch_url]|mandatory|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
  kibana[version]| mandatory|5.5.0| kibana version number
@@ -658,10 +690,8 @@ Software Versions
 
     10. The best approach is for having static Ip for bootstrap machine, check how to setup static Ip below:
     
-	```
 	#static ip for bootstrap machine:
     #cat /etc/sysconfig/network-scripts/ifcfg-enp0s3
-
     BOOTPROTO="none"
     IPADDR="10.11.12.7"
     NETMASK="255.255.255.0"
@@ -673,7 +703,7 @@ Software Versions
     PEERROUTES=yes
     DEFROUTE=yes
     DNS1="10.11.12.7"
-    ```
+    
 
 ## Quickstart in general
 ---------------------------------------------------------------
