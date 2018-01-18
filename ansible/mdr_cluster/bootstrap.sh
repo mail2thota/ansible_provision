@@ -80,19 +80,9 @@ passwordNodes()
 
 passwordAccess()
 {
-    echo "Enter Nodes Authentication"
-    echo "Password, minimum 8 characters required"
+    echo "Enter Nodes Username and Password"
     read -p "Username: " nodeusername
-    while true; do
-        read -s -p "Password: " nodepassword
-        echo
-        len=`echo ${#nodepassword}`
-        if [[ $len -ge 8 ]] ; then
-            break
-        fi
-        echo "password length should be greater than or equal 8 and must be match"
-        echo "Please try again"
-    done
+    read -s -p "Password: " nodepassword
     echo
 }
 
