@@ -16,97 +16,6 @@ group, create hosts for provisioning, architectures of machine to be provisioned
 installation medias, set ptable hardisk partition through the kick starter script,
 and set the operating system image to be installed. All of process take place in bare metal environment and configuration file must be set in YML format.
 
-## Prerequisite
----------------
-
-    1. Bootstrap machine
-          - support centos 7
-          - gnome UI must be installed
-          - at least 20 GB hardisk and 2 GB ram
-          - log in as a root user
-
-    2. Setup SE Linux permissive or disabled
-          - modified: /etc/sysconfig/selinux
-          - restart machine
-
-    3. Setup firewall or disable it
-          - disable
-                sudo systemctl stop firewalld
-                sudo systemctl disable firewalld
-          - allow to go through
-                sudo firewall-cmd --permanent --add-service=http
-                sudo firewall-cmd --permanent --add-service=https
-                sudo firewall-cmd --permanent --add-port=69/tcp
-                sudo firewall-cmd --permanent --add-port=67-69/udp
-                sudo firewall-cmd --permanent --add-port=53/tcp
-                sudo firewall-cmd --permanent --add-port=53/udp
-                sudo firewall-cmd --permanent --add-port=5432/tcp
-                sudo firewall-cmd --permanent --add-port=8443/tcp
-
-	  4. Install local yum and pypi Repository setup on bootstrap machine
-
-          - installation of Nginx Repository
-	              https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
-
-          - installation of pypi
-                * pypi should be installed in sameplace where http repository was installed.
-                * install pip:
-                      yum -y install python-pip
-                * install pypi server:
-                      pip install pypiserver
-                * download packages.tar.gz :
-                      wget -N http://10.129.6.237/repos/zip_repo/packages.tar.gz
-                * unzip file:
-                      tar xvfz packages.tar.gz ~/
-                * run command:
-                      nohup pypi-server -p 8008 -P . -a . ~/packages/ &
-                * verify by using curl or open browser:
-                      http://repo_url:8008/packages
-                * pypi local repository must be bind using port 8008.
-
-    5. If DNS required, Making sure your DNS address is resolveable
-          - you may check on:
-                 /etc/resolv.conf
-          - if not set yet you may set manually or you may configure using nmtui,
-                - type "nmtui" you may use arrows, space and enter to navigate the cursor
-                - choose "Edit a connection", click enter
-                - choose your ethernet interface, click enter e.g; enp0s3
-                - choose IPv4 CONFIGURATION set "Automatic", click enter
-                - choose Automatically connect, click space
-                - click 'OK', and following by click "back" to close the nmtui windows.
-                - restart network; "systemctl restart network"
-
-    6. Making sure that you don't have any DHCP server available which is been connecting to the subnet network
-
-    7. Making sure that your network device interface or network interface in bootstrap machine e.g; "eth0" is
-       dedicated only for single Ip
-
-    8. Make sure your http_proxy and https_proxy is disabled, check as well in /etc/yum.conf
-
-    9. If you have existing Ansible, Required Ansible version : ansible 2.3.1.0
-
-    10. The best approach is for having static Ip for bootstrap machine, check how to setup static Ip below:
-
-
---------------
-## Static IP
--------------
-    #static ip for bootstrap machine:
-    #cat /etc/sysconfig/network-scripts/ifcfg-enp0s3
-
-    BOOTPROTO="none"
-    IPADDR="10.11.12.7"
-    NETMASK="255.255.255.0"
-    GATEWAY="10.11.12.1"
-    DEVICE=enp0s3
-    HWADDR="08:00:27:78:b1:a1"
-    ONBOOT=yes
-    PEERDNS=yes
-    PEERROUTES=yes
-    DEFROUTE=yes
-    DNS1="10.11.12.7"
-
-
 ## Configuration for foreman
 -----------------------------
 
@@ -678,6 +587,94 @@ Software Versions
 | Python         |     2.7        |
 | Python-pip     |     8.1.2      |
 | Foreman        |     1.15       |	
+
+## Prerequisite
+---------------
+
+    1. Bootstrap machine
+          - support centos 7
+          - gnome UI must be installed
+          - at least 20 GB hardisk and 2 GB ram
+          - log in as a root user
+
+    2. Setup SE Linux permissive or disabled
+          - modified: /etc/sysconfig/selinux
+          - restart machine
+
+    3. Setup firewall or disable it
+          - disable
+                sudo systemctl stop firewalld
+                sudo systemctl disable firewalld
+          - allow to go through
+                sudo firewall-cmd --permanent --add-service=http
+                sudo firewall-cmd --permanent --add-service=https
+                sudo firewall-cmd --permanent --add-port=69/tcp
+                sudo firewall-cmd --permanent --add-port=67-69/udp
+                sudo firewall-cmd --permanent --add-port=53/tcp
+                sudo firewall-cmd --permanent --add-port=53/udp
+                sudo firewall-cmd --permanent --add-port=5432/tcp
+                sudo firewall-cmd --permanent --add-port=8443/tcp
+
+	  4. Install local yum and pypi Repository setup on bootstrap machine
+
+          - installation of Nginx Repository
+	              https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/nginx
+
+          - installation of pypi
+                * pypi should be installed in sameplace where http repository was installed.
+                * install pip:
+                      yum -y install python-pip
+                * install pypi server:
+                      pip install pypiserver
+                * download packages.tar.gz :
+                      wget -N http://10.129.6.237/repos/zip_repo/packages.tar.gz
+                * unzip file:
+                      tar xvfz packages.tar.gz ~/
+                * run command:
+                      nohup pypi-server -p 8008 -P . -a . ~/packages/ &
+                * verify by using curl or open browser:
+                      http://repo_url:8008/packages
+                * pypi local repository must be bind using port 8008.
+
+    5. If DNS required, Making sure your DNS address is resolveable
+          - you may check on:
+                 /etc/resolv.conf
+          - if not set yet you may set manually or you may configure using nmtui,
+                - type "nmtui" you may use arrows, space and enter to navigate the cursor
+                - choose "Edit a connection", click enter
+                - choose your ethernet interface, click enter e.g; enp0s3
+                - choose IPv4 CONFIGURATION set "Automatic", click enter
+                - choose Automatically connect, click space
+                - click 'OK', and following by click "back" to close the nmtui windows.
+                - restart network; "systemctl restart network"
+
+    6. Making sure that you don't have any DHCP server available which is been connecting to the subnet network
+
+    7. Making sure that your network device interface or network interface in bootstrap machine e.g; "eth0" is
+       dedicated only for single Ip
+
+    8. Make sure your http_proxy and https_proxy is disabled, check as well in /etc/yum.conf
+
+    9. If you have existing Ansible, Required Ansible version : ansible 2.3.1.0
+
+    10. The best approach is for having static Ip for bootstrap machine, check how to setup static Ip below:
+    
+	```
+	#static ip for bootstrap machine:
+    #cat /etc/sysconfig/network-scripts/ifcfg-enp0s3
+
+    BOOTPROTO="none"
+    IPADDR="10.11.12.7"
+    NETMASK="255.255.255.0"
+    GATEWAY="10.11.12.1"
+    DEVICE=enp0s3
+    HWADDR="08:00:27:78:b1:a1"
+    ONBOOT=yes
+    PEERDNS=yes
+    PEERROUTES=yes
+    DEFROUTE=yes
+    DNS1="10.11.12.7"
+    ```
 
 ## Quickstart in general
 ---------------------------------------------------------------
