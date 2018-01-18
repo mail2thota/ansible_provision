@@ -423,14 +423,13 @@ mongodb:
  
 ## Default configuration template for foreman and cluster setup
 ---------------------------------------------------------------
- Please refer below example template and the existing   [config template ](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/config.yml) in code base if needed
-
- ```
+ Please refer below example template 
+ https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/config.yml 
 
 ## Add/Remove nodes for HDP cluster
 ---------------------------------------------------------------
   Datanodes can be added/removed with option 4 and currently supports the nodes which has components DATANODE,NODEMANAGER,METRICS_MONITOR and it first New nodes will be added and then existing nodes will be removed if any configured
-  Default template been used fo this  [Update Datanodes Template](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml)
+  Default template been used for this (https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml)
 
 ### Adding Datanodes for HDP cluster
 ---------------------------------------------------------------
@@ -472,9 +471,9 @@ mongodb:
 
 ### Example of default Template for Add/Remove HDP cluster
 ---------------------------------------------------------------
-  Please refer the below example template for better understanding
- https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml
-```
+  Please refer the below example template
+  https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml
+
 ### Variable Description for Add/Remove HDP cluster
 ---------------------------------------------------------------
  Variable |mandatory/optional| example| Description
@@ -692,14 +691,14 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
       - ./bootstrap.sh http://<repo_url> ,example as below
 	    ./bootstrap.sh http://10.129.6.237
 
-    once you running this scirpt it will promit with Options
+    while running this scirpt it will promit for options as below
     1. Node Provision
     2. Node Provision & Cluster
     3. Cluster
     4. Add/Remove Data nodes
     5. Quit
 
-   and choose option
+   below are the description for each option
    1) Node provisioning: This does only the provisioning task which is basic software installation in a bare metal machine giving with MAC address. By triggering this option it installs the ansible and foreman in bootstrap machine and thereby foreman provisions the nodes supplied by the MAC address which has be mentioned in config.yml as highlighted before.
    2) Cluster: This skips the installation of foreman and installs only ansible in bootstrap machine ,thereby ansible takes care of  triggering the installation of software  which has been mentioned in config.yml to the target nodes
    3) Node provisioning & Cluster: This does foreman provisioning followed by cluster setup on those machines which has been provisioned by foreman.
