@@ -368,6 +368,7 @@ es_master:
     node.master: determine whether es_master is master or not
     bootstrap.memory_lock: it tries to lock the process address space into RAM, preventing any es_master memory from being swapped out
   es_heap_size: to specify the maximum size of total heap space for es_master
+
 es_node:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search worker nodes will be installed
    es_config: 
@@ -379,6 +380,7 @@ es_node:
     node.master: determine whether es_node is master or not
     bootstrap.memory_lock: it tries to lock the process address space into RAM, preventing any es_node memory from being swapped out
   es_api_port: interaction port of es_node
+
 kibana:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes kibana will be installed
   elasticsearch_url: elasticsearch master host adddress to use
@@ -736,7 +738,7 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
    5) Quit: Terminate the process
 
 ```
-This will automatically updates the required configurations for ansible roles and executes playbooks which setups the hdp cluster and remaining packages
+This will automatically update the required configurations for ansible roles and executes playbooks which setups the hdp cluster and remaining packages
 
 note:While choosing Node provisioning option, you see provisioning is ready you might turn up the nodes to be provisioned,from bios setting you may choose boot from network and allow boot using PXELinux. After the installation You may find the rest of log in /var/log/ansible.log
 
