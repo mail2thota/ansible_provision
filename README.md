@@ -592,15 +592,11 @@ foreman proxy|8443
     note:check your particular host name for bootstrap and ambari server
 
 ## Origin Repo
------------------------
-
-    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible
+ https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible
 	
-HDP Blueprints (This section contains blueprint design specification and architecture documentation)
-----------------------------------------------------------------------------------------------------
-
-    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/blueprints
-    https://engineering/confluence/display/MSS/Ambari+Blueprint+Design+Specification
+## HDP Blueprints (This section contains blueprint design specification and architecture documentation)
+ https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/blueprints
+ https://engineering/confluence/display/MSS/Ambari+Blueprint+Design+Specification
 
 Software Versions
 -----------------
