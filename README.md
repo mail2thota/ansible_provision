@@ -325,29 +325,8 @@ It is restricted for user making changes on system.yml file below, but it is con
 | Node Provision & Cluster | proceed with node provisioning and followed by ambari and hdp cluster |
 | Add/Remove hosts | adding and removing pre-existing nodes and components|
 
-
-## Authentication Menu 
----------------------
-    Enter Foreman Authentication
-    Username: foreman_username
-    Password: foreman_password
-    Password (again): confirm foreman_password
-
-    Enter HDP Password
-    Password: hdp_passport
-    Password (again): confirm hdp_passport
-	
-	Enter Nodes Password to be set while foreman provisioning
-    Password: node_passport
-    Password (again): confirm node_passport
-
-    Enter Nodes Username and Password for cluster launch
-    Minimum 8 characters required
-    Username: node_user
-    Password: node_password
-
-## Disk Partition Logic
-------------------------
+## Disk partition logic while foreman provisioning
+--------------------------------------------------
     Disk partition logic and configuration can be modified as below:
 
     partition_system(default minimum size):
@@ -605,7 +584,7 @@ mongodb:
   hdp[remove]|optional||config subsection for datanodes to be removed
   hdp[remove][hosts]|optional|[{name:agent7-ambariagent.example.com}]| Hostnames of the datanodes to be removed
 
-## Service ports
+## Service ports in general
 ---------------------------------------------------------------
 ### Hadoop Components
 Service | Port number
@@ -631,9 +610,76 @@ kibana webinterface|5601
 docker|5000
 tomcat|8080
 httpd|80
-mongodb| 27017
+mongodb|27017
+foreman proxy|8443
 
-## Quickstart
+## Authentication menu in general
+---------------------------------
+    Enter Foreman Authentication
+    Username: foreman_username
+    Password: foreman_password
+    Password (again): confirm foreman_password
+
+    Enter HDP Password
+    Password: hdp_passport
+    Password (again): confirm hdp_passport
+	
+	Enter Nodes Password to be set while foreman provisioning
+    Password: node_passport
+    Password (again): confirm node_passport
+
+    Enter Nodes Username and Password for cluster launch
+    Minimum 8 characters required
+    Username: node_user
+    Password: node_password
+
+## Foreman URL and ambari server
+--------------------------------
+    web interface can be accessed through:
+    foreman:
+        http://bootstrap.example.com/users/login
+        default authentication:
+        username = 'admin'
+        password = 'input password'
+
+    ambari server:
+        http://master1-ambariserver.example.com:8080
+        default authentication:
+        username = 'admin'
+        password = 'admin'
+
+    note:check your particular host name for bootstrap and ambari server
+
+## Origin Repo
+-----------------------
+
+    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible
+	
+HDP Blueprints (This section contains blueprint design specification and architecture documentation)
+----------------------------------------------------------------------------------------------------
+
+    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/blueprints
+    https://engineering/confluence/display/MSS/Ambari+Blueprint+Design+Specification
+
+Software Versions
+-----------------
+| Software       | Version        |
+| :------------- | :------------- |
+| ActiveMQ       |     5.15       |
+| Ambari         |     2.5.2      |
+| Apache  Tomcat |     7.0.76     |
+| CentOS         |     7.1        |
+| Elastic Search |     5.5.0      |
+| Foreman        |     1.15.13    |
+| HDP            |     2.5 & 2.6  |
+| Java SE        |     1.8        |
+| Kibana         |     5.5.0      |
+| MySql          |     5.6.38-2   |
+| Python         |     2.7        |
+| Python-pip     |     8.1.2      |
+| Foreman        |     1.15       |	
+
+## Quickstart in general
 ---------------------------------------------------------------
 Following are the steps to be done for provisioning the nodes and to setup cluster
 
@@ -668,55 +714,6 @@ This will automatically updates the required configurations for ansible roles an
 
 note:While choosing Node provisioning option, you see provisioning is ready you might turn up the nodes to be provisioned,from bios setting you may choose boot from network and allow boot using PXELinux. After the installation You may find the rest of log in /var/log/ansible.log
 
-Foreman URL and Ambari Server
------------------------------
-    web interface can be accessed through:
-    foreman:
-        http://bootstrap.example.com/users/login
-        default authentication:
-        username = 'admin'
-        password = 'input password'
-
-    ambari server:
-        http://master1-ambariserver.example.com:8080
-        default authentication:
-        username = 'admin'
-        password = 'admin'
-
-    note:check your particular host name for bootstrap and ambari server
-
----
-
-Provisioning MDR Platform
------------------------
-
-    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible
-
-
-HDP Blueprints (This section contains blueprint design specification and architecture documentation)
-----------------------------------------------------------------------------------------------------
-
-    https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/blueprints
-    https://engineering/confluence/display/MSS/Ambari+Blueprint+Design+Specification
-
-Software Versions
------------------
-| Software       | Version        |
-| :------------- | :------------- |
-| ActiveMQ       |     5.15       |
-| Ambari         |     2.5.2      |
-| Apache  Tomcat |     7.0.76     |
-| CentOS         |     7.1        |
-| Elastic Search |     5.5.0      |
-| Foreman        |     1.15.13    |
-| HDP            |     2.5 & 2.6  |
-| Java SE        |     1.8        |
-| Kibana         |     5.5.0      |
-| MySql          |     5.6.38-2   |
-| Python         |     2.7        |
-| Python-pip     |     8.1.2      |
-
-Licence
--------
-
+## Licence
+-----------
 Mdr_Platform_bare_metal - Copyright (c) 2017 BAE Systems Applied Intelligence.
