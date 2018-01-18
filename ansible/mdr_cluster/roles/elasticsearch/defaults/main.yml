@@ -13,7 +13,7 @@ es_scripts: false
 es_templates: false
 es_user: elasticsearch
 es_group: elasticsearch
-es_config: {}
+es_config: "{% if es_type == 'master' %} {{ es_master_es_config|to_json}} {% else %} {{ es_node_es_config|to_json }} {% endif %}"
 es_config_log4j2: log4j2.properties.j2
 #Need to provide default directories
 es_pid_dir: "/var/run/elasticsearch"
@@ -28,7 +28,8 @@ es_xpack_features: ["alerting","monitoring","graph","ml","security"]
 #These are used for internal operations performed by ansible.
 #They do not effect the current configuration
 es_api_host: "localhost"
-es_api_port: 9200
+es_api_port: "{{ es_node_es_api_port }}"
+es_heap_size: "{{ es_master_es_heap_size }}"
 
 # Since ansible 2.2 the following variables need to be defined
 # to allow the role to be conditionally played with a when condition.

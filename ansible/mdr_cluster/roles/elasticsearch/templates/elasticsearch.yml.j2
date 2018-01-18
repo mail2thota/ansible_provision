@@ -1,16 +1,21 @@
-
-{% if es_config %}
-{{ es_config | to_nice_yaml }}
+{% if es_type == 'master' %}
+{{ es_master_es_config | to_nice_yaml }}
+{% else %}
+{{ es_node_es_config | to_nice_yaml }}
 {% endif %}
 
 discovery.zen.ping.unicast.hosts: {{ discovery_hosts }}
 
+{% if es_type is not defined %}
 {% if es_config['cluster.name'] is not defined %}
 cluster.name: elasticsearch
 {% endif %}
+{% endif %}
 
+{% if es_type is not defined %}
 {% if es_config['node.name'] is not defined %}
 node.name: {{inventory_hostname}}
+{% endif %}
 {% endif %}
 
 #################################### Paths ####################################
