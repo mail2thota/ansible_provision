@@ -457,13 +457,12 @@ mongodb:
  
 ## Default configuration template for foreman and cluster setup
 ---------------------------------------------------------------
- Please refer below example template 
+ Please refer to default template
  https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/config.yml 
 
 ## Add/Remove nodes for HDP cluster
 ---------------------------------------------------------------
-  Datanodes can be added/removed with option 4 and currently supports the nodes which has components DATANODE,NODEMANAGER,METRICS_MONITOR and it first New nodes will be added and then existing nodes will be removed if any configured
-  Default template been used for this (https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml)
+  Datanodes can be added/removed with option 4 and currently supports the nodes which has components DATANODE,NODEMANAGER and METRICS_MONITOR.First New nodes will be added and then existing nodes will be removed if any configured.Please refer to default template https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml
 
 ### Adding Datanodes for HDP cluster
 ---------------------------------------------------------------
@@ -505,7 +504,7 @@ mongodb:
 
 ### Example of default Template for Add/Remove HDP cluster
 ---------------------------------------------------------------
-  Please refer the below example template
+  Please refer to default template
   https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml
 
 ### Variable Description for Add/Remove HDP cluster
@@ -620,6 +619,7 @@ Software Versions
 | Python         |     2.7        |
 | Python-pip     |     8.1.2      |
 | Foreman        |     1.15       |	
+| Ansible        |     2.3.1.0    |
 
 ## Prerequisite
 ---------------
