@@ -2,8 +2,10 @@
 # Bare Metal Provisioning and Cluster Setup
 
 There are two terminologies to be understood before going into actual steps of installation
-◆	Bootstrap machine: Machine which is expected to be fresh, without any software which is going to installed by mdr_platform_bare_metal such as ansible and foreman
-◆	Target  machine: These are the machine which has to be provisioned by foreman and which needed to be installed the softwares such as  activemq,ambari-agent,ambari-server,docker,elasticsearch,httpd,kibana,mongodb,ntp,java,postgresql,python-pip,tomcat,wget.Also all other HDP components for example JOURNALNODE, NAMENODE . Foreman is normally used to install the centOS in bare metal machine, this is optional. It can be skipped if the machine is already provisioned.
+### Bootstrap machine 
+Machine which is expected to be fresh, without any software which is going to installed by mdr_platform_bare_metal such as ansible and foreman
+### Target  machine
+These are the machine which has to be provisioned by foreman and which needed to be installed the softwares such as  activemq,ambari-agent,ambari-server,docker,elasticsearch,httpd,kibana,mongodb,ntp,java,postgresql,python-pip,tomcat,wget.Also all other HDP components for example JOURNALNODE, NAMENODE . Foreman is normally used to install the centOS in bare metal machine, this is optional. It can be skipped if the machine is already provisioned.
 
 ## Foreman Usage
 Automated provisioning using foreman configuration as easy as pie.
@@ -14,8 +16,8 @@ group, create hosts for provisioning, architectures of machine to be provisioned
 installation medias, set ptable hardisk partition through the kick starter script,
 and set the operating system image to be installed. All of process take place in bare metal environment and configuration file must be set in YML format.
 
-Prerequisite
-------------
+## Prerequisite
+---------------
 
     1. Bootstrap machine
           - support centos 7
@@ -87,7 +89,7 @@ Prerequisite
 
 
 --------------
-Static IP
+## Static IP
 -------------
     #static ip for bootstrap machine:
     #cat /etc/sysconfig/network-scripts/ifcfg-enp0s3
@@ -105,8 +107,8 @@ Static IP
     DNS1="10.11.12.7"
 
 
-Configuration for foreman
--------------------------
+## Configuration for foreman
+-----------------------------
 
 | Variable       |  Example           | Description  |
 |:------------- |:-------------|:-----|
@@ -127,7 +129,7 @@ Configuration for foreman
 
 
 
-Complete YAML User Template for foreman
+## Complete YAML User Template for foreman
 ---------------------------------------
 User is allowed to modified as they like according to requirement to do provisiong process.you may find it in /mdr_platform_bare_metal/ansible/mdr_cluster/config.yml
 
@@ -251,8 +253,8 @@ User is allowed to modified as they like according to requirement to do provisio
 
 
 
-Complete YAML System Default Template for foreman
--------------------------------------------------
+## Complete YAML System Default Template for foreman
+----------------------------------------------------
 It is restricted for user making changes on system.yml file below, but it is configurable and allow to be modified as per user need. before provisioning You may find it in /mdr_platform_bare_metal/ansible/mdr_cluster/fmconfig/system.yml.j2.
 
     foreman:
@@ -313,8 +315,8 @@ It is restricted for user making changes on system.yml file below, but it is con
 
 
 
-Installation Menu for foreman
------------------------------
+## Installation Menu for foreman
+---------------------------------
 
 | Variable      | Description  |
 |:------------- |:-------------|:-----|
@@ -324,8 +326,8 @@ Installation Menu for foreman
 | Add/Remove hosts | adding and removing pre-existing nodes and components|
 
 
-Authentication Menu 
--------------------
+## Authentication Menu 
+---------------------
     Enter Foreman Authentication
     Username: foreman_username
     Password: foreman_password
@@ -334,14 +336,18 @@ Authentication Menu
     Enter HDP Password
     Password: hdp_passport
     Password (again): confirm hdp_passport
+	
+	Enter Nodes Password to be set while foreman provisioning
+    Password: node_passport
+    Password (again): confirm node_passport
 
-    Enter Nodes Username and Password
+    Enter Nodes Username and Password for cluster launch
     Minimum 8 characters required
     Username: node_user
     Password: node_password
 
-Disk Partition Logic
--------------------
+## Disk Partition Logic
+------------------------
     Disk partition logic and configuration can be modified as below:
 
     partition_system(default minimum size):
@@ -380,7 +386,8 @@ Disk Partition Logic
             root_size=281138
 
 
-## Configuration for cluster
+## Configuration for cluster setup
+---------------------------------
 
 Following Yaml configuration template structure used for configuring the playbooks  
 
@@ -478,7 +485,8 @@ mongodb:
   version: mongodb version number
 ```
 
-## Variables Description
+## Variable Description for cluster setup
+--------------------------------------------
 
  Variable |mandatory/optional| example| Description
  ---------|---|----|-------
@@ -524,25 +532,29 @@ mongodb:
  apache[tomcat_version]| mandatory|7.0.76| tomcat version number
  docker[hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker and on this group of hosts docker will be installed
  docker[version]| mandatory|17.09.0| docker version number
-## Default Template
+ 
+## Default configuration template for foreman and cluster setup
+---------------------------------------------------------------
  Please refer below example template and the existing   [config template ](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/config.yml) in code base if needed
 
  ```
 
- ## Add/Remove nodes for HDP cluster
-
+## Add/Remove nodes for HDP cluster
+---------------------------------------------------------------
   Datanodes can be added/removed with option 4 and currently supports the nodes which has components DATANODE,NODEMANAGER,METRICS_MONITOR and it first New nodes will be added and then existing nodes will be removed if any configured
   Default template been used fo this  [Update Datanodes Template](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml)
 
 ### Adding Datanodes for HDP cluster
-
+---------------------------------------------------------------
  Configured nodes will be added to the hdp host group mentioned and only remommeded is Datanodes
 
 
 ### Removing Datanodes for HDP cluster
+---------------------------------------------------------------
  Datanodes can be removed from the hdp cluster by configuring in list of datanodes needs to be removed section and Cluster must have one data node
 
 ### Configuration for Add/Remove HDP cluster
+---------------------------------------------------------------
  ```
  default:
    java_vendor: Java vendor to be installed on ambari agent either oracle or openjdk
@@ -570,13 +582,13 @@ mongodb:
         - name: Hostname of the node to be removed
  ```
 
-### Example/Default Template for Add/Remove HDP cluster
-
+### Example of default Template for Add/Remove HDP cluster
+---------------------------------------------------------------
   Please refer the below example template for better understanding
  https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml
 ```
 ### Variable Description for Add/Remove HDP cluster
-
+---------------------------------------------------------------
  Variable |mandatory/optional| example| Description
  ---------|---|----|-------
   default[java_vendor]|optional|oracle| Java/jdk vendor to be installed on New data nodes default is opendk, Only supported oracle or openjdk
@@ -594,6 +606,7 @@ mongodb:
   hdp[remove][hosts]|optional|[{name:agent7-ambariagent.example.com}]| Hostnames of the datanodes to be removed
 
 ## Service ports
+---------------------------------------------------------------
 ### Hadoop Components
 Service | Port number
 --------|------------
@@ -621,7 +634,8 @@ httpd|80
 mongodb| 27017
 
 ## Quickstart
-Assuming that the nodes are provisioned with OS and dependencies using foreman  or manually,thereby run below command
+---------------------------------------------------------------
+Following are the steps to be done for provisioning the nodes and to setup cluster
 
 ```
 git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
