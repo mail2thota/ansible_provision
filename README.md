@@ -530,6 +530,10 @@ mongodb:
   ---------------------------------------------------------------
   Please refer to default template
   https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml
+
+---------------------------------------------------------------
+
+
 ## Adding or Removing Elastic Search Data Nodes
 
   Elastic search datanodes can be added or removed from the option 5 in the bootstrap menu, as of now,we only supports the adding new data nodes and decommissioning existing data nodes in the cluster.
@@ -572,7 +576,8 @@ mongodb:
  ```
 
 
-### Example of default Template for Add/Remove HDP cluster
+### Example of default Template for Add/Remove Elastic search data nodes
+
   Please refer to the default template [update_es_cluster.yml](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_es_cluster.yml)
 
 ### Variable Description for Add/Remove Elastic search Data nodes
@@ -594,7 +599,6 @@ mongodb:
     es_node[add]|optional|| Config subsection for Newly adding hosts and its optional if you don't need to add Datanodes
     es_node[add][hosts]|optional| Newly adding hosts configuration section and its optional if you don't need to add Datanodes
     es_node[add][hosts]|optional|{name: mandatory,ip: optional}| Yaml array of hosts with optional ip adress those needs to be added to Datanodes hostgroup
-    es_node[add][hostgroup]|mandatory in case if you need to add hosts| exisitng hostgroup name in the cluster to assign the hosts in the host specification
     es_node[remove]|optional||Config subsection for datanodes to be removed
     es_node[remove][hosts]|optional|[{name:agent7-ambariagent.example.com}]| Hostnames of the datanodes to be removed
 
