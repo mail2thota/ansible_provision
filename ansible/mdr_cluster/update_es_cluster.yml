@@ -5,6 +5,7 @@ default:
 es_master:
   host: agent3-ambariagent.example.com
   version: 5.5.0
+  es_heap_size: "1g"
 
 es_node:
   add:
@@ -22,3 +23,4 @@ es_node:
     node.data: true
     node.master: false
     bootstrap.memory_lock: false 
+  es_api_port: 9200
