@@ -96,10 +96,10 @@ class Validator:
         self.es_master = Schema({
             Required('hostgroup',msg='es_master[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
             Required('version',msg='es_master[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='elastic search version doesn''t match with expected version format( Ex: 5.5.0) but configured value')
-        })
+        },extra=ALLOW_EXTRA)
         self.es_node = Schema({
             Required('hostgroup',msg='es_node[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
-        })
+        },extra=ALLOW_EXTRA)
         self.apache = Schema({
             Required('hostgroup',msg='apache[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
  Required('httpd_version',msg='apache[httpd_version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='httpd version doesn''t match with expected version format( Ex: 2.4.6) but configured value'),

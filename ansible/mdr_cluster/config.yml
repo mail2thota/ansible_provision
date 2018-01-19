@@ -328,11 +328,31 @@ kibana:
 
 
 es_master:
-  hostgroup: master_3
+  hostgroup: edge_1
   version: 5.5.0
+  # Please use this configuration to specify cluster name and ports. Below "node.data" is true if you want to have master and data node on the same host. 
+  es_config:
+    network.host: 0.0.0.0
+    cluster.name: "es-cluster"
+    http.port: 9200
+    transport.tcp.port: 9300
+    node.data: true
+    node.master: true
+    bootstrap.memory_lock: false
+  es_heap_size: "1g"
 
 es_node:
   hostgroup: es_node
+  # Please use this configuration to specify cluster name and ports.
+  es_config: 
+    network.host: 0.0.0.0
+    cluster.name: "es-cluster"
+    http.port: 9200
+    transport.tcp.port: 9300
+    node.data: true
+    node.master: false
+    bootstrap.memory_lock: false
+  es_api_port: 9200
   
 
 apache:
