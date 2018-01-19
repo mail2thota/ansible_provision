@@ -2,7 +2,7 @@
 # Bare Metal Provisioning and Cluster Setup
 
 There are two terminologies to be understood before going into actual steps of installation
-### Bootstrap machine 
+### Bootstrap machine
 Machine which is expected to be fresh, without any software which is going to installed by mdr_platform_bare_metal such as ansible and foreman
 ### Target  machine
 These are the machine which has to be provisioned by foreman and which needed to be installed the softwares such as  activemq,ambari-agent,ambari-server,docker,elasticsearch,httpd,kibana,mongodb,ntp,java,postgresql,python-pip,tomcat,wget.Also all other HDP components for example JOURNALNODE, NAMENODE . Foreman is normally used to install the centOS in bare metal machine, this is optional. It can be skipped if the machine is already provisioned.
@@ -355,11 +355,11 @@ apache:
 docker:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of docker registery will be installed
   version: docker version number
-  
+
 es_master:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search master nodes will be installed
   version: elasticsearch version number
-  es_config: 
+  es_config:
     network.host: network address within which es_master cluster should be available
     cluster.name: es_master cluster name
     http.port: accessing port of es_master
@@ -371,7 +371,7 @@ es_master:
 
 es_node:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search worker nodes will be installed
-   es_config: 
+   es_config:
     network.host: network address within which es_node cluster should be available
     cluster.name: es_node cluster name
     http.port: accessing port of es_node
@@ -454,22 +454,22 @@ mongodb:
  apache[tomcat_version]| mandatory|7.0.76| tomcat version number
  docker[hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker and on this group of hosts docker will be installed
  docker[version]| mandatory|17.09.0| docker version number
- 
+
 ## Default configuration template for foreman and cluster setup
 ---------------------------------------------------------------
  Please refer to default template
- https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/config.yml 
+ https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/config.yml
 
-## Add/Remove nodes for HDP cluster
+## Add/Remove nodes from HDP cluster
 ---------------------------------------------------------------
   Datanodes can be added/removed with option 4 and currently supports the nodes which has components DATANODE,NODEMANAGER and METRICS_MONITOR.First New nodes will be added and then existing nodes will be removed if any configured.Please refer to default template https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml
 
-### Adding Datanodes for HDP cluster
+### Adding Datanodes to HDP cluster
 ---------------------------------------------------------------
  Configured nodes will be added to the hdp host group mentioned and only remommeded is Datanodes
 
 
-### Removing Datanodes for HDP cluster
+### Removing Datanodes from HDP cluster
 ---------------------------------------------------------------
  Datanodes can be removed from the hdp cluster by configuring in list of datanodes needs to be removed section and Cluster must have one data node
 
@@ -525,6 +525,85 @@ mongodb:
   hdp[remove]|optional||config subsection for datanodes to be removed
   hdp[remove][hosts]|optional|[{name:agent7-ambariagent.example.com}]| Hostnames of the datanodes to be removed
 
+
+### Example of default Template for Add/Remove HDP cluster
+  ---------------------------------------------------------------
+  Please refer to default template
+  https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_hdp_cluster.yml
+## Adding or Removing Elastic Search Data Nodes
+
+  Elastic search datanodes can be added or removed from the option 5 in the bootstrap menu, as of now,we only supports the adding new data nodes and decommissioning existing data nodes in the cluster.
+       Note: in case of removing nodes we only decommissioning the nodes with elastic search api, after finishing the ansible execution user needs to decide  if all the data in the node has rebalanced within the cluster then user can shutdown the intended nodes and decommissioning only based on host name of the node
+
+### Configuration template for adding/removing datanodes
+
+---------------------------------------------------------------
+ ```
+ default:
+   java_vendor: Java vendor to be installed on new nodes  oracle or openjdk
+   dns_enabled: yes or no to update cluster nodes /etc/hosts file if dns server not available
+
+ es_master:
+    host : Hostname of the elasticsearch master
+    version: Version number of elastic search to setup
+    es_heap_size: JVM heap size of the newly added data nodes
+ es_node:
+   add:
+     hosts:
+        - name: hostnmae of the new node 1 to be added
+          ip: ip address of the node 1
+        - name: hostnmae of the new node 2 to be added
+          ip: ip adress of node 2
+     hostgroup: hdp hostgroup name to attach the nodes in hosts section
+   remove:
+      hosts:
+        - name: Hostname of the node to be removed
+   es_config: # Configuration parameters to place in elasticsearch.yml some of the mandatories we have defiend here and user can add any additional
+        network.host:  Network host parameter in elasticsearch.yml file
+        cluster.name: Existing elasticsearch clustername to add new nodes
+        http.port: Http Api port number to be used by new nodes
+        transport.tcp.port: TCP port number to be used by new nodes
+        node.data: New nodes supports data or not
+        node.master: New nodes are master or data node. note: we only support data nodes
+        bootstrap.memory_lock: Elastic search RAM memory lock to avoid swapping
+    es_api_port: HTTP rest api port number on the newly added data nodes
+
+
+ ```
+
+
+### Example of default Template for Add/Remove HDP cluster
+  Please refer to the default template [update_es_cluster.yml](https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/ansible/mdr_cluster/update_es_cluster.yml)
+
+### Variable Description for Add/Remove Elastic search Data nodes
+  ---------------------------------------------------------------
+   Variable |mandatory/optional| example| Description
+    ---------|---|----|-------
+    default[java_vendor]|optional|oracle| Java/jdk vendor to be installed on New data nodes default is openjdk, Only supported oracle or openjdk
+    default[dns_enabled]|mandatory|no| yes or no, To update the etc/host files in all the nodes of cluster if we dont have dns server in network
+    es_master[host]|mandatory|agent3-ambariagent.example.com| Elastic search master host name for submittng to node adding/deleting requests
+    es_master[version]|mandatory|5.5.0| Elastic search version number to setup the new data nodes
+    es_master[es_heap_size]|mandatory|1g| JVM heap size of the newly added data nodes
+    es_node[es_config][network.host]|mandatory|0.0.0.10|network host ip address to be used new data nodes  
+    es_node[es_config][cluster.name]|mandatory|es-cluster| configured elastic search clustername during initial launch of cluster
+    es_node[es_config][http.port]|mandatory|9200|  http rest api port number of newly added data nodes
+    es_node[es_config][transport.tcp.port]|mandatory|9300| Tcp port number of the newly added data nodes
+    es_node[es_config][node.data]|mandatory|true| true if newly added data nodes supports storing data on it,false if no
+    es_node[es_config][node.master]|mandatory|false|true if newly added nodes acts as a master nodes, false if no
+    es_node[es_config][bootstrap.memory_lock]|mandatory|true| RAM memory to lock to avoid the swapping on node    
+    es_node[add]|optional|| Config subsection for Newly adding hosts and its optional if you don't need to add Datanodes
+    es_node[add][hosts]|optional| Newly adding hosts configuration section and its optional if you don't need to add Datanodes
+    es_node[add][hosts]|optional|{name: mandatory,ip: optional}| Yaml array of hosts with optional ip adress those needs to be added to Datanodes hostgroup
+    es_node[add][hostgroup]|mandatory in case if you need to add hosts| exisitng hostgroup name in the cluster to assign the hosts in the host specification
+    es_node[remove]|optional||Config subsection for datanodes to be removed
+    es_node[remove][hosts]|optional|[{name:agent7-ambariagent.example.com}]| Hostnames of the datanodes to be removed
+
+
+
+
+
+
+
 ## Service ports in general
 ---------------------------------------------------------------
 ### Hadoop Components
@@ -564,7 +643,7 @@ foreman proxy|8443
     Enter HDP Password
     Password: hdp_passport
     Password (again): confirm hdp_passport
-	
+
 	Enter Nodes Password to be set while foreman provisioning
     Password: node_passport
     Password (again): confirm node_passport
@@ -593,7 +672,7 @@ foreman proxy|8443
 
 ## Origin Repo
  https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal
-	
+
 ## HDP Blueprints (This section contains blueprint design specification and architecture documentation)
  https://engineering/bitbucket/projects/TA/repos/mdr_platform_bare_metal/browse/blueprints
  https://engineering/confluence/display/MSS/Ambari+Blueprint+Design+Specification
@@ -614,7 +693,7 @@ Software Versions
 | MySql          |     5.6.38-2   |
 | Python         |     2.7        |
 | Python-pip     |     8.1.2      |
-| Foreman        |     1.15       |	
+| Foreman        |     1.15       |
 | Ansible        |     2.3.1.0    |
 
 ## Prerequisite
@@ -687,7 +766,7 @@ Software Versions
     9. If you have existing Ansible, Required Ansible version : ansible 2.3.1.0
 
     10. The best approach is for having static Ip for bootstrap machine, check how to setup static Ip below:
-    
+
 	#static ip for bootstrap machine:
     #cat /etc/sysconfig/network-scripts/ifcfg-enp0s3
     BOOTPROTO="none"
@@ -701,7 +780,7 @@ Software Versions
     PEERROUTES=yes
     DEFROUTE=yes
     DNS1="10.11.12.7"
-    
+
 
 ## Quickstart in general
 ---------------------------------------------------------------
