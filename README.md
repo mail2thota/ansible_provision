@@ -807,7 +807,7 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
     2. Node Provision & Cluster
     3. Cluster
     4. Add/Remove HDP Data nodes
-    5. Add/Remove Elasticsearch worker nodes
+    5. Add/Remove Elasticsearch Data nodes
     6. Quit
 
    below are the description for each option
