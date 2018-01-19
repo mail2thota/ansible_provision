@@ -806,15 +806,17 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
     1. Node Provision
     2. Node Provision & Cluster
     3. Cluster
-    4. Add/Remove Data nodes
+    4. Add/Remove HDP Data nodes
+    5. Add/Remove elasticsearch worker nodes
     5. Quit
 
    below are the description for each option
    1) Node provisioning: This does only the provisioning task which is basic software installation in a bare metal machine giving with MAC address. By triggering this option it installs the ansible and foreman in bootstrap machine and thereby foreman provisions the nodes supplied by the MAC address which has be mentioned in config.yml as highlighted before.
    2) Cluster: This skips the installation of foreman and installs only ansible in bootstrap machine ,thereby ansible takes care of  triggering the installation of software  which has been mentioned in config.yml to the target nodes
    3) Node provisioning & Cluster: This does foreman provisioning followed by cluster setup on those machines which has been provisioned by foreman.
-   4) Add/Remove Data nodes: This allows to add/remove the data nodes from HDP cluster
-   5) Quit: Terminate the process
+   4) Add/Remove HDP Data nodes: This allows to add/remove the data nodes from HDP cluster
+   5) Add/Remove Elasticsearch worker nodes: This allows to add/remove data nodes form elasticsearch cluster
+   6) Quit: Terminate the process
 
 ```
 This will automatically update the required configurations for ansible roles and executes playbooks which setups the hdp cluster and remaining packages
