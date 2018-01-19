@@ -1,0 +1,9 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+#mdr_hosts_begins
+10.11.12.16 agent14-ambariagent.example.com
+10.11.12.5 agent3-ambariagent.example.com
+10.11.12.15 agent13-ambariagent.example.com
+#mdr_hosts_ends
+10.11.12.17 agent15-ambariagent.example.com
+10.11.12.10 agent8-ambariagent.example.com

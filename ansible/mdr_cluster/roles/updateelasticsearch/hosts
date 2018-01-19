@@ -1,0 +1,10 @@
+
+[es]
+agent3-ambariagent.example.com
+agent15-ambariagent.example.com
+agent14-ambariagent.example.com
+agent13-ambariagent.example.com
+agent8-ambariagent.example.com
+[es_add]
+[es_master]
+agent3-ambariagent.example.com

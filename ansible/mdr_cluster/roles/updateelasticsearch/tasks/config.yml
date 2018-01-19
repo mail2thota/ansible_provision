@@ -1,0 +1,36 @@
+#
+## Software Copyright BAE Systems plc 2017. All Rights Reserved.
+## BAE SYSTEMS, DETICA are trademarks of BAE Systems
+## plc and may be registered in certain jurisdictions.
+##
+#---
+## Create Config Files
+
+
+#- name: Validating config file
+#  shell: 'cd {{ role_path }}  && python validateconfig.py update_hdp_cluster.yml'
+
+- name: Delete if any existing files
+  shell: 'cd {{ role_path }} && rm -f all && rm -f hosts'
+  
+- name: Generate Config files  
+  shell: 'cd {{ role_path }}  && python updateeshosts.py update_es_cluster.yml'
+  register: scriptlog
+
+- debug:
+    msg: "{{scriptlog.stderr}}"
+- debug:
+    msg: "{{scriptlog.stdout}}"
+
+
+
+
+- name: Copying files back to inventory and ambari_Config
+  shell: cd "{{ role_path }}" && rm -f "{{ inventory_dir }}/hosts" && cp hosts "{{ inventory_dir}}"/hosts && rm -f "{{ inventory_dir }}"/group_vars/all && cp all "{{ inventory_dir }}"/group_vars/all
+  register: inventoryfiles 
+
+- debug:
+     msg: "{{ inventoryfiles.stdout }}"
+- debug: 
+     msg="{{ inventoryfiles.stderr }}"
+  

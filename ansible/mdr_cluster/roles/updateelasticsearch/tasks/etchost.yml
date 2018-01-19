@@ -1,0 +1,68 @@
+#
+## Software Copyright BAE Systems plc 2017. All Rights Reserved.
+## BAE SYSTEMS, DETICA are trademarks of BAE Systems
+## plc and may be registered in certain jurisdictions.
+##
+#---
+## Create Config Files
+
+- name: Dns Enabled
+  set_fact:
+     dns_enabled: "{{ default_dns_enabled | default(False) }}"
+
+- name: Update_file
+  set_fact:
+     update_file: "{{ update_file | default(False) }}"
+
+
+- name: copying etc host file from es_master
+  fetch: 
+    src: /etc/hosts 
+    dest: "{{ role_path }}/es_etc_hosts"
+    flat: yes
+  when: 
+   - dns_enabled == False
+   - update_file == False
+   - inventory_hostname in groups["es_master"]
+
+
+- name: copying etc host file to new nodes
+  copy:
+    src: "{{ role_path}}/es_etc_hosts"
+    dest: "/etc/hosts"
+  when:
+   - dns_enabled == False
+   - update_file == True
+   - inventory_hostname in groups["es_add"] 
+
+- name: copy add host file to all nodes
+  become: True
+  become_user: root
+  copy:
+    src: "{{ role_path }}/add_hosts"
+    dest: /home/add_hosts
+    force: yes
+    mode: 0777
+  when: 
+    - dns_enabled == False
+    - update_file == True
+
+
+- name: run config_hosts.sh
+  become_user: root
+  script: ./config_hosts.sh
+  when: 
+    - dns_enabled == False
+    - update_file == True
+ 
+- name: Clean Temp File
+  file:
+    state: absent
+    path: /home/add_hosts
+  when:
+    - dns_enabled == False
+    - update_file == True
+
+ 
+ 
+ 

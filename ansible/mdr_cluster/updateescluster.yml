@@ -1,0 +1,65 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+
+- hosts: localhost
+  become: true
+  roles:
+    - { role: updateelasticsearch, action : 'config'}
+    - { role: updateelasticsearch,action: 'etchost', update_file: True}
+  tags:
+    - config
+
+- hosts: localhost
+  roles:
+    - {role: updateelasticsearch, action: 'env'}
+  tags:
+    - es-install
+
+
+- hosts: es_master
+  become: true
+  roles:
+    - {role: updateelasticsearch, action: 'etchost'}
+  tags:
+    - es-install
+
+
+- hosts: es_add,es
+  become: true
+  roles:
+    - {role: updateelasticsearch, action: 'etchost',update_file: True}
+  tags:
+    - es-install
+
+- hosts: es_add
+  strategy: free
+  become: true
+  roles:
+    - {role: updateelasticsearch,action: 'env'}
+    -  mdr_common
+  tags:
+    - es-install
+
+- hosts: es_add
+  become: true
+  roles:
+    - elasticsearch
+  vars:
+    es_type: data
+    es_scripts: false
+    es_templates: false
+    es_version_lock: false
+    ansible_user: ansible
+  tags:
+    - es-install
+
+- hosts: localhost
+  become: true
+  roles:
+    - {role: updateelasticsearch,action: 'status'}
+  tags:
+    - es-install
