@@ -1,0 +1,15 @@
+#
+## Software Copyright BAE Systems plc 2017. All Rights Reserved.
+## BAE SYSTEMS, DETICA are trademarks of BAE Systems
+## plc and may be registered in certain jurisdictions.
+##
+#---
+## Create Config Files
+
+
+- name: Checking new nodes status and Decommissioning nodes  
+  shell: 'cd {{ role_path }}  && python checkhostsstatus.py update_es_cluster.yml'
+
+
+
+

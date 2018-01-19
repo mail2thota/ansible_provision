@@ -80,19 +80,9 @@ passwordNodes()
 
 passwordAccess()
 {
-    echo "Enter Nodes Authentication"
-    echo "Password, minimum 8 characters required"
+    echo "Enter Nodes Username and Password"
     read -p "Username: " nodeusername
-    while true; do
-        read -s -p "Password: " nodepassword
-        echo
-        len=`echo ${#nodepassword}`
-        if [[ $len -ge 8 ]] ; then
-            break
-        fi
-        echo "password length should be greater than or equal 8 and must be match"
-        echo "Please try again"
-    done
+    read -s -p "Password: " nodepassword
     echo
 }
 
@@ -149,13 +139,24 @@ updatehdp(){
         ansible_ssh_pass=$nodepassword"
 } 
 
+updateelasticsearch(){
+        rm -f ./roles/updateelasticsearch/update_es_cluster.yml
+        cp update_es_cluster.yml ./roles/updateelasticsearch
+        echo "[es_add]" > ./inventory/hosts
+        ansible-playbook configescluster.yml --tags config --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
+        ansible-playbook updateescluster.yml --tags es-install --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
+
+}
+
 option1="Node Provision"
 option2="Cluster"
 option3="Node Provision & Cluster"
 option4="Add/Remove hdp worker nodes"
-option5="Quit"
+option5="Add/Remove elasticsearch data nodes"
+option6="Quit"
+
 PS3='Please enter your choice: '
-options=("${option1}" "${option2}" "${option3}" "${option4}" "${option5}")
+options=("${option1}" "${option2}" "${option3}" "${option4}" "${option5}" "${option6}")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -197,6 +198,13 @@ do
             break
             ;;
         "${option5}")
+            echo  "${bold}${green}Selected ${option5}${reset}"
+            passwordNodes
+            init
+            updateelasticsearch
+            break
+            ;;
+        "${option6}")
             exit 1
             ;;
         *) echo "${bold}${red}ERROR! Invalid option${reset}";;

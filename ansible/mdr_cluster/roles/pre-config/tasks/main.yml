@@ -9,7 +9,7 @@
   shell: 'cd {{ role_path }} && rm -f all && rm -f hosts && rm -f host_list'
 
 - name: Create config files
-  shell: 'cd {{ role_path }}  && python configuraton-gen.py'
+  shell: 'cd {{ role_path }}  && python config-gen.py'
   register: config
   run_once: true
 
@@ -26,7 +26,6 @@
 
 - name: Copying blueprint template
   shell: cd "{{ role_path }}" && rm -f  ../ambari_config/vars/*_node.yml && cp *_node.yml ../ambari_config/vars/
-  when: hdp_stack is defined 
 
 
 

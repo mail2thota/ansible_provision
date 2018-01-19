@@ -287,10 +287,13 @@ def validateConfigFile(configdata):
                 elif configService == 'es_master':
                     validator.es_master(serviceData)
                     checkHostGroupNameExists(serviceData.get('hostgroup'))
+                    validator.es_config(serviceData['es_config'])
 
                 elif configService == 'es_node':
                     validator.es_node(serviceData)
                     checkHostGroupNameExists(serviceData.get('hostgroup'))
+                    validator.es_config(serviceData['es_config'])
+
 
                 elif configService == 'apache':
                     validator.apache(serviceData)
