@@ -204,7 +204,7 @@ do
             updateelasticsearch
             break
             ;;
-        "${option666666}")
+        "${option6}")
             exit 1
             ;;
         *) echo "${bold}${red}ERROR! Invalid option${reset}";;
