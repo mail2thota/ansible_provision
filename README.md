@@ -802,13 +802,13 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
       - ./bootstrap.sh http://<repo_url> ,example as below
 	    ./bootstrap.sh http://10.129.6.237
 
-    while running this scirpt it will promit for options as below
+    while running this scirpt it will prompt for options as below
     1. Node Provision
     2. Node Provision & Cluster
     3. Cluster
     4. Add/Remove HDP Data nodes
-    5. Add/Remove elasticsearch worker nodes
-    5. Quit
+    5. Add/Remove Elasticsearch worker nodes
+    6. Quit
 
    below are the description for each option
    1) Node provisioning: This does only the provisioning task which is basic software installation in a bare metal machine giving with MAC address. By triggering this option it installs the ansible and foreman in bootstrap machine and thereby foreman provisions the nodes supplied by the MAC address which has be mentioned in config.yml as highlighted before.
