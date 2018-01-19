@@ -152,7 +152,7 @@ option1="Node Provision"
 option2="Cluster"
 option3="Node Provision & Cluster"
 option4="Add/Remove hdp worker nodes"
-option5="Add/Remove elasticsearch worker nodes"
+option5="Add/Remove elasticsearch data nodes"
 option6="Quit"
 
 PS3='Please enter your choice: '
