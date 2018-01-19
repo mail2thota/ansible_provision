@@ -42,7 +42,7 @@ def validate(configdata):
        validator.es_master(configdata['es_master'])
    except MultipleInvalid as e:
         for error in e.errors:
-            log.log(log.LOG_ERROR, "YAML validation Error ambari: message:{0} in {1}".format(error,configdata['ambari']))
+            log.log(log.LOG_ERROR, "YAML validation Error ambari: message:{0} in {1}".format(error,configdata['es_master']))
         sys.exit(1)
    #Validate es_node
 
@@ -52,9 +52,17 @@ def validate(configdata):
        validator.es_node(configdata['es_node'])
    except MultipleInvalid as e:
         for error in e.errors:
-            log.log(log.LOG_ERROR, "YAML validation Error es_node: messag:{0} in {1}".format(error,configdata['es_node']))
+            log.log(log.LOG_ERROR, "YAML validation Error es_node: message:{0} in {1}".format(error,configdata['es_node']))
         sys.exit(1)
+   
+   #Validate es_node[es_config]
 
+   try:
+       validator.es_config(configdata['es_node']['es_config'])
+   except MultipleInvalid as e:
+        for error in e.errors:
+            log.log(log.LOG_ERROR, "YAML validation Error es_node[es_config]: message:{0} in {1}".format(error,configdata['es_node']['es_config']))
+        sys.exit(1)
 
    #Validate add hosts
     
