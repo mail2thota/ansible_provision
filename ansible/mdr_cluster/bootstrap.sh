@@ -73,6 +73,14 @@ passwordNodes()
     echo
 }
 
+passwordAccess()
+{
+    echo "Enter Nodes Username and Password"
+    read -p "Username: " nodeusername
+    read -s -p "Password: " nodepassword
+    echo
+}
+
 passwordAmbari()
 {
     echo "Enter Ambari Authentication"
