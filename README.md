@@ -815,7 +815,7 @@ git clone ssh://git@10.37.0.35:7999/ta/mdr_platform_bare_metal.git
    2) Cluster: This skips the installation of foreman and installs only ansible in bootstrap machine ,thereby ansible takes care of  triggering the installation of software  which has been mentioned in config.yml to the target nodes
    3) Node provisioning & Cluster: This does foreman provisioning followed by cluster setup on those machines which has been provisioned by foreman.
    4) Add/Remove HDP Data nodes: This allows to add/remove the data nodes from HDP cluster
-   5) Add/Remove Elasticsearch worker nodes: This allows to add/remove data nodes form elasticsearch cluster
+   5) Add/Remove Elasticsearch Data nodes: This allows to add/remove data nodes form elasticsearch cluster
    6) Quit: Terminate the process
 
 ```
