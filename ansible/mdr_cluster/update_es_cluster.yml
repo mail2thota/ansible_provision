@@ -16,7 +16,7 @@ es_node:
     hosts:
        - name: agent14-ambariagent.example.com
   es_config:
-    network.host: 0.0.0.0
+    network.host: _site_
     cluster.name: "es-cluster"
     http.port: 9200
     transport.tcp.port: 9300
