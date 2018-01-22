@@ -18,6 +18,10 @@
 - easy_install:
       name: python-foreman
 
+- easy_install:
+      name: six
+      state: latest
+
 - name: waiting for the foreman server 
   local_action:
       module: wait_for
