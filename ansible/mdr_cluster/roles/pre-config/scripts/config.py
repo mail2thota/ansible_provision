@@ -17,7 +17,6 @@ def getClusters(config):
      return clusterNames
 
 def getCommonConfig(config):
-
      defaultConfig = {}
      for section in config:
       if section in excludeSections:
@@ -38,23 +37,23 @@ def configNewClusters(config,path,validate):
      clusterNames = getClusters(config)
      #Validating Each Section
      if len(clusterNames) == 0:
-         log.log(log.LOG_ERROR,'Configuration is empty except')
+         log.log(log.LOG_ERROR,'Configuration is empty')
          sys.exit(1)
      if validate:
          for clusterName in clusterNames:
-            log.log(log.LOG_INFO,'Validating Section: {0}'.format(clusterName))
+            log.log(log.LOG_INFO,'Validating config.yml Section@{0}'.format(clusterName))
             clusterData = getClusterInfo(config,clusterName)
             validatecluster.main(clusterData)
      else:
          log.log(log.LOG_WARN,'Skipping config.yml validation')
      #Creating Config files
      for clusterName in clusterNames:
-        log.log(log.LOG_INFO,'Creating  {0} section config files'.format(clusterName))
+        log.log(log.LOG_INFO,'Creating config files of section@{0}'.format(clusterName))
         clusterData = getClusterInfo(config,clusterName)
         configcluster.main(clusterData,clusterName,path)
 
 def createInventoriesListFile(config,path):
-    filePath = "{0}{1}{2}".format(path,os.sep,'invetory_list')
+    filePath = "{0}{1}{2}".format(path,os.sep,'inventory_list')
     with open(filePath, 'w') as fileData:
         try:
              invetoryNames = getClusters(config)
@@ -74,7 +73,7 @@ def main():
         config_file = sys.argv[1]
 
     else:
-        log.log(log.LOG_ERROR, "Please suply the config.yml")
+        log.log(log.LOG_ERROR, "Please supply config.yml file")
         log.log(log.LOG_ERROR, "No YAML provided")
         sys.exit(1)
 
@@ -84,7 +83,6 @@ def main():
     else:
         log.log(log.LOG_ERROR,"Invalid directory ".format(sys.argv[2]))
         sys.exit(1)
-    print sys.argv
     if len(sys.argv) == 4:
         validate = sys.argv[3]
     try:
@@ -95,7 +93,7 @@ def main():
             createInventoriesListFile(config,path)
 
         except yaml.YAMLError, exc:
-            log.log(log.LOG_ERROR, "Failed to load/parse import config YAML, Error:'{0}'".format(exc))
+            log.log(log.LOG_ERROR, "Failed to load/parse import config.yml file, Error:'{0}'".format(exc))
             log.log(log.LOG_INFO, "Check if '{0}' formatted correctly".format(config_file))
             sys.exit(1)
         config_file.close()

@@ -173,8 +173,6 @@ def generateAnsibleAllFile(config,services):
 					if property == 'hostgroup':
 						allFile.write("\n" + service + "_hosts: " + str(gethostNameIpMap(globalConfigData[service][property])))
 						inventoryMap.append(globalConfigData[service][property])
-
-
 					else:
 						allFile.write("\n" + service + "_" + property + ": " + str(globalConfigData[service][property]))
 	allFile.close()
