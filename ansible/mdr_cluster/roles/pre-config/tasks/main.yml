@@ -5,27 +5,41 @@
 ##
 #---
 ## Create Config Files
-- name: Delete if any existing files
-  shell: 'cd {{ role_path }} && rm -f all && rm -f hosts && rm -f host_list'
 
-- name: Create config files
-  shell: 'cd {{ role_path }}  && python config-gen.py'
+- name: Create temp inventories directory
+  file:
+    path: {{ role_path }}/inventories
+    state: directory
+
+- name: Clean temp inventories directory
+  file:
+    state: absent
+    path:  {{ role_path }}/inventories/
+
+
+- name: Validate & Create config files
+  shell: 'cd {{ role_path }}  && python scripts/config.py {{playbook_dir}}/config.yml {{ role_path }}'
   register: config
   run_once: true
 
 - debug: msg="{{ config.stderr.split('\n')}}"
 - debug: msg="{{ config.stdout.split('\n')}}"
 
+- name: Create Ansible Inventory directories
+  file:
+    path: {{ playbook_dir }}/inventories
+    state: directory
+
+- name: Clean Ansible Inventory directories
+  file:
+    state: absent
+    path:  {{ playbook_dir }}/inventories/
 
 
-- name: Copying files back to inventory and ambari_Config
-  shell: cd "{{ role_path }}" && rm -f ../init/tasks/all_config/host_list && cp host_list ../init/tasks/all_config/host_list && rm -f "{{ inventory_dir }}/hosts" && cp hosts "{{ inventory_dir}}"/hosts && rm -f "{{ inventory_dir }}"/group_vars/all && cp all "{{ inventory_dir }}"/group_vars/all
-  register: inventoryfiles
-- debug: msg="{{ inventoryfiles.stdout }}"
-- debug: msg="{{ inventoryfiles.stderr }}"
-
-- name: Copying blueprint template
-  shell: cd "{{ role_path }}" && rm -f  ../ambari_config/vars/*_node.yml && cp *_node.yml ../ambari_config/vars/
+- synchronize:
+    src: {{ role_path }}/inventories
+    dest: {{ playbook_dir }}/inventories
+  delegate_to: localhost
 
 
 
