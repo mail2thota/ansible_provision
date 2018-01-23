@@ -19,10 +19,19 @@ class Validator:
             Required('domain', 'domain name is required in common[hostgroups]'): Match('^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$',msg='domain doesn\'t match expected value ex: example.com but configured value'),
         },extra=ALLOW_EXTRA)
 
-        self.common_primary_host = Schema({
+        self.common_primary_host_default = Schema({
             Required('name', 'host group name is required in common[hostgroups]'): All(str,msg='hostgroup name must be a string'),
             Required('ip','ip is required for in common[primary_hosts]'): Match(
                 '^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',msg='host ip does''t match with expcted ip4 version but Configured Value'),
+
+        }, extra=ALLOW_EXTRA)
+
+        self.common_primary_host = Schema({
+            Required('name', 'host group name is required in common[hostgroups]'): All(str,
+                                                                                       msg='hostgroup name must be a string'),
+            Optional('ip', 'ip is required for in common[primary_hosts]'): Match(
+                '^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',
+                msg='host ip does''t match with expcted ip4 version but Configured Value'),
 
         }, extra=ALLOW_EXTRA)
 
@@ -124,7 +133,7 @@ Required('tomcat_version',msg='apache[tomcat_version] doesn\'t exists'):        
         })
         self.mongodb = Schema({
             Required('hostgroup',msg='mongodb[hosts] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
-             Required('version',msg='mongodb[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='mongodb version doesn''t match with expected version format( Ex: 3.4.10) but configured value')
+            Required('version',msg='mongodb[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='mongodb version doesn''t match with expected version format( Ex: 3.4.10) but configured value')
         })
         self.activemq = Schema({
             Required('hostgroup', msg='activemq[hosts] doesn\t exists'): All(str, msg='hostgroup must be a string'),

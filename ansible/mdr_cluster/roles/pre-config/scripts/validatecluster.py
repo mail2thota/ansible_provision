@@ -41,9 +41,7 @@ def loadcommonHostgroupInfo(configdata):
 
 	for hostgroup in hostgroups:
 			try:
-
 			  validator.common_hostgroup(hostgroup)
-
 			  if hostgroup['name'] not in commonHostGroups:
 				commonHostGroups[hostgroup['name']] = hostgroup
 				commonHostGroupMap[hostgroup['name']] = {}
@@ -59,18 +57,34 @@ def loadcommonHostgroupInfo(configdata):
 
 	for primary_host in data.get('primary_hosts'):
 		try:
-			validator.common_primary_host(primary_host)
-			if primary_host['hostgroup'] not in commonHostGroups:
-				raise Invalid('Unknown hostgroup {0} mapped to host {1}'.format(primary_host['hostgroup'],primary_host['name']))
-			else:
-				if primary_host['ip'] in commonHostGroupIpMap:
-					raise Invalid('ip \'{0}\' mapped to two host groups {1} & {2}'.format(primary_host['ip'],commonHostGroupIpMap.get(primary_host['ip']),primary_host['hostgroup']))
+			#If Dns enabled check for IP Consistancy if dns_enabled = No
+			if globalConfigData["default"]["dns_enabled"] == False:
+				validator.common_primary_host_default(primary_host)
+				if primary_host['hostgroup'] not in commonHostGroups:
+					raise Invalid('Unknown hostgroup {0} mapped to host {1}'.format(primary_host['hostgroup'],primary_host['name']))
 				else:
-					commonHostGroupIpMap[primary_host['ip']] = primary_host['hostgroup']
-				hostGroup = commonHostGroupMap[primary_host['hostgroup']]
-				hostGroup[primary_host['ip']] = primary_host
-				primary_host['fqdn'] = primary_host['name']+'.'+commonHostGroups[primary_host['hostgroup']].get('domain')
-				commonHostGroupIpMap[primary_host.get('ip')] = primary_host['hostgroup']
+					if primary_host['ip'] in commonHostGroupIpMap:
+						raise Invalid('ip \'{0}\' mapped to two host groups {1} & {2}'.format(primary_host['ip'],commonHostGroupIpMap.get(primary_host['ip']),primary_host['hostgroup']))
+					else:
+						commonHostGroupIpMap[primary_host['ip']] = primary_host['hostgroup']
+					fqdn = primary_host['name']+'.'+commonHostGroups[primary_host['hostgroup']].get('domain')
+					primary_host['fqdn'] = fqdn
+					commonHostGroupMap[primary_host['hostgroup']][fqdn] = primary_host
+					commonHostGroupIpMap[primary_host.get('ip')] = primary_host['hostgroup']
+
+		    #Ignore IP if dns_enabled = Yes
+			else:
+				validator.common_primary_host(primary_host)
+				if primary_host['hostgroup'] not in commonHostGroups:
+					raise Invalid('Unknown hostgroup {0} mapped to host {1}'.format(primary_host['hostgroup'],primary_host['name']))
+				else:
+					primary_host['fqdn'] = primary_host['name'] + '.' + commonHostGroups[primary_host['hostgroup']].get(
+						'domain')
+				fqdn = primary_host['name'] + '.' + commonHostGroups[primary_host['hostgroup']].get('domain')
+				primary_host['fqdn'] = fqdn
+				commonHostGroupMap[primary_host['hostgroup']][fqdn] = primary_host
+
+
 		except Invalid as e:
 			log.log(log.LOG_ERROR, "YAML validation Error: common[primary_hosts]:{0} in {1}".format(e, primary_host))
 			sys.exit(1)
