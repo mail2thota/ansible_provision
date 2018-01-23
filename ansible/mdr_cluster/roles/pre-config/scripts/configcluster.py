@@ -12,6 +12,8 @@ from scripts.error import MultipleInvalid
 validator = Validator()
 excludeSections = ['foreman','common']
 
+globalHostGroupsMaps = {}
+
 def gethosts(groupName):
 
     hostgroup = commonHostGroupMap[groupName]
@@ -37,6 +39,13 @@ def addToEtcHostsList(groupName):
         oshostConfig[host['ip']] = host['name']
 
 
+def getInventoryHostgroupMap():
+	inventoryMap = globalHostGroupsMaps.get(inventoryName)
+	if inventoryMap == None:
+		globalHostGroupsMaps[inventoryName] = []
+		inventoryMap = globalHostGroupsMaps.get(inventoryName)
+	return inventoryMap
+
 def generateHdpHostConfig(hdpHostConfig):
 
     outfile = open(ansiblehostsfile, 'w')
@@ -50,6 +59,7 @@ def generateHdpHostConfig(hdpHostConfig):
 	for host_group in hdpHostConfig["hostgroups"]:
 		host_group_name = host_group.keys()[0]
 		host_group_name =  host_group[host_group_name]['hostgroup']
+		getInventoryHostgroupMap().append(host_group_name)
 		for host in gethosts(host_group_name):
 			outfile.write("\n" + '{0}'.format(host))
 		addToEtcHostsList(host_group_name)
@@ -147,6 +157,8 @@ def generateAnsibleAllFile(config,services):
 	# Adding the properties to all file
 
 	isAllConfigFileExists = os.path.exists(allConfigFile)
+	inventoryMap = getInventoryHostgroupMap()
+
 
 	if isAllConfigFileExists:
 		fileMode = 'a'
@@ -160,6 +172,9 @@ def generateAnsibleAllFile(config,services):
 				for property in config[service]:
 					if property == 'hostgroup':
 						allFile.write("\n" + service + "_hosts: " + str(gethostNameIpMap(globalConfigData[service][property])))
+						inventoryMap.append(globalConfigData[service][property])
+
+
 					else:
 						allFile.write("\n" + service + "_" + property + ": " + str(globalConfigData[service][property]))
 	allFile.close()
@@ -227,6 +242,18 @@ def updateConfigData(configData,inventoryName1,path1):
 	components = ['all']
 	oshostConfig= {}
 
+def checkifAnyInvalidHostGroupMap():
+
+	 inventoryMap = getInventoryHostgroupMap()
+	 for hostgroup in inventoryMap:
+		 for section in globalHostGroupsMaps:
+			 if section !=inventoryName :
+				 sectionConfig = globalHostGroupsMaps[section]
+				 if hostgroup in sectionConfig:
+					 log.log(log.LOG_ERROR,'Same hostgroup in common[hostgroups] cannot be mapped in multiple clutster sections')
+					 log.log(log.LOG_ERROR,'common[hostgroups][name] =  [{0}] is used in Sections {1} and {2}: Please re-check'.format(hostgroup,section,inventoryName))
+					 sys.exit(1)
+
 def createInvetoryDirectories():
 	fileSeperator = os.sep
 	#Create if inventories directory doesnt exists
@@ -260,7 +287,6 @@ def createInvetoryDirectories():
 def main(configdata,inventoryName,path):
 	updateConfigData(configdata,inventoryName,path)
 	createInvetoryDirectories()
-	print configdata
 	loadcommonHostgroupInfo(configdata)
 	hdpConfig = configdata.get('hdp',None)
 	if hdpConfig != None:
@@ -268,6 +294,10 @@ def main(configdata,inventoryName,path):
 	generateCommonDefaultAllConfigFile(configdata)
 	generateAnsibleAllFile(configdata,components)
 	generateAnsibleHostFile(configdata,components)
+	checkifAnyInvalidHostGroupMap()
 	generateEtcHostFile(configdata,components)
+
+
+
 
 
