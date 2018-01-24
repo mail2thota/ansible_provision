@@ -66,7 +66,7 @@
   script: "/home/{{inventoryname}}/repo_config.sh"
   when: inventory_hostname != "localhost"
 
-- name: Create temp files directories
+- name: Clear temp files directories
   file:
     state: absent
     path: "/home/{{ inventoryname }}"
