@@ -8,17 +8,17 @@
 
 - name: Create temp inventories directory
   file:
-    path: {{ role_path }}/inventories
+    path: "{{ role_path }}/inventories"
     state: directory
 
 - name: Clean temp inventories directory
   file:
     state: absent
-    path:  {{ role_path }}/inventories/
+    path:  "{{ role_path }}/inventories/"
 
 
 - name: Validate & Create config files
-  shell: 'cd {{ role_path }}  && python scripts/config.py {{playbook_dir}}/config.yml {{ role_path }}'
+  shell: 'cd {{ role_path }}/scripts  && python config.py {{playbook_dir}}/config.yml {{ role_path }}'
   register: config
   run_once: true
 
@@ -27,19 +27,33 @@
 
 - name: Create Ansible Inventory directories
   file:
-    path: {{ playbook_dir }}/inventories
+    path: "{{ playbook_dir }}/inventories"
     state: directory
 
 - name: Clean Ansible Inventory directories
   file:
     state: absent
-    path:  {{ playbook_dir }}/inventories/
+    path: "{{ playbook_dir }}/inventories/"
 
-
-- synchronize:
-    src: {{ role_path }}/inventories
-    dest: {{ playbook_dir }}/inventories
+- name: Synchronize inventories
+  synchronize:
+    src: "{{ role_path }}/inventories/"
+    dest: "{{ playbook_dir }}/inventories/"
   delegate_to: localhost
 
+- name: Clean Ansible Temp directories
+  file:
+    state: absent
+    path: "{{ role_path }}/inventories/"
 
+- name: Copy Inventory list file
+  copy:
+   src: "{{ role_path}}/inventory_list"
+   dest: "{{ playbook_dir}}/inventory_list"
+   force: yes
+
+- name: remove temp files
+  file:
+    state: absent
+    path: "{{ role_path }}/inventory_list"
 

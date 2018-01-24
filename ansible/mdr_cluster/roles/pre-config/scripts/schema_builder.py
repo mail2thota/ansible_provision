@@ -6,7 +6,7 @@ import sys
 from contextlib import contextmanager
 from functools import wraps
 
-from scripts import error as er
+import error as er
 
 if sys.version_info >= (3,):
     long = int

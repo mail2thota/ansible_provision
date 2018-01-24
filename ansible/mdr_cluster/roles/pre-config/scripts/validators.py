@@ -6,8 +6,8 @@ from decimal import Decimal, InvalidOperation
 from functools import wraps
 
 try:
-    from scripts.schema_builder import Schema, raises, message
-    from scripts.error import (MultipleInvalid, CoerceInvalid, TrueInvalid, FalseInvalid, BooleanInvalid, Invalid, AnyInvalid,
+    from schema_builder import Schema, raises, message
+    from error import (MultipleInvalid, CoerceInvalid, TrueInvalid, FalseInvalid, BooleanInvalid, Invalid, AnyInvalid,
                                AllInvalid, MatchInvalid, UrlInvalid, EmailInvalid, FileInvalid, DirInvalid, RangeInvalid,
                                PathInvalid, ExactSequenceInvalid, LengthInvalid, DatetimeInvalid, DateInvalid, InInvalid,
                                TypeInvalid, NotInInvalid, ContainsInvalid)

@@ -3,10 +3,10 @@ import sys
 
 import yaml
 
-from scripts import log
-from scripts.config_schema import Validator
-from scripts.error import MatchInvalid,Invalid
-from scripts.error import MultipleInvalid
+import log
+from config_schema import Validator
+from error import MatchInvalid,Invalid
+from error import MultipleInvalid
 
 
 validator = Validator()
