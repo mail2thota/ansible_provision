@@ -6,8 +6,8 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 bold=`tput bold`
-
-cp -f  config.yml ./roles/pre-config/
+inventoriesdir=inventories
+exec_type="s"
 if [[ $repo_url =~ $regex ]]
 then
    if [ -w /etc/yum.conf ]; then
@@ -40,6 +40,7 @@ init(){
 	is_shell_login=$(shopt -q login_shell && echo 'yes' || echo 'no')
 	if [ "$DESKTOP_SESSION" = "gnome-classic" -a "$is_shell_login" == "no" ]
 	then
+           exec_type="p"
  	   sudo gnome-terminal -x ./lnav-0.8.2/lnav /var/log/ansible.*
 	fi
 }
@@ -116,16 +117,20 @@ foreman(){
 
 validate(){
         echo "Validating Config files"
-	ansible-playbook validate.yml --tags=$1 
+	ansible-playbook validate.yml --tags=$1 --extra-vars "inventoriesdir=$inventoriesdir"
 }
 
 ambari_hdp(){
-	rm -f ./roles/pre-config/config.yml
-	cp config.yml  ./roles/pre-config/
-	echo "execution of ambari and hdp playbook"
-	ansible-playbook mdr.yml --extra-vars "ambari_user=admin
-        ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername
-        ansible_ssh_pass=$nodepassword" 
+	while IFS='' read -r line || [[ -n "$line" ]]; do
+               if [ $exec_type = "p" ]; then
+
+	           gnome-terminal -x sh -c "ansible-playbook -i inventories/$line mdr.yml --extra-vars 'inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword'; bash"
+               else
+                   ansible-playbook -i inventories/$line mdr.yml --extra-vars "inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword"    
+	       fi 
+       done < "inventory_list"
+              
+
 }
 
 updatehdp(){ 

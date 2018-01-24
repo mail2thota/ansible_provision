@@ -275,11 +275,11 @@ def createInvetoryDirectories():
 	inventorydir = "{0}{1}{2}".format(invetoriesdir,fileSeperator,inventoryName)
 	if not os.path.isdir(inventorydir):
 	    os.makedirs(inventorydir)
-	groupvarsdir = "{0}{1}{2}".format(inventorydir,fileSeperator,"group-vars")
+	groupvarsdir = "{0}{1}{2}".format(inventorydir,fileSeperator,"group_vars")
 	if not os.path.isdir(groupvarsdir):
 		os.makedirs(groupvarsdir)
 	global rolesConfigFilesdir
-	rolesConfigFilesdir = "{0}{1}{2}".format(inventorydir,fileSeperator,"roles_config")
+	rolesConfigFilesdir = "{0}{1}{2}{3}{4}".format(path,fileSeperator,"roles_config",fileSeperator,inventoryName)
 	if not os.path.isdir(rolesConfigFilesdir):
 		os.makedirs(rolesConfigFilesdir)
 

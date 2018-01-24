@@ -4,7 +4,7 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- include_vars: "{{ hdp_cluster_type }}.yml"
+- include_vars: "{{playbook_dir}}/roles_config/{{inventoryname}}/{{ hdp_cluster_type }}.yml"
 
 - name: install python-requests
   yum:

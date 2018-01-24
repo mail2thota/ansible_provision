@@ -11,10 +11,22 @@
     path: "{{ role_path }}/inventories"
     state: directory
 
+- name: Create temp inventories directory
+  file:
+    path: "{{ role_path }}/roles_config"
+    state: directory
+
+
 - name: Clean temp inventories directory
   file:
     state: absent
     path:  "{{ role_path }}/inventories/"
+
+
+- name: Clean temp config directory
+  file:
+    state: absent
+    path:  "{{ role_path }}/roles_config/"
 
 
 - name: Validate & Create config files
@@ -27,24 +39,51 @@
 
 - name: Create Ansible Inventory directories
   file:
-    path: "{{ playbook_dir }}/inventories"
+    path: "{{ playbook_dir }}/{{ inventoriesdir}}"
     state: directory
+
+- name: Create Ansible Config files directories
+  file:
+    path: "{{ playbook_dir }}/roles_config"
+    state: directory
+
 
 - name: Clean Ansible Inventory directories
   file:
     state: absent
-    path: "{{ playbook_dir }}/inventories/"
+    path: "{{ playbook_dir }}/{{ inventoriesdir}}/"
+
+- name: Clean Ansible Config files directories
+  file:
+    state: absent
+    path: "{{ playbook_dir }}/roles_config/"
+
+
 
 - name: Synchronize inventories
   synchronize:
     src: "{{ role_path }}/inventories/"
-    dest: "{{ playbook_dir }}/inventories/"
+    dest: "{{ playbook_dir }}/{{ inventoriesdir}}/"
   delegate_to: localhost
 
-- name: Clean Ansible Temp directories
+- name: Clean Ansible temp inventories
   file:
     state: absent
     path: "{{ role_path }}/inventories/"
+
+
+- name: Synchronize config files directories
+  synchronize:
+    src: "{{ role_path }}/roles_config/"
+    dest: "{{ playbook_dir }}/roles_config/"
+  delegate_to: localhost
+
+- name: Clean temp role config directories
+  file:
+    state: absent
+    path: "{{ role_path }}/roles_config/"
+
+
 
 - name: Copy Inventory list file
   copy:
@@ -52,7 +91,7 @@
    dest: "{{ playbook_dir}}/inventory_list"
    force: yes
 
-- name: remove temp files
+- name: remove Inventory_list file
   file:
     state: absent
     path: "{{ role_path }}/inventory_list"

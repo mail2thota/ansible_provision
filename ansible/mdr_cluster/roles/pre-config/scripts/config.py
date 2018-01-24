@@ -68,7 +68,6 @@ def main():
     config_file = ''
     path= ''
     validate = True
-
     if os.path.isfile(sys.argv[1]):
         config_file = sys.argv[1]
 
@@ -83,6 +82,7 @@ def main():
     else:
         log.log(log.LOG_ERROR,"Invalid directory ".format(sys.argv[2]))
         sys.exit(1)
+    
     if len(sys.argv) == 4:
         validate = sys.argv[3]
     try:

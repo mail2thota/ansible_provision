@@ -29,6 +29,13 @@ def checkHostGroupNameExists(groupName):
 
 
 def loadcommonHostgroupInfo(configdata):
+	try:
+            validator.config(configdata)
+        except MultipleInvalid as e:
+             for error in e.errors:
+                log.log(log.LOG_ERROR, "YAML validation Error: message:{0} in {1}".format(error, configdata))
+             sys.exit(1)
+
 	data = configdata.get('common',{})
 	try:
 	   validator.common(data)
@@ -57,8 +64,8 @@ def loadcommonHostgroupInfo(configdata):
 
 	for primary_host in data.get('primary_hosts'):
 		try:
-			#If Dns enabled check for IP Consistancy if dns_enabled = No
-			if globalConfigData["default"]["dns_enabled"] == False:
+			#IP Consistancy if dns_enabled = No
+			if globalConfigData["default"].get('dns_enabled') == False:
 				validator.common_primary_host_default(primary_host)
 				if primary_host['hostgroup'] not in commonHostGroups:
 					raise Invalid('Unknown hostgroup {0} mapped to host {1}'.format(primary_host['hostgroup'],primary_host['name']))
@@ -72,7 +79,7 @@ def loadcommonHostgroupInfo(configdata):
 					commonHostGroupMap[primary_host['hostgroup']][fqdn] = primary_host
 					commonHostGroupIpMap[primary_host.get('ip')] = primary_host['hostgroup']
 
-		    #Ignore IP if dns_enabled = Yes
+		        #Ignore IP if dns_enabled = Yes
 			else:
 				validator.common_primary_host(primary_host)
 				if primary_host['hostgroup'] not in commonHostGroups:
