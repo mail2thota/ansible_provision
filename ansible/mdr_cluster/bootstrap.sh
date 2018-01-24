@@ -124,7 +124,7 @@ ambari_hdp(){
 	while IFS='' read -r line || [[ -n "$line" ]]; do
                if [ $exec_type = "p" ]; then
 
-	           gnome-terminal -x sh -c "ansible-playbook -i inventories/$line mdr.yml --extra-vars 'inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword'; bash"
+	           gnome-terminal --title=$line -x sh -c "ansible-playbook -i inventories/$line mdr.yml --extra-vars 'inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword'; bash"
                else
                    ansible-playbook -i inventories/$line mdr.yml --extra-vars "inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword"    
 	       fi 
