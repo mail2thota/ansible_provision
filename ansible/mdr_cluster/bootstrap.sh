@@ -96,7 +96,7 @@ passwordAmbari()
 
 passwordHDP()
 {
-    echo "Enter HDP Password"
+    echo "Enter HDP Blueprint default Password"
     while true; do
         read -s -p "Password: " hdppassword
         echo
@@ -122,7 +122,6 @@ validate(){
 ambari_hdp(){
 	rm -f ./roles/pre-config/config.yml
 	cp config.yml  ./roles/pre-config/
-	echo "execution of ambari and hdp playbook"
 	ansible-playbook mdr.yml --extra-vars "ambari_user=admin
         ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername
         ansible_ssh_pass=$nodepassword" 

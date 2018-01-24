@@ -109,7 +109,7 @@ class Validator:
 
         })
         self.es_config = Schema({
-           Required('network.host',msg='es_master[es_config][network.host] doesn\'t exists'):   Match('^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',msg='network.host does\'t match with expected ip4 version but Configured Value'),
+           Required('network.host',msg='es_master[es_config][network.host] doesn\'t exists'):     Any('_[networkInterface]_','_local_','_site_','_global_',msg='The options must be one of:_[networkInterface]_,_local_,_site_,_global_'),
            Required('cluster.name',msg='es_maste[es_config][cluster.name] doesn\'t exists'):                        Any(str,msg='cluster.name must be a string'),
            Required('http.port',msg='es_master[es_config][http.port] doesn\'t exists'):          Any(int,msg='http.port Number must be integer (Ex: 9200) but configured value'),
            Required('transport.tcp.port',msg='es_master[es_config][transport.tcp.port] doesn\'t exists'):          Any(int,msg='transport.tcp.port Number must be integer (Ex: 9300) but configured value'),

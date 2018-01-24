@@ -20,12 +20,23 @@
 
 - name: Copying files back to inventory and ambari_Config
   shell: cd "{{ role_path }}" && rm -f ../init/tasks/all_config/host_list && cp host_list ../init/tasks/all_config/host_list && rm -f "{{ inventory_dir }}/hosts" && cp hosts "{{ inventory_dir}}"/hosts && rm -f "{{ inventory_dir }}"/group_vars/all && cp all "{{ inventory_dir }}"/group_vars/all
-  register: inventoryfiles
-- debug: msg="{{ inventoryfiles.stdout }}"
-- debug: msg="{{ inventoryfiles.stderr }}"
-
-- name: Copying blueprint template
-  shell: cd "{{ role_path }}" && rm -f  ../ambari_config/vars/*_node.yml && cp *_node.yml ../ambari_config/vars/
 
 
+
+- stat:
+    path: "{{ role_path }}/multi_node.yml"
+  register: multinode
+
+
+- name: Copying blueprint template multi-node
+  shell: cd "{{ role_path }}" && rm -f  ../ambari_config/vars/multi_node.yml && cp multi_node.yml ../ambari_config/vars/
+  when: multinode.stat.islnk is defined
+
+- stat:
+    path: "{{ role_path }}/single_node.yml"
+  register: singlenode
+
+- name: Copying blueprint template single-node
+  shell: cd "{{ role_path }}" && rm -f  ../ambari_config/vars/single_node.yml && cp single_node.yml ../ambari_config/vars/
+  when: singlenode.stat.islnk is defined
 
