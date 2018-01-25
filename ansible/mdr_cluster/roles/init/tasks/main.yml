@@ -4,8 +4,6 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- name: echo inventory_dir
-  shell: echo "{{ inventory_dir }}"
 
 - name: retrieve repourl from localhost
   set_fact:
@@ -66,8 +64,4 @@
   script: "/home/{{inventoryname}}/repo_config.sh"
   when: inventory_hostname != "localhost"
 
-- name: Clear temp files directories
-  file:
-    state: absent
-    path: "/home/{{ inventoryname }}"
 
