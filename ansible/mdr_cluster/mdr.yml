@@ -39,23 +39,6 @@
   roles:
     - role: postgresql
     
-- hosts: ambari
-  become: true
-  roles:
-    - role: ambari_server
-  tags:
-    - ambari-server
-    - hdp-install
-
-- hosts: hdp
-  become: true
-  roles:
-    - role: ambari_agent
-  tags:
-    - ambari-agent
-    - hdp-install
-
-
 - hosts: es_master
   roles:
     - role: elasticsearch
@@ -85,6 +68,24 @@
   become: true
   roles:
     - role:  mongodb
+
+- hosts: ambari
+  become: true
+  roles:
+    - role: ambari_server
+  tags:
+    - ambari-server
+    - hdp-install
+
+- hosts: hdp
+  become: true
+  roles:
+    - role: ambari_agent
+  tags:
+    - ambari-agent
+    - hdp-install
+
+
 
 - hosts: ambari
   become: true

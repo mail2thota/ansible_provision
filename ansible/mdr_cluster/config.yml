@@ -232,18 +232,18 @@ cluster1:
       cluster_type: multi_node
       cluster_name: mdr
       component_groups :
-        master_1 :
+        componentgroup_1 :
           - JOURNALNODE
           - NAMENODE
           - HISTORYSERVER
           - METRICS_MONITOR
-        master_2:
+        componentgroup_2:
           - JOURNALNODE
           - APP_TIMELINE_SERVER
           - RESOURCEMANAGER
           - SPARK_JOBHISTORYSERVER
           - METRICS_MONITOR
-        master_3:
+        componentgroup_3:
           - SECONDARY_NAMENODE
           - HCAT
           - HIVE_METASTORE
@@ -252,16 +252,16 @@ cluster1:
           - WEBHCAT_SERVER
           - MYSQL_SERVER
           - METRICS_MONITOR
-        master_4:
+        componentgroup_4:
           - OOZIE_SERVER
           - METRICS_MONITOR
-        zk_1:
+        componentgroup_5:
           - METRICS_MONITOR
           - ZOOKEEPER_SERVER
-        edge_1:
+        componentgroup_6:
           - METRICS_MONITOR
           - METRICS_COLLECTOR
-        edge_3:
+        componentgroup_7:
           - ZOOKEEPER_CLIENT
           - TEZ_CLIENT
           - SPARK_CLIENT
@@ -272,43 +272,43 @@ cluster1:
           - HIVE_CLIENT
           - PIG
           - METRICS_MONITOR
-        worker_1:
+        componentgroup_8:
           - NODEMANAGER
           - DATANODE
           - METRICS_MONITOR
       hostgroups:
         - master_1:
             components:
-              - master_1
+              - componentgroup_1
             hostgroup: master_1
         - master_2:
             components:
-              - master_2
+              - componentgroup_2
             hostgroup: master_2
         - master_3:
             components:
-              - master_3
+              - componentgroup_3
             hostgroup: master_3
         - master_4:
             components:
-              - master_4
+              - componentgroup_4
             hostgroup: master_4
         - zk_1:
             components:
-              - zk_1
+              - componentgroup_5
             hostgroup: zk_1
             cardinality: 3
         - edge_1:
             components:
-               - edge_1
+               - componentgroup_6
             hostgroup: edge_1
         - edge_3:
             components:
-              - edge_3
+              - componentgroup_7
             hostgroup: edge_3
         - worker_1:
             components:
-              - worker_1
+              - componentgroup_8
             hostgroup: worker_1
 
     hdp_test:
