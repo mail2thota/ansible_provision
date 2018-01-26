@@ -326,13 +326,12 @@ cluster1:
       elasticsearch_url: http://master1-ambariserver.example.com:9200/
       version: 5.5.0
 
-
     es_master:
       hostgroup: edge_1
       version: 5.5.0
       # Please use this configuration to specify cluster name and ports. Below "node.data" is true if you want to have master and data node on the same host. 
       es_config:
-        network.host: 0.0.0.0
+        network.host: _site_
         cluster.name: "es-cluster"
         http.port: 9200
         transport.tcp.port: 9300
@@ -345,7 +344,7 @@ cluster1:
       hostgroup: es_node
       # Please use this configuration to specify cluster name and ports.
       es_config: 
-        network.host: 0.0.0.0
+        network.host: _site_
         cluster.name: "es-cluster"
         http.port: 9200
         transport.tcp.port: 9300

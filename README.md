@@ -360,7 +360,7 @@ es_master:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search master nodes will be installed
   version: elasticsearch version number
   es_config:
-    network.host: network address within which es_master cluster should be available
+    network.host: network address within which es_master cluster should be available(_[networkInterface]_, _local_, _site_, _global_)
     cluster.name: es_master cluster name
     http.port: accessing port of es_master
     transport.tcp.port: transportation port of es_master
@@ -372,7 +372,7 @@ es_master:
 es_node:
   hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search worker nodes will be installed
    es_config:
-    network.host: network address within which es_node cluster should be available
+    network.host: network address within which es_node cluster should be available (_[networkInterface]_, _local_, _site_, _global_)
     cluster.name: es_node cluster name
     http.port: accessing port of es_node
     transport.tcp.port: transportation port of es_node
@@ -429,7 +429,7 @@ mongodb:
  activemq[version]| mandatory|5.15.0| activemq version number
  es_master[hostgroup]|mandatory|es_master| hostgroup name configured in common[hostgroups] to install elastic search  and on this group of hosts elastic search masters will be installed
  es_master[version]| mandatory|5.5.0| elasticsearch version number
- es_master[es_config][network.host]| mandatory|0.0.0.0|network address within which es_master cluster should be available
+ es_master[es_config][network.host]| mandatory|_site_|_[networkInterface]_: Addresses of a network interface, for example _en0_, _local_: Any loopback addresses on the system, for example 127.0.0.1, _site_: Any site-local addresses on the system, for example 192.168.0.1, _global_: Any globally-scoped addresses on the system, for example 8.8.8.8.
  es_master[es_config][cluster.name]| mandatory|es-cluster|es_master cluster name
  es_master[es_config][http.port]| mandatory|9200| accessing port of es_master
  es_master[es_config][transport.tcp.port]| mandatory|9300| transportation port of es_master
@@ -438,7 +438,7 @@ mongodb:
  es_master[es_config][bootstrap.memory_lock]| mandatory|false| it tries to lock the process address space into RAM, preventing any es_master memory from being swapped out
  es_master[es_heap_size]| mandatory|1g| to specify the maximum size of total heap space for es_master
  es_node[hostgroup]| mandatory|es_node| hostgroup name configured in common[hostgroups] to install elastic search worker nodes and on this group of hosts elastic search nodes will be installed
- es_node[es_config][network.host]| mandatory|0.0.0.0|network address within which es_node cluster should be available
+ es_node[es_config][network.host]| mandatory|_site_|_[networkInterface]_: Addresses of a network interface, for example _en0_, _local_: Any loopback addresses on the system, for example 127.0.0.1, _site_: Any site-local addresses on the system, for example 192.168.0.1, _global_: Any globally-scoped addresses on the system, for example 8.8.8.8.
  es_node[es_config][cluster.name]| mandatory|es-cluster|es_node cluster name
  es_node[es_config][http.port]| mandatory|9200| accessing port of es_node
  es_node[es_config][transport.tcp.port]| mandatory|9300| transportation port of es_node
@@ -589,7 +589,7 @@ mongodb:
     es_master[host]|mandatory|agent3-ambariagent.example.com| Elastic search master host name for submittng to node adding/deleting requests
     es_master[version]|mandatory|5.5.0| Elastic search version number to setup the new data nodes
     es_master[es_heap_size]|mandatory|1g| JVM heap size of the newly added data nodes
-    es_node[es_config][network.host]|mandatory|0.0.0.10|network host ip address to be used new data nodes  
+    es_node[es_config][network.host]|mandatory|_site_|_[networkInterface]_: Addresses of a network interface, for example _en0_, _local_: Any loopback addresses on the system, for example 127.0.0.1, _site_: Any site-local addresse on the system, for example 192.168.0.1, _global_: Any globally-scoped addresses on the system, for example 8.8.8.8.  
     es_node[es_config][cluster.name]|mandatory|es-cluster| configured elastic search clustername during initial launch of cluster
     es_node[es_config][http.port]|mandatory|9200|  http rest api port number of newly added data nodes
     es_node[es_config][transport.tcp.port]|mandatory|9300| Tcp port number of the newly added data nodes

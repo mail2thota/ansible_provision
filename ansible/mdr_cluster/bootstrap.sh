@@ -97,7 +97,7 @@ passwordAmbari()
 
 passwordHDP()
 {
-    echo "Enter HDP Password"
+    echo "Enter HDP Blueprint default Password"
     while true; do
         read -s -p "Password: " hdppassword
         echo

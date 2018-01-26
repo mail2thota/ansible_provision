@@ -12,11 +12,7 @@ cluster.name: elasticsearch
 {% endif %}
 {% endif %}
 
-{% if es_type is not defined %}
-{% if es_config['node.name'] is not defined %}
 node.name: {{inventory_hostname}}
-{% endif %}
-{% endif %}
 
 #################################### Paths ####################################
 
