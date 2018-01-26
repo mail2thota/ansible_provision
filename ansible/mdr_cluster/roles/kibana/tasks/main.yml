@@ -46,3 +46,21 @@
 - name : check if kibana is up
   wait_for : host={{ kibana_hosts[0]['name'] }} port={{ kibana_port }} delay=5 timeout=180
 
+- name: copy test files of kibana
+  become: True
+  become_user: root
+  copy:
+    src: ./tests/
+    dest: /home/
+    mode: 0777
+
+- name: run test for kibana
+  become: True
+  become_user: root
+  command: /home/kibana_test.sh
+  register: kibana_test
+  failed_when: "'Failed' in kibana_test.stdout"
+
+- debug: msg="{{ kibana_test.stdout }}"
+- debug: msg="{{ kibana_test.stderr }}"
+

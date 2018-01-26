@@ -48,9 +48,13 @@
     changed_when: False
     args:
       warn: no
+  
+  - name: locating postgresql
+    shell: whereis psql | tr " " %
+    register: path
  
   - name: generate postgresql report
-    shell: "{{ playbook_dir }}/report.sh postgresql {{ version.stdout }} N/A N/A {{ ansible_fqdn }} success"
+    shell: "{{ playbook_dir }}/report.sh postgresql {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
     delegate_to: localhost
     when: result|succeeded
 

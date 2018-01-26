@@ -33,11 +33,13 @@
   tags: mongodb
 
 - name: run mongo health check
-  shell: echo 'db.stats().ok' | mongo {{ item }}:{{ mongod_port }}/test --quiet
+  become: True
+  become_user: root
+  script: ./tests/mongodb_test.sh "{{groups['mongodb']}}" "{{  mongodb_port }}"
   register: shell
   with_items:  
       - "{{groups['mongodb']}}" 
-  failed_when: "'Failed' in shell.stdout"
+  failed_when: "'Failed' in shell"
 - debug: msg="{{shell}}"
 
   
