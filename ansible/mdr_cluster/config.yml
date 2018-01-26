@@ -223,7 +223,7 @@ cluster1:
       hostgroup: master_1
       version: 2.4.6
       #Optional configuration for httpd load balancer
-      clusters:
+      config:
           balancer1:
                   uri: mylb1
                   member:
