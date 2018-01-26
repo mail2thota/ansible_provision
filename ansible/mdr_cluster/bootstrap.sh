@@ -121,16 +121,19 @@ validate(){
 }
 
 ambari_hdp(){
+
+        clustercount= cat inventory_list | wc -l
+        echo ${clustercount}
+        counter=1
 	while IFS='' read -r line || [[ -n "$line" ]]; do
-               if [ $exec_type = "p" ]; then
-
-	           gnome-terminal --title=$line -x sh -c "ansible-playbook -i inventories/$line mdr.yml --extra-vars 'inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword'; bash"
-               else
-                   ansible-playbook -i inventories/$line mdr.yml --extra-vars "inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword"    
-	       fi 
-       done < "inventory_list"
-              
-
+                 if [ $counter -eq $clustercount]; then
+                    ansible-playbook -i inventories/$line mdr.yml --extra-vars "inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword" 
+                 else
+                    ansible-playbook -i inventories/$line mdr.yml --extra-vars "inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword" &
+                 fi         
+                 let "counter++"                 
+        done < "inventory_list"
+        wait
 }
 
 updatehdp(){ 
