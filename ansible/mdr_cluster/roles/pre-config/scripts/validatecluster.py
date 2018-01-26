@@ -29,9 +29,10 @@ def checkHostGroupNameExists(groupName):
 
 
 def loadcommonHostgroupInfo(configdata):
+
 	try:
+
             validator.config(configdata)
-        
         except MultipleInvalid as e:
              for error in e.errors:
                 log.log(log.LOG_ERROR, "YAML validation Error: message:{0} in {1}".format(error, configdata))
@@ -115,9 +116,8 @@ def validateConfigFile(configdata):
 		msglevel = log.LOG_INFO_RM
 		if configService == 'default':
 			validator.default(serviceData)
-                
                 elif configService == 'httpd':
-                    validator.httpd(serviceData)
+                        validator.httpd(serviceData)
 
 		elif configService == 'ambari':
 			checkHostGroupNameExists(serviceData.get('hostgroup'))
