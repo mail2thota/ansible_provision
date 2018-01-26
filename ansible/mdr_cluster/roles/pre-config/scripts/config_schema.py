@@ -94,11 +94,11 @@ class Validator:
             Required('namenode_host',msg='hdp_test[namenode_host] doesn\'t exists'):                 All(str,msg='namenode_host doesn\t match the exptected'),
             Required('oozie_host', msg='hdp_test[oozie_host] doesn\'t exists'):                      All(str,msg='oozie_host doesn\t match the exptected'),
             Optional('hdfs'):                                    				     Any(Boolean(),msg='hdfs must be either yes or no'),
-	    Optional('yarn'):                                                                        Any(Boolean(),msg='yarn must be either yes or no'),
-	    Optional('oozie'):                                                                       Any(Boolean(),msg='oozie must be either yes or no'),
+            Optional('yarn'):                                                                        Any(Boolean(),msg='yarn must be either yes or no'),
+            Optional('oozie'):                                                                       Any(Boolean(),msg='oozie must be either yes or no'),
             Optional('spark'):                                                                       Any(Boolean(),msg='spark must be either yes or no'),
-	    Optional('hive'):                                                                        Any(Boolean(),msg='hive must be either yes or no'),
-	    Optional('pig'):                                                                         Any(Boolean(),msg='pig must be either yes or no')
+            Optional('hive'):                                                                        Any(Boolean(),msg='hive must be either yes or no'),
+            Optional('pig'):                                                                         Any(Boolean(),msg='pig must be either yes or no')
 
         })
         self.kibana = Schema({
