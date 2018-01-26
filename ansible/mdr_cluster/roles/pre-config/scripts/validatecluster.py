@@ -118,6 +118,7 @@ def validateConfigFile(configdata):
 			validator.default(serviceData)
                 elif configService == 'httpd':
                         validator.httpd(serviceData)
+                        checkHostGroupNameExists(serviceData.get('hostgroup'))
 
 		elif configService == 'ambari':
 			checkHostGroupNameExists(serviceData.get('hostgroup'))
