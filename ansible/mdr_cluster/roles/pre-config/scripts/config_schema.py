@@ -38,6 +38,7 @@ class Validator:
         self.config = Schema( {
             Required('default',msg='default doesn\'t exists'): Any(dict),
             Required('common',msg='common doesn\'t exists'): Any(dict),
+            Required('httpd',msg='httpd doesn\'t exists'): Any(dict),
             Optional('ambari'): All(dict),
             Optional('hdp'): All(dict),
             Optional('hdp_test'): All(dict),
@@ -91,7 +92,14 @@ class Validator:
             Required('hostgroup',msg='hdp_test[hostgroup] doesn\'t exists'):                         All(str,msg='hostgroup must be a string'),
             Required('jobtracker_host',msg='hdp_test[jobtracker_host] doesn\'t exists'):             All(str,msg='jobtracker_host doesn\t match the expected'),
             Required('namenode_host',msg='hdp_test[namenode_host] doesn\'t exists'):                 All(str,msg='namenode_host doesn\t match the exptected'),
-            Required('oozie_host', msg='hdp_test[oozie_host] doesn\'t exists'):                      All(str,msg='oozie_host doesn\t match the exptected')
+            Required('oozie_host', msg='hdp_test[oozie_host] doesn\'t exists'):                      All(str,msg='oozie_host doesn\t match the exptected'),
+            Optional('hdfs'):                                    				     Any(Boolean(),msg='hdfs must be either yes or no'),
+	    Optional('yarn'):                                                                        Any(Boolean(),msg='yarn must be either yes or no'),
+	    Optional('oozie'):                                                                       Any(Boolean(),msg='oozie must be either yes or no'),
+            Optional('spark'):                                                                       Any(Boolean(),msg='spark must be either yes or no'),
+	    Optional('hive'):                                                                        Any(Boolean(),msg='hive must be either yes or no'),
+	    Optional('pig'):                                                                         Any(Boolean(),msg='pig must be either yes or no')
+
         })
         self.kibana = Schema({
             Required('hostgroup',msg='kibana[hostgroup] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
@@ -118,7 +126,7 @@ class Validator:
 
         })
         self.es_config = Schema({
-           Required('network.host',msg='es_master[es_config][network.host] doesn\'t exists'):     Any('_[networkInterface]_','_local_','_site_','_global_',msg='The options must be one of:_[networkInterface]_,_local_,_site_,_global_'),
+           Required('network.host',msg='es_master[es_config][network.host] doesn\'t exists'):   Match('^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',msg='network.host does\'t match with expected ip4 version but Configured Value'),
            Required('cluster.name',msg='es_maste[es_config][cluster.name] doesn\'t exists'):                        Any(str,msg='cluster.name must be a string'),
            Required('http.port',msg='es_master[es_config][http.port] doesn\'t exists'):          Any(int,msg='http.port Number must be integer (Ex: 9200) but configured value'),
            Required('transport.tcp.port',msg='es_master[es_config][transport.tcp.port] doesn\'t exists'):          Any(int,msg='transport.tcp.port Number must be integer (Ex: 9300) but configured value'),

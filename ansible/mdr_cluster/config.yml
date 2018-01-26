@@ -321,6 +321,11 @@ cluster1:
        jobtracker_host: agent2-ambariagent.example.com
        namenode_host: agent1-ambariagent.example.com
        oozie_host: agent4-ambariagent.example.com
+       # By default hdfs and yarn will be exected you can disable by setting to (hdfs: no) and yarn (yarn: no) 
+       oozie: yes
+       spark: yes
+       hive: yes
+       pig: yes
     kibana:
       hostgroup: master_3
       elasticsearch_url: http://master1-ambariserver.example.com:9200/
