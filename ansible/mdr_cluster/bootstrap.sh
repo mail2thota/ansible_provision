@@ -7,7 +7,6 @@ green=`tput setaf 2`
 reset=`tput sgr0`
 bold=`tput bold`
 inventoriesdir=inventories
-exec_type="s"
 if [[ $repo_url =~ $regex ]]
 then
    if [ -w /etc/yum.conf ]; then
