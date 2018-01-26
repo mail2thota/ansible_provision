@@ -217,7 +217,12 @@ foreman:
 cluster1:
     default:
       dns_enabled: no
-      java_vendor: oracle              
+      java_vendor: oracle
+      
+    httpd:
+      hostgroup: es_master
+      version: 2.4.6
+      
     ambari:
       hostgroup: edge_1
       port : 8080
@@ -354,6 +359,10 @@ cluster2:
     default:
       dns_enabled: no
       java_vendor: oracle
+      
+    httpd:
+      hostgroup: docker
+      version: 2.4.6
       
     postgres:
       hostgroup: postgres

@@ -131,6 +131,12 @@ class Validator:
  Required('httpd_version',msg='apache[httpd_version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='httpd version doesn''t match with expected version format( Ex: 2.4.6) but configured value'),
 Required('tomcat_version',msg='apache[tomcat_version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='tomcat version doesn''t match with expected version format( Ex: 7.0.76) but configured value')
         })
+
+        self.httpd = Schema({
+            Required('hostgroup',msg='httpd[hostgroup] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
+            Required('version',msg='httpd[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='httpd version doesn''t match with expected version format( Ex: 2.4.6) but configured value')
+        })
+
         self.mongodb = Schema({
             Required('hostgroup',msg='mongodb[hostgroup] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
             Required('version',msg='mongodb[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='mongodb version doesn''t match with expected version format( Ex: 3.4.10) but configured value')

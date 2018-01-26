@@ -114,6 +114,9 @@ def validateConfigFile(configdata):
 		msglevel = log.LOG_INFO_RM
 		if configService == 'default':
 			validator.default(serviceData)
+                elif configService == 'httpd':
+                        validator.httpd(serviceData)
+
 		elif configService == 'ambari':
 			checkHostGroupNameExists(serviceData.get('hostgroup'))
          		validator.hdpambari(configdata)

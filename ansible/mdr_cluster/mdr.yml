@@ -18,6 +18,12 @@
     - ambari-prereqs
     - hdp-install
 
+
+- hosts: httpd
+  become: true
+  roles:
+    - httpd
+
 - hosts: activemq
   become: true
   roles:
@@ -104,7 +110,9 @@
   roles:
     - role: cleanup
 
-- hosts: apache
+
+
+- hosts: httpd
   become: true
   roles:
     - overall_report

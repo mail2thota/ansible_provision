@@ -1,0 +1,57 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+- name: "{{ inventoryname }}: install apache server"
+  yum:
+    name: httpd-{{ httpd_version}}
+    state: installed
+  register: result
+
+- name:  "{{ inventoryname }}: ensure the httpd service is enable and running"
+  service:
+    name: httpd
+    state: restarted
+    enabled: yes
+  become: true
+
+
+- name : "{{ inventoryname }}: check if httpd server is up"
+  wait_for : host={{ ansible_fqdn }} port=80 delay=20
+
+- name: get the version of httpd
+  shell: yum list installed httpd | grep httpd | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating httpd
+  shell: whereis httpd | tr " " %
+  register: path
+  
+- name: generate httpd report
+  shell: "{{ playbook_dir }}/report.sh httpd {{ version.stdout }} http://{{ ansible_fqdn }}:80 {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
+
+  
+- name: generate tomcat report
+  shell: "{{ playbook_dir }}/report.sh tomcat {{ version.stdout }} http://{{ ansible_fqdn }}:8080 {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
+
+- name: run test for httpd server
+  become: True
+  become_user: root
+  script: ./tests/httpd/httpd_test.sh
+  register: httpd_test
+  failed_when: "'Failed' in httpd_test.stdout"
+
+- debug: msg="{{ httpd_test.stdout }}"
+- debug: msg="{{ httpd_test.stderr }}"
+
+
+
