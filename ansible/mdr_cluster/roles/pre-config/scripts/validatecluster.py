@@ -119,6 +119,16 @@ def validateConfigFile(configdata):
                 elif configService == 'httpd':
                         validator.httpd(serviceData)
                         checkHostGroupNameExists(serviceData.get('hostgroup'))
+                        httpdconfig = serviceData.get('config',None)
+                        if httpdconfig == None:
+                            log.log(log.LOG_INFO,'assuming httpd without any configuration')
+                        else:
+                          for balancer in httpdconfig:
+                                try:
+                                   validator.httpd_balancer(httpdconfig[balancer])
+                                except Invalid as e:
+                                   log.log(log.LOG_ERROR, configService + " : YAML validation Error:{0} in {1}".format(e.error_message,httpdconfig[balancer]))
+                                   sys.exit(1)                                                         
 
 		elif configService == 'ambari':
 			checkHostGroupNameExists(serviceData.get('hostgroup'))

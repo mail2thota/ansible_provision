@@ -142,9 +142,13 @@ class Validator:
 
         self.httpd = Schema({
             Required('hostgroup',msg='httpd[hostgroup] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
-            Required('version',msg='httpd[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='httpd version doesn''t match with expected version format( Ex: 2.4.6) but configured value')
+            Required('version',msg='httpd[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='httpd version doesn''t match with expected version format( Ex: 2.4.6) but configured value'),
+            Optional('config'):                                                                             Any(dict)
         })
-
+        self.httpd_balancer = Schema({
+            Required('uri',msg='httpd[config][.] uri doesn\'t exists'):                                      Any(str,msg='uri must be a string'),
+            Required('member',msg='httpd[config].[] member doesn\'t exists'):                                 Any(list,msg='member value must be a list of hosts')
+        })
         self.mongodb = Schema({
             Required('hostgroup',msg='mongodb[hostgroup] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
             Required('version',msg='mongodb[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='mongodb version doesn''t match with expected version format( Ex: 3.4.10) but configured value')

@@ -222,6 +222,22 @@ cluster1:
     httpd:
       hostgroup: master_1
       version: 2.4.6
+      #Optional configuration for httpd load balancer
+      clusters:
+          balancer1:
+                  uri: mylb1
+                  member:
+                       - host1
+                       - host2  
+          balancer2:
+                  uri: mylb2
+                  member:
+                       - host3
+                       - host4 
+ 
+         
+           
+
       
     ambari:
       hostgroup: edge_1
