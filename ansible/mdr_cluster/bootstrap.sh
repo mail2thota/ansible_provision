@@ -171,7 +171,7 @@ do
             passwordFm
             passwordNodes
             init
-	    validate foreman
+            validate foreman
             foreman
             break
             ;;
