@@ -5,7 +5,7 @@
 #
 ---
 
-- name: setting default hdfs default values
+- name: setting default values for hdp tests exection
   set_fact:
     hdfs: "{{ hdp_test_hdfs | default(True) }}"
     yarn: "{{ hdp_test_yarn | default(True) }}"
