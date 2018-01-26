@@ -15,4 +15,20 @@
     dest: "/etc/logrotate.d/ambari"
     mode: 0644
 
+- name: get the version of python
+  shell: yum list installed python | grep python | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
+  register: version
+  changed_when: False
+  args:
+    warn: no
+
+- name: locating python
+  shell: whereis python | tr " " %
+  register: path
+  
+- name: generate python report
+  shell: "{{ playbook_dir }}/report.sh python {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  delegate_to: localhost
+  when: result|succeeded
+
 

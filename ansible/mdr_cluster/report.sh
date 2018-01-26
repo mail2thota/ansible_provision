@@ -10,10 +10,10 @@ template="\"host\" : \""$5\"",\"status\" : \""$6\"""
 if [ ! -d "$report_path" ]; then
   mkdir "${report_path}"
 fi
-if [ ! -f "${report_path}"/"${service_name}".json ]; then
-echo -e  "{\"service\":\""$service_name"\",\"version\":\""$version"\",\"url\":\""$url"\",\"path\":\""$path"\", \"properties\": [ { $template }]}" > "${report_path}"/"${service_name}".json
+if [ ! -f "${report_path}"/"${service_name}${version}".json ]; then
+echo -e  "{\"service\":\""$service_name"\",\"version\":\""$version"\",\"url\":\""$url"\",\"path\":\""$path"\", \"properties\": [ { $template }]}" > "${report_path}"/"${service_name}${version}".json
 else
-sed -i "s%}]}% },{ $template }]}%g" "${report_path}"/"${service_name}".json
+sed -i "s%}]}% },{ $template }]}%g" "${report_path}"/"${service_name}${version}".json
 fi
 
 
