@@ -31,7 +31,7 @@ def checkHostGroupNameExists(groupName):
 def loadcommonHostgroupInfo(configdata):
 	try:
             validator.config(configdata)
-
+			
         except MultipleInvalid as e:
              for error in e.errors:
                 log.log(log.LOG_ERROR, "YAML validation Error: message:{0} in {1}".format(error, configdata))
