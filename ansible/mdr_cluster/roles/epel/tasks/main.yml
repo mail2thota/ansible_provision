@@ -23,7 +23,7 @@
     warn: no
 
 - name: generate epel release report
-  shell: "{{ playbook_dir }}/report.sh epel {{ version.stdout }} N/A N/A {{ ansible_fqdn }} success"
+  shell: "{{ playbook_dir }}/report.sh epel-release {{ version.stdout }} N/A N/A {{ ansible_fqdn }} success"
   delegate_to: localhost
   when: result|succeeded
   

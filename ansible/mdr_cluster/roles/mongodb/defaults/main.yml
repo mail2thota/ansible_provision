@@ -1,4 +1,4 @@
 
 
 dbpath: /var/lib/mongo
-mongod_port: 27017
+mongodb_port: 27017

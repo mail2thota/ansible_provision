@@ -8,14 +8,14 @@
   become: True
   become_user: hdfs
   copy:
-    src: ./tasks/
+    src: ./tasks/tests/
     dest: /home/hdfs/
     mode: 0777
 
 - name: run test for hdfs
   become: True
   become_user: root
-  script: ./hdfs/hdfs_test.sh
+  script: ./tests/hdfs/hdfs_test.sh
   register: hdfs_test
   failed_when: "'HDFS test is Failed' in hdfs_test.stdout"
  
@@ -26,7 +26,7 @@
 - name: run test for yarn
   become: True
   become_user: hdfs
-  script: ./yarn/yarn_test.sh
+  script: ./tests/yarn/yarn_test.sh
   register: yarn_test
   failed_when: "'Yarn test is Failed' in yarn_test.stdout"
 
@@ -37,7 +37,7 @@
 - name: run test for oozie
   become: True
   become_user: hdfs
-  script:  ./oozie/oozie_test.sh {{ oozie_url }} {{ oozie_name_node }} {{ oozie_job_tracker }}
+  script:  ./tests/oozie/oozie_test.sh {{ oozie_url }} {{ oozie_name_node }} {{ oozie_job_tracker }}
   register: oozie_test
   failed_when: "'Failed' in oozie_test.stdout"
 
@@ -48,7 +48,7 @@
 - name: run test for spark
   become: True
   become_user: hdfs
-  script: ./spark/spark_test.sh {{hdp_test_namenode_host}}
+  script: ./tests/spark/spark_test.sh {{hdp_test_namenode_host}}
   register: spark_test
   failed_when: "'Failed' in spark_test.stdout"
 
@@ -59,7 +59,7 @@
 - name: run test for hive
   become: True
   become_user: hdfs
-  script: ./hive/hive_test.sh
+  script: ./tests/hive/hive_test.sh
   register: hive_test
   failed_when: "'Failed' in hive_test.stdout"
 
@@ -69,7 +69,7 @@
 - name: run test for pig
   become: True
   become_user: hdfs
-  script: ./pig/pig_test.sh
+  script: ./tests/pig/pig_test.sh
   register: pig_test
   failed_when: "'Failed' in pig_test.stdout"
 
