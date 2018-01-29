@@ -33,15 +33,10 @@
   register: path
   
 - name: generate httpd report
-  shell: "{{ playbook_dir }}/report.sh httpd {{ version.stdout }} http://{{ ansible_fqdn }}:80 {{ path.stdout }} {{ ansible_fqdn }} success"
+  shell: "{{ playbook_dir }}/report.sh httpd {{ version.stdout }} http://{{ ansible_fqdn }}:80 {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: result|succeeded
 
-  
-- name: generate tomcat report
-  shell: "{{ playbook_dir }}/report.sh tomcat {{ version.stdout }} http://{{ ansible_fqdn }}:8080 {{ path.stdout }} {{ ansible_fqdn }} success"
-  delegate_to: localhost
-  when: result|succeeded
 
 - name: run test for httpd server
   become: True

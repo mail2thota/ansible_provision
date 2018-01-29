@@ -19,4 +19,11 @@
   script: ./tasks/all_cleanup/cleanup_config.sh
   when: inventory_hostname != "localhost"
 
+- name: delete temp inventory directory
+  become: True
+  become_user: root
+  file:
+    state: absent
+    path: "/home/{{ inventoryname }}/"
+
 

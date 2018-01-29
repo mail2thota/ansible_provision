@@ -28,7 +28,7 @@
   register: path
 
 - name: generate python-pip report
-  shell: "{{ playbook_dir }}/report.sh python-pip {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  shell: "{{ playbook_dir }}/report.sh python-pip {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: result|succeeded
    

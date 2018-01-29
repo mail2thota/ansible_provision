@@ -22,7 +22,7 @@
   register: path
   
 - name: generate kibana report
-  shell: "{{ playbook_dir }}/report.sh kibana {{ version.stdout }} http://{{ kibana_hosts[0]['name'] }}:{{ kibana_port }} {{ path.stdout }} {{ ansible_fqdn }} success"
+  shell: "{{ playbook_dir }}/report.sh kibana {{ version.stdout }} http://{{ kibana_hosts[0]['name'] }}:{{ kibana_port }} {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: result|succeeded
 

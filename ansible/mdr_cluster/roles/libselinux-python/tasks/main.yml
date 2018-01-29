@@ -18,7 +18,7 @@
     warn: no
 
 - name: generate libselinux python report
-  shell: "{{ playbook_dir }}/report.sh libselinux-python {{ version.stdout }} N/A N/A {{ ansible_fqdn }} success"
+  shell: "{{ playbook_dir }}/report.sh libselinux-python {{ version.stdout }} N/A N/A {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: result|succeeded
 

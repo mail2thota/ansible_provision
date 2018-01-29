@@ -7,13 +7,13 @@
 - name: compile all overall reports
   become: True
   become_user: root
-  script: ./compile_report.sh
+  script: ./compile_report.sh {{ inventoryname }}
   delegate_to: localhost
 
 - name: copy reports to investigator
   copy:
-    src: /tmp/overall_report.json
-    dest: /var/www/html/overall_report.json
+    src: "/tmp/{{ inventoryname }}_overall_report.json"
+    dest: /var/www/html/{{ inventoryname }}_overall_report.json
 
 - name: copy report view to investigator
   copy:
@@ -26,11 +26,16 @@
 - name: clean up for overall report
   file:
     state: absent
-    path: /tmp/overall_report.json
+    path: /tmp/{{ inventoryname }}_overall_report.json
+  delegate_to: localhost
+
+- file:
+    state: absent
+    path: "/tmp/{{ inventoryname }}_report_json"
   delegate_to: localhost
 
 - name: trigger overall reports view
   become: True
   become_user: root
-  shell: python -m webbrowser -t "http://{{ ansible_fqdn }}"
+  shell: python -m webbrowser -t "http://{{ ansible_fqdn }}?cluster_name={{ inventoryname }}"
   delegate_to: localhost

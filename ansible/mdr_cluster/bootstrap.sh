@@ -25,6 +25,8 @@ else
    exit 1
 fi
 init(){
+        rm -rf /tmp/*_overall_report.json
+        rm -rf /tmp/*_report_json
         thisdir=`dirname $0`
 	source ${thisdir}/ansible_epel
 	if [[ $EUID -ne 0 ]]; then

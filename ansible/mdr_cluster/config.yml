@@ -236,112 +236,6 @@ cluster1:
                        - host4 
  
          
-           
-
-      
-    ambari:
-      hostgroup: edge_1
-      port : 8080
-      version: 2.5.2.0
-
-    hdp:
-      blueprint: mdr-ha-blueprint
-      blueprint_configuration:
-      stack: 2.6
-      stack_version : 2.6.2.0
-      utils_version: 1.1.0.21
-      cluster_type: multi_node
-      cluster_name: mdr
-      component_groups :
-        componentgroup_1 :
-          - JOURNALNODE
-          - NAMENODE
-          - HISTORYSERVER
-          - METRICS_MONITOR
-        componentgroup_2:
-          - JOURNALNODE
-          - APP_TIMELINE_SERVER
-          - RESOURCEMANAGER
-          - SPARK_JOBHISTORYSERVER
-          - METRICS_MONITOR
-        componentgroup_3:
-          - SECONDARY_NAMENODE
-          - HCAT
-          - HIVE_METASTORE
-          - HIVE_SERVER
-          - HIVE_CLIENT
-          - WEBHCAT_SERVER
-          - MYSQL_SERVER
-          - METRICS_MONITOR
-        componentgroup_4:
-          - OOZIE_SERVER
-          - METRICS_MONITOR
-        componentgroup_5:
-          - METRICS_MONITOR
-          - ZOOKEEPER_SERVER
-        componentgroup_6:
-          - METRICS_MONITOR
-          - METRICS_COLLECTOR
-        componentgroup_7:
-          - ZOOKEEPER_CLIENT
-          - TEZ_CLIENT
-          - SPARK_CLIENT
-          - MAPREDUCE2_CLIENT
-          - YARN_CLIENT
-          - HDFS_CLIENT
-          - OOZIE_CLIENT
-          - HIVE_CLIENT
-          - PIG
-          - METRICS_MONITOR
-        componentgroup_8:
-          - NODEMANAGER
-          - DATANODE
-          - METRICS_MONITOR
-      hostgroups:
-        - master_1:
-            components:
-              - componentgroup_1
-            hostgroup: master_1
-        - master_2:
-            components:
-              - componentgroup_2
-            hostgroup: master_2
-        - master_3:
-            components:
-              - componentgroup_3
-            hostgroup: master_3
-        - master_4:
-            components:
-              - componentgroup_4
-            hostgroup: master_4
-        - zk_1:
-            components:
-              - componentgroup_5
-            hostgroup: zk_1
-            cardinality: 3
-        - edge_1:
-            components:
-               - componentgroup_6
-            hostgroup: edge_1
-        - edge_3:
-            components:
-              - componentgroup_7
-            hostgroup: edge_3
-        - worker_1:
-            components:
-              - componentgroup_8
-            hostgroup: worker_1
-
-    hdp_test:
-       hostgroup: edge_3
-       jobtracker_host: agent2-ambariagent.example.com
-       namenode_host: agent1-ambariagent.example.com
-       oozie_host: agent4-ambariagent.example.com
-       # By default hdfs and yarn will be exected you can disable by setting to (hdfs: no) and yarn (yarn: no) 
-       oozie: yes
-       spark: yes
-       hive: yes
-       pig: yes
     kibana:
       hostgroup: master_3
       elasticsearch_url: http://master1-ambariserver.example.com:9200/
@@ -384,10 +278,7 @@ cluster2:
       hostgroup: docker
       version: 2.4.6
       
-    postgres:
-      hostgroup: postgres
-      version: 9.6
-
+    
     activemq:
       hostgroup: activemq
       version: 5.15.0

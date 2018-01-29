@@ -2,7 +2,8 @@
 service_name=$1
 version=$2
 url=$3
-report_path="/tmp/report_json"
+cluster_name=$7
+report_path=/tmp/"${cluster_name}"_report_json
 actual_path=$( echo $4 | cut -d':' -f2 )
 trim_path=$( echo $actual_path | xargs )
 path=$( echo $trim_path | tr "%" " " )
