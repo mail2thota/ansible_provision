@@ -139,17 +139,18 @@ ambari_hdp(){
 updatehdp(){ 
 	rm -f ./roles/updatehdp/update_hdp_cluster.yml
 	cp update_hdp_cluster.yml ./roles/updatehdp/
-        ansible-playbook updatehdp.yml --tags=config --extra-vars "ambari_user=$ambusername
+        echo "[hdp_add]" > ./inventory/hosts
+        ansible-playbook configupdatehdp.yml --tags=config --extra-vars "ambari_user=$ambusername
         ambari_password=$ambpassword ansible_user=root
-        ansible_ssh_pass=$nodepassword"
+        ansible_ssh_pass=$nodepasswordi inventoryname=inventory"
         ansible-playbook updatehdp.yml --tags=hdp-install --extra-vars "ambari_user=$ambusername
         ambari_password=$ambpassword ansible_user=root
-        ansible_ssh_pass=$nodepassword"
+        ansible_ssh_pass=$nodepassword inventoryname=inventory"
 } 
 
 updateelasticsearch(){
         rm -f ./roles/updateelasticsearch/update_es_cluster.yml
-        cp update_es_cluster.yml ./roles/updateelasticsearch
+        cp update_es_cluster.yml ./roles/updateelasticsearch/
         echo "[es_add]" > ./inventory/hosts
         ansible-playbook configescluster.yml --tags config --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
         ansible-playbook updateescluster.yml --tags es-install --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
