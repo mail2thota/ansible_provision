@@ -1,5 +1,74 @@
 ---
 
+foreman:
+    auth:
+        foreman_fqdn: bootstrap.example.com
+        foreman_ip: 10.11.12.23
+
+    domain:
+        - name: example.com
+          fullname: this is example.com
+
+    subnet:
+        - name: subnet1
+          network: 10.11.12.0
+          mask: 255.255.255.0
+          gateway: 10.11.12.1
+          dns_primary: 10.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+        - name: subnet2
+          network: 13.11.12.0
+          mask: 255.255.255.0
+          gateway: 13.11.12.1
+          dns_primary: 13.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+    
+    partition_table:
+        - name: Kickstart default
+          boot:
+              fstype: ext2
+              size: 10
+          swap:
+              fstype: swap
+              size: 10
+          tmp:
+              fstype: ext4
+              size: 10
+          var:
+              fstype: xfs
+              size: 10
+          home:
+              fstype: ext4
+              size: 10
+          root:
+              fstype: ext4
+              size: 50
+        - name: Kickstart default2
+          boot:
+              fstype: ext2
+              size: 10
+          swap:
+              fstype: swap
+              size: 10
+          tmp:
+              fstype: ext4
+              size: 10
+          var:
+              fstype: xfs
+              size: 10
+          home:
+              fstype: ext4
+              size: 10
+          root:
+              fstype: ext4
+              size: 50
+
 common:
     hostgroups:
         - name: master_1
@@ -145,75 +214,7 @@ common:
           subnet: subnet1
           primary: agent7-ambariagent
 
-foreman:
-    auth:
-        foreman_fqdn: bootstrap.example.com
-        foreman_ip: 10.11.12.23
-
-    domain:
-        - name: example.com
-          fullname: this is example.com
-
-    subnet:
-        - name: subnet1
-          network: 10.11.12.0
-          mask: 255.255.255.0
-          gateway: 10.11.12.1
-          dns_primary: 10.11.12.7
-          dns_secondary: 8.8.8.8
-          vlanid:
-          domain:
-            - name: example.com
-        - name: subnet2
-          network: 13.11.12.0
-          mask: 255.255.255.0
-          gateway: 13.11.12.1
-          dns_primary: 13.11.12.7
-          dns_secondary: 8.8.8.8
-          vlanid:
-          domain:
-            - name: example.com
-    
-    partition_table:
-        - name: Kickstart default
-          boot:
-              fstype: ext2
-              size: 10
-          swap:
-              fstype: swap
-              size: 10
-          tmp:
-              fstype: ext4
-              size: 10
-          var:
-              fstype: xfs
-              size: 10
-          home:
-              fstype: ext4
-              size: 10
-          root:
-              fstype: ext4
-              size: 50
-        - name: Kickstart default2
-          boot:
-              fstype: ext2
-              size: 10
-          swap:
-              fstype: swap
-              size: 10
-          tmp:
-              fstype: ext4
-              size: 10
-          var:
-              fstype: xfs
-              size: 10
-          home:
-              fstype: ext4
-              size: 10
-          root:
-              fstype: ext4
-              size: 50
-
+#It launches multiple clusters with different configurations. cluster1 and cluster2 are the names used for the cluster group. We can use any name to cluster in the below configuration it is cluster1, cluster2, etc.
 cluster1:
     default:
       dns_enabled: no
@@ -252,6 +253,7 @@ cluster1:
       utils_version: 1.1.0.21
       cluster_type: multi_node
       cluster_name: mdr
+      #This section is to group components based on deployment needs or architecture
       component_groups :
         componentgroup_1 :
           - JOURNALNODE
@@ -298,6 +300,7 @@ cluster1:
           - DATANODE
           - METRICS_MONITOR
       hostgroups:
+      #This section is to map component groups to be deployed on respective host groups
         - master_1:
             components:
               - componentgroup_1
