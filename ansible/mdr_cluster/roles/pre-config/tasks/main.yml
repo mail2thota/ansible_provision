@@ -5,38 +5,94 @@
 ##
 #---
 ## Create Config Files
-- name: Delete if any existing files
-  shell: 'cd {{ role_path }} && rm -f all && rm -f hosts && rm -f host_list'
 
-- name: Create config files
-  shell: 'cd {{ role_path }}  && python config-gen.py'
+- name: Create temp inventories directory
+  file:
+    path: "{{ role_path }}/inventories"
+    state: directory
+
+- name: Create temp inventories directory
+  file:
+    path: "{{ role_path }}/roles_config"
+    state: directory
+
+
+- name: Clean temp inventories directory
+  file:
+    state: absent
+    path:  "{{ role_path }}/inventories/"
+
+
+- name: Clean temp config directory
+  file:
+    state: absent
+    path:  "{{ role_path }}/roles_config/"
+
+
+- name: Validate & Create config files
+  shell: 'cd {{ role_path }}/scripts  && python config.py {{playbook_dir}}/config.yml {{ role_path }}'
   register: config
   run_once: true
 
 - debug: msg="{{ config.stderr.split('\n')}}"
 - debug: msg="{{ config.stdout.split('\n')}}"
 
+- name: Create Ansible Inventory directories
+  file:
+    path: "{{ playbook_dir }}/{{ inventoriesdir}}"
+    state: directory
+
+- name: Create Ansible Config files directories
+  file:
+    path: "{{ playbook_dir }}/roles_config"
+    state: directory
 
 
-- name: Copying files back to inventory and ambari_Config
-  shell: cd "{{ role_path }}" && rm -f ../init/tasks/all_config/host_list && cp host_list ../init/tasks/all_config/host_list && rm -f "{{ inventory_dir }}/hosts" && cp hosts "{{ inventory_dir}}"/hosts && rm -f "{{ inventory_dir }}"/group_vars/all && cp all "{{ inventory_dir }}"/group_vars/all
+- name: Clean Ansible Inventory directories
+  file:
+    state: absent
+    path: "{{ playbook_dir }}/{{ inventoriesdir}}/"
+
+- name: Clean Ansible Config files directories
+  file:
+    state: absent
+    path: "{{ playbook_dir }}/roles_config/"
 
 
 
-- stat:
-    path: "{{ role_path }}/multi_node.yml"
-  register: multinode
+- name: Synchronize inventories
+  synchronize:
+    src: "{{ role_path }}/inventories/"
+    dest: "{{ playbook_dir }}/{{ inventoriesdir}}/"
+  delegate_to: localhost
+
+- name: Clean Ansible temp inventories
+  file:
+    state: absent
+    path: "{{ role_path }}/inventories/"
 
 
-- name: Copying blueprint template multi-node
-  shell: cd "{{ role_path }}" && rm -f  ../ambari_config/vars/multi_node.yml && cp multi_node.yml ../ambari_config/vars/
-  when: multinode.stat.islnk is defined
+- name: Synchronize config files directories
+  synchronize:
+    src: "{{ role_path }}/roles_config/"
+    dest: "{{ playbook_dir }}/roles_config/"
+  delegate_to: localhost
 
-- stat:
-    path: "{{ role_path }}/single_node.yml"
-  register: singlenode
+- name: Clean temp role config directories
+  file:
+    state: absent
+    path: "{{ role_path }}/roles_config/"
 
-- name: Copying blueprint template single-node
-  shell: cd "{{ role_path }}" && rm -f  ../ambari_config/vars/single_node.yml && cp single_node.yml ../ambari_config/vars/
-  when: singlenode.stat.islnk is defined
+
+
+- name: Copy Inventory list file
+  copy:
+   src: "{{ role_path}}/inventory_list"
+   dest: "{{ playbook_dir}}/inventory_list"
+   force: yes
+
+- name: remove Inventory_list file
+  file:
+    state: absent
+    path: "{{ role_path }}/inventory_list"
 

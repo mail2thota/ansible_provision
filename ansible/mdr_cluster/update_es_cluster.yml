@@ -10,8 +10,8 @@ es_master:
 es_node:
   add:
     hosts:
-       - name: agent8-ambariagent.example.com
-         ip: 10.11.12.10
+       - name: agent15-ambariagent.example.com
+         ip: 10.11.12.17
   remove:
     hosts:
        - name: agent14-ambariagent.example.com
@@ -22,5 +22,5 @@ es_node:
     transport.tcp.port: 9300
     node.data: true
     node.master: false
-    bootstrap.memory_lock: false 
+    bootstrap.memory_lock: false
   es_api_port: 9200

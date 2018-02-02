@@ -157,16 +157,25 @@
          return $sce.trustAsHtml(text);
          };
          });
-         app.controller('overallReport', function($scope, $http) {
-           $http.get("overall_report.json").then(function (response) {
+         app.config(function($locationProvider) {
+         $locationProvider.html5Mode({
+      		enabled: true,
+      		requireBase: false
+    	  });
+	 });
+         app.controller('overallReport', function($scope, $http ,$location) {
+         var cluster_name=$location.search()['cluster_name'];
+         $scope.cluster_name=cluster_name;
+         $http.get(cluster_name+"_overall_report.json").then(function (response) {
                $scope.service_reports = response.data.reports;
            });
          });
       </script>
    </head>
    <body bgcolor=white>
-      <div class="top"><span class="main_header">MDR Service Information</span><span class="sub_header">Overall software installation report</span><span class="logo_header"><img src="bae_logo.png"  height="50" width="250" /></span></div>
-      <div class="middle"  ng-app="report" ng-controller="overallReport" style="background-color:white;padding:1px;display:table;width:100%" >
+      <div ng-app="report" ng-controller="overallReport">
+      <div class="top"><span class="main_header">MDR Service Information</span><span class="sub_header">{{ cluster_name | uppercase }} overall software installation report</span><span class="logo_header"><img src="bae_logo.png"  height="50" width="250" /></span></div>
+      <div class="middle"   style="background-color:white;padding:1px;display:table;width:100%" >
          <table  class="info_table1"  style="min-width: 100px;" >
             <tr>
                <th style="min-width: 100px;" align="center" class="table_header">SERVICE</th>
@@ -196,6 +205,7 @@
             </table>
          </table>
          <div class="copyright"> Copyright &copy; 2017 BAE Systems. All rights reserved </div>
+      </div>
       </div>
    </body>
 </html>

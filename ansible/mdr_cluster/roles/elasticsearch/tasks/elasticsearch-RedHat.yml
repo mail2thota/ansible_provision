@@ -35,7 +35,7 @@
   register: path
   
 - name: generate elasticsearch report
-  shell: "{{ playbook_dir }}/report.sh elasticsearch {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  shell: "{{ playbook_dir }}/report.sh elasticsearch {{ version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: redhat_elasticsearch_install_from_repo|succeeded
 

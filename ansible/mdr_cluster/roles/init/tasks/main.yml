@@ -4,6 +4,7 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
+
 - name: retrieve repourl from localhost
   set_fact:
      repo_site: "{{ ansible_env.repo_url }}"
@@ -14,30 +15,53 @@
     default_pip_repo_site: "{{ hostvars['localhost']['repo_site'] }}"
     default_repo_site: "{{ hostvars['localhost']['repo_site'] }}/repos"
 
+- name: Create temp directory
+  file:
+    state: directory
+    path: "/home/{{ inventoryname }}"
+
 - name: copy init files to nodes
   become: True
   become_user: root
   copy:
-    src: ./tasks/
-    dest: /home/
+    src: ./scripts/
+    dest: "/home/{{ inventoryname }}"
     mode: 0777
+
+- name: copy host_list file to nodes
+  become: True
+  become_user: root
+  copy:
+    src: "{{playbook_dir}}/roles_config/{{inventoryname}}/host_list"
+    dest: "/home/{{ inventoryname }}/"
+    mode: 0777
+
 
 - name: check and remove host_list entry in /etc/hosts of nodes since dns is enabled
   become: True
   become_user: root
   command: sed -i '/mdr_hosts_begins/,/mdr_hosts_ends/d' /etc/hosts
-  when: default_dns_enabled
+  when: 
+    - default_dns_enabled
+    - inventory_hostname != 'localhost'
  
 - name: host_list entry into /etc/hosts of nodes since dns is disabled
   become: True
   become_user: root
-  script: /home/all_config/localhost_config.sh
-  when: not default_dns_enabled
+  script: "/home/{{inventoryname}}/localhost_config.sh {{inventoryname}}"
+  when: not default_dns_enabled and inventory_hostname != 'localhost'
+   
+- name: host_list entry into /etc/hosts of nodes since dns is disabled
+  become: True
+  become_user: root
+  script: "/home/{{inventoryname}}/config_hosts.sh {{inventoryname}}"
+  when: not default_dns_enabled and inventory_hostname == 'localhost'
+    
 
 - name: move the original repo files to /tmp/yum.repos.d.tmp
   become: True
   become_user: root
-  script: /home/all_config/repo_config.sh
+  script: "/home/{{inventoryname}}/repo_config.sh"
   when: inventory_hostname != "localhost"
 
 

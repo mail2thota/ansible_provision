@@ -24,9 +24,9 @@
     dest: "{{ role_path }}/ambari_etc_hosts"
     flat: yes
   when: 
-    - inventory_hostname in groups["ambari"]
     - dns_enabled == False
     - update_file == False
+    - inventory_hostname in groups["ambari"]
  
 - name: copying etc host file to new nodes
   copy:

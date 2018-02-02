@@ -6,8 +6,7 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 bold=`tput bold`
-
-cp -f  config.yml ./roles/pre-config/
+inventoriesdir=inventories
 if [[ $repo_url =~ $regex ]]
 then
    if [ -w /etc/yum.conf ]; then
@@ -26,6 +25,8 @@ else
    exit 1
 fi
 init(){
+        rm -rf /tmp/*_overall_report.json
+        rm -rf /tmp/*_report_json
         thisdir=`dirname $0`
 	source ${thisdir}/ansible_epel
 	if [[ $EUID -ne 0 ]]; then
@@ -116,31 +117,40 @@ foreman(){
 
 validate(){
         echo "Validating Config files"
-	ansible-playbook validate.yml --tags=$1 
+	ansible-playbook validate.yml --tags=$1 --extra-vars "inventoriesdir=$inventoriesdir"
 }
 
 ambari_hdp(){
-	rm -f ./roles/pre-config/config.yml
-	cp config.yml  ./roles/pre-config/
-	ansible-playbook mdr.yml --extra-vars "ambari_user=admin
-        ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername
-        ansible_ssh_pass=$nodepassword" 
+
+        clustercount= cat inventory_list | wc -l
+        echo ${clustercount}
+        counter=1
+	while IFS='' read -r line || [[ -n "$line" ]]; do
+                 if [ $counter -eq $clustercount]; then
+                    ansible-playbook -i inventories/$line mdr.yml --extra-vars "inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword" 
+                 else
+                    ansible-playbook -i inventories/$line mdr.yml --extra-vars "inventoriesdir=$inventoriesdir inventoryname=$line ambari_user=admin ambari_password=admin hdp_password=$hdppassword ansible_user=$nodeusername ansible_ssh_pass=$nodepassword" &
+                 fi         
+                 let "counter++"                 
+        done < "inventory_list"
+        wait
 }
 
 updatehdp(){ 
 	rm -f ./roles/updatehdp/update_hdp_cluster.yml
 	cp update_hdp_cluster.yml ./roles/updatehdp/
-        ansible-playbook updatehdp.yml --tags=config --extra-vars "ambari_user=$ambusername
+        echo "[hdp_add]" > ./inventory/hosts
+        ansible-playbook configupdatehdp.yml --tags=config --extra-vars "ambari_user=$ambusername
         ambari_password=$ambpassword ansible_user=root
-        ansible_ssh_pass=$nodepassword"
+        ansible_ssh_pass=$nodepasswordi inventoryname=inventory"
         ansible-playbook updatehdp.yml --tags=hdp-install --extra-vars "ambari_user=$ambusername
         ambari_password=$ambpassword ansible_user=root
-        ansible_ssh_pass=$nodepassword"
+        ansible_ssh_pass=$nodepassword inventoryname=inventory"
 } 
 
 updateelasticsearch(){
         rm -f ./roles/updateelasticsearch/update_es_cluster.yml
-        cp update_es_cluster.yml ./roles/updateelasticsearch
+        cp update_es_cluster.yml ./roles/updateelasticsearch/
         echo "[es_add]" > ./inventory/hosts
         ansible-playbook configescluster.yml --tags config --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
         ansible-playbook updateescluster.yml --tags es-install --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
@@ -164,7 +174,7 @@ do
             passwordFm
             passwordNodes
             init
-	    validate foreman
+            validate foreman
             foreman
             break
             ;;

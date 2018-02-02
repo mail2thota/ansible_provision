@@ -5,13 +5,6 @@
 #
 ---
 
-- hosts: localhost
-  become: true
-  roles:
-    - { role: updatehdp, action : 'config'}
-    - { role: updatehdp,action: 'etchost', update_file: True}
-  tags:
-    - config
 
 - hosts: localhost
   roles:

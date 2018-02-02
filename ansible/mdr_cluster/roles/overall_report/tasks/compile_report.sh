@@ -1,7 +1,8 @@
 #!/bin/bash
-reports=/tmp/report_json/*.json
+cluster_name=$1
+reports=/tmp/"${cluster_name}"_report_json/*.json
 count=0
-overall_report=/tmp/overall_report.json
+overall_report=/tmp/"${cluster_name}"_overall_report.json
 > "${overall_report}"
 echo "{"  >> "${overall_report}"
 echo "\"reports\":["  >> "${overall_report}"
@@ -15,7 +16,7 @@ echo "$count"
   count=$((count+1))
 done
 echo "]}" >> "${overall_report}"
-rm -rf /tmp/report_json
+
 
 
 

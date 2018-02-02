@@ -29,7 +29,7 @@
   register: path
   
 - name: generate ambari server report
-  shell: "{{ playbook_dir }}/report.sh ambari-server {{ version.stdout }} http://{{ ansible_fqdn }}:8080 {{ path.stdout }} {{ ansible_fqdn }} success"
+  shell: "{{ playbook_dir }}/report.sh ambari-server {{ version.stdout }} http://{{ ansible_fqdn }}:8080 {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: result|succeeded
 

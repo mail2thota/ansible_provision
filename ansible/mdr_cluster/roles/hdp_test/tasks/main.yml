@@ -4,6 +4,16 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
+
+- name: setting default values for hdp tests exection
+  set_fact:
+    hdfs: "{{ hdp_test_hdfs | default(True) }}"
+    yarn: "{{ hdp_test_yarn | default(True) }}"
+    oozie: "{{ hdp_test_oozie | default(False) }}"
+    spark: "{{ hdp_test_spark | default(False) }}"
+    hive: "{{ hdp_test_hive | default(False) }}"
+    pig: "{{ hdp_test_pig | default(False) }}"
+
 - name: copy all test files to edge node
   become: True
   become_user: hdfs
@@ -11,16 +21,23 @@
     src: ./tasks/tests/
     dest: /home/hdfs/
     mode: 0777
+  when: hdfs or yarn or oozie or spark or hive or pig
 
 - name: run test for hdfs
   become: True
   become_user: root
   script: ./tests/hdfs/hdfs_test.sh
   register: hdfs_test
+  when: hdfs
   failed_when: "'HDFS test is Failed' in hdfs_test.stdout"
- 
-- debug: msg="{{ hdfs_test.stdout }}"
-- debug: msg="{{ hdfs_test.stderr }}"
+
+- debug:
+     msg: "{{ hdfs_test.stdout }}"
+  when: hdfs_test.stdout is defined
+
+- debug: 
+    msg: "{{ hdfs_test.stderr }}"
+  when: hdfs_test.stderr is defined
 
 
 - name: run test for yarn
@@ -29,9 +46,13 @@
   script: ./tests/yarn/yarn_test.sh
   register: yarn_test
   failed_when: "'Yarn test is Failed' in yarn_test.stdout"
+  when: yarn
 
-- debug: msg="{{ yarn_test.stdout }}"
-- debug: msg="{{ yarn_test.stderr }}"
+- debug: msg= "{{ yarn_test.stdout }}"
+  when: yarn_test.stdout is defined
+
+- debug: msg= "{{ yarn_test.stderr }}"
+  when: yarn_test.stderr is defined
 
 
 - name: run test for oozie
@@ -40,9 +61,12 @@
   script:  ./tests/oozie/oozie_test.sh {{ oozie_url }} {{ oozie_name_node }} {{ oozie_job_tracker }}
   register: oozie_test
   failed_when: "'Failed' in oozie_test.stdout"
+  when: oozie
 
-- debug: msg="{{ oozie_test.stdout }}"
-- debug: msg="{{ oozie_test.stderr }}"
+- debug: msg= "{{ oozie_test.stdout }}"
+  when: oozie_test.stdout is defined
+- debug: msg= "{{ oozie_test.stderr }}"
+  when: oozie_test.stderr is defined
 
 
 - name: run test for spark
@@ -51,9 +75,12 @@
   script: ./tests/spark/spark_test.sh {{hdp_test_namenode_host}}
   register: spark_test
   failed_when: "'Failed' in spark_test.stdout"
+  when: spark
 
-- debug: msg="{{ spark_test.stdout }}"
-- debug: msg="{{ spark_test.stderr }}"
+- debug: msg= "{{ spark_test.stdout }}"
+  when: spark_test.stdout is defined
+- debug: msg= "{{ spark_test.stderr }}"
+  when: spark_test.stderr is defined
 
 
 - name: run test for hive
@@ -62,9 +89,13 @@
   script: ./tests/hive/hive_test.sh
   register: hive_test
   failed_when: "'Failed' in hive_test.stdout"
+  when: hive
 
-- debug: msg="{{ hive_test.stdout }}"
-- debug: msg="{{ hive_test.stderr }}"
+- debug: msg= "{{ hive_test.stdout }}"
+  when: hive_test.stdout is defined
+- debug: msg= "{{ hive_test.stderr }}"
+  when: hive_test.stderr is defined
+
 
 - name: run test for pig
   become: True
@@ -72,6 +103,9 @@
   script: ./tests/pig/pig_test.sh
   register: pig_test
   failed_when: "'Failed' in pig_test.stdout"
+  when: pig
 
-- debug: msg="{{ pig_test.stdout }}"
-- debug: msg="{{ pig_test.stderr }}"
+- debug: msg= "{{ pig_test.stdout }}"
+  when: pig_test.stdout is defined
+- debug: msg= "{{ pig_test.stderr }}"
+  when: pig_test.stderr is defined

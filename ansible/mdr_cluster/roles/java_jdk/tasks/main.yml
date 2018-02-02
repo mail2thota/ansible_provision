@@ -37,12 +37,12 @@
   register: path
  
 - name: generate openjdk report
-  shell: "{{ playbook_dir }}/report.sh openjdk {{ openjdk_version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  shell: "{{ playbook_dir }}/report.sh openjdk {{ openjdk_version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: result|succeeded and (  default_java_vendor == "openjdk" or default_java_vendor is not defined )
 
 - name: generate oracle jdk report
-  shell: "{{ playbook_dir }}/report.sh oracle {{ oracle_version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success"
+  shell: "{{ playbook_dir }}/report.sh oracle {{ oracle_version.stdout }} N/A {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: result|succeeded and default_java_vendor is defined and default_java_vendor == "oracle"
   
