@@ -690,6 +690,7 @@ Software Versions
 | :------------- | :------------- |
 | ActiveMQ       |     5.15       |
 | Ambari         |     2.5.2      |
+| Ansible        |     2.3.1.0    |
 | Apache  Tomcat |     7.0.76     |
 | CentOS         |     7.1        |
 | Elastic Search |     5.5.0      |
@@ -697,11 +698,12 @@ Software Versions
 | HDP            |     2.5 & 2.6  |
 | Java SE        |     1.8        |
 | Kibana         |     5.5.0      |
+| Mongo          |     3.4.10     |
 | MySql          |     5.6.38-2   |
+| Postgres       |     9.6        |
 | Python         |     2.7        |
 | Python-pip     |     8.1.2      |
-| Foreman        |     1.15       |
-| Ansible        |     2.3.1.0    |
+
 
 ## Prerequisite
 ---------------
