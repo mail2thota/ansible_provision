@@ -121,7 +121,7 @@ validate(){
 }
 
 ambari_hdp(){
-
+        yum install python-netaddr -y
         clustercount= cat inventory_list | wc -l
         echo ${clustercount}
         counter=1
