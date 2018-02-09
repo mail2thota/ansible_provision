@@ -10,9 +10,6 @@
      state: latest
   with_items:
      - python-pip
-     - python-devel
-     - postgresql-devel
-     - gcc
   register: result
 
 
