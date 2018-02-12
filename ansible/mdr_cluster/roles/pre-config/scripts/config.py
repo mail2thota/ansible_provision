@@ -31,6 +31,37 @@ def getClusterInfo(config,section):
 
     return clusterInfo
 
+# envHostsMap map = {
+#            envname1: {
+#                   hostGroup2Domain: {
+#                           groupName1: domain1,
+#                           groupName2: domain2,
+#                           etc..
+#                   host2HostGroup: {
+#                          hostname: [hostgroup1,hostgroup2..]
+#                          etc..
+#                   hostGroup2Host: {
+#                          groupname1: [hostaname1,hostname2..]
+#                          groupname2: [hostanme1,hostname3,..]
+#                   host2IP  {
+#                           hostname1: ipaddress1,
+#                           hostname2: ipadress2,
+#                           etc..
+#
+#            envname2: { Same structure as above envname1 configuration... }
+#
+
+def createMany2ManyMapping(config):
+    envNames = getClusters(config)
+
+    for envName in envNames:
+        envConfig = config[envName]
+
+
+
+
+
+
 
 def configNewClusters(config,path,validate):
      commonConfig = getCommonConfig(config)
@@ -99,7 +130,6 @@ def main():
         config_file.close()
     except IOError as e:
         log.log(log.LOG_ERROR, "Failed to open/load import config YAML Error:'{0}'".format(e))
-        log.log(log.LOG_INFO, "Check if '{0}' is available".format(config_file))
         sys.exit(1)
 
 

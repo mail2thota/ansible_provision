@@ -1,0 +1,393 @@
+---
+
+foreman:
+    auth:
+        foreman_fqdn: bootstrap.example.com
+        foreman_ip: 10.11.12.23
+
+    domain:
+        - name: example.com
+          fullname: this is example.com
+
+    subnet:
+        - name: subnet1
+          network: 10.11.12.0
+          mask: 255.255.255.0
+          gateway: 10.11.12.1
+          dns_primary: 10.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+        - name: subnet2
+          network: 13.11.12.0
+          mask: 255.255.255.0
+          gateway: 13.11.12.1
+          dns_primary: 13.11.12.7
+          dns_secondary: 8.8.8.8
+          vlanid:
+          domain:
+            - name: example.com
+    
+    partition_table:
+        - name: Kickstart default
+          boot:
+              fstype: ext2
+              size: 10
+          swap:
+              fstype: swap
+              size: 10
+          tmp:
+              fstype: ext4
+              size: 10
+          var:
+              fstype: xfs
+              size: 10
+          home:
+              fstype: ext4
+              size: 10
+          root:
+              fstype: ext4
+              size: 50
+        - name: Kickstart default2
+          boot:
+              fstype: ext2
+              size: 10
+          swap:
+              fstype: swap
+              size: 10
+          tmp:
+              fstype: ext4
+              size: 10
+          var:
+              fstype: xfs
+              size: 10
+          home:
+              fstype: ext4
+              size: 10
+          root:
+              fstype: ext4
+              size: 50
+
+common:
+    hostgroups:
+        - name: master_1
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: master_2
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: master_3
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: master_4
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: zk_1
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: edge_1
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: edge_3
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: worker_1
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: postgres
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: activemq
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: kibana
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: es_master
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: es_node
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: apache
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: mongodb
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+        - name: docker
+          subnet: subnet1
+          domain: example.com
+          partition_table: Kickstart default
+
+    primary_hosts:
+
+        - name: agent1-ambariagent
+          hostgroup: master_1
+          ip: 10.11.12.19
+          mac: 0800271AD0DA
+        - name: agent2-ambariagent
+          hostgroup: master_2
+          ip: 10.11.12.4
+          mac: 080027626A0D
+        - name: agent3-ambariagent
+          hostgroup: master_3
+          ip: 10.11.12.5
+          mac: 080027FE1A42
+        - name: agent4-ambariagent
+          hostgroup: master_4
+          ip: 10.11.12.6
+          mac: 08002708D5C2
+        - name: agent5-ambariagent
+          hostgroup: zk_1
+          ip: 10.11.12.7
+          mac: 080027DF8EE5
+        - name: agent6-ambariagent
+          hostgroup: zk_1
+          ip: 10.11.12.8
+          mac: 0800278B2194
+        - name: agent7-ambariagent
+          hostgroup: worker_1
+          ip: 10.11.12.9
+          mac: 08002728805D
+        - name: agent8-ambariagent
+          hostgroup: edge_3
+          ip: 10.11.12.10
+          mac: 08002743CB9C
+        - name: agent9-ambariagent
+          hostgroup: postgres
+          ip: 10.11.12.11
+          mac: 080027A55547
+        - name: agent10-ambariagent
+          hostgroup: activemq
+          ip: 10.11.12.12
+          mac: 080027D25FEE
+        - name: agent11-ambariagent
+          hostgroup: apache
+          ip: 10.11.12.13
+          mac: 080027EE643F
+        - name: agent12-ambariagent
+          hostgroup: docker
+          ip: 10.11.12.14
+          mac: 0800275F8125
+        - name: agent13-ambariagent
+          hostgroup: es_node
+          ip: 10.11.12.15
+          mac: 080027ED84FE
+        - name: agent14-ambariagent
+          hostgroup: es_node
+          ip: 10.11.12.16
+          mac: 0800272F3847
+        - name: agent15-ambariagent
+          hostgroup: mongodb
+          ip: 10.11.12.17
+          mac: 080027A5EAB2
+        - name: master1-ambariserver
+          hostgroup: edge_1
+          ip: 10.11.12.24
+          mac: 080027BB1483  
+
+    secondary_hosts:
+        - ip: 10.11.12.21
+          mac: 0800279B8DDA
+          subnet: subnet1
+          primary: agent6-ambariagent
+
+        - ip: 10.11.12.20
+          mac: 080027F8D3E8
+          subnet: subnet1
+          primary: agent7-ambariagent
+
+#It launches multiple clusters with different configurations. cluster1 and cluster2 are the names used for the cluster group. We can use any name to cluster in the below configuration it is cluster1, cluster2, etc.
+cluster1:
+    default:
+      dns_enabled: no
+      java_vendor: oracle
+      
+    httpd:
+      hostgroup: master_1
+      version: 2.4.6
+      #Optional configuration for httpd load balancer
+    ambari:
+      hostgroup: edge_1
+      port : 8080
+      version: 2.5.2.0
+
+    hdp:
+      blueprint: mdr-ha-blueprint
+      blueprint_configuration:
+      stack: 2.6
+      stack_version : 2.6.2.0
+      utils_version: 1.1.0.21
+      cluster_type: multi_node
+      cluster_name: mdr
+      #This section is to group components based on deployment needs or architecture
+      component_groups :
+        componentgroup_1 :
+          - JOURNALNODE
+          - NAMENODE
+          - HISTORYSERVER
+          - METRICS_MONITOR
+        componentgroup_2:
+          - JOURNALNODE
+          - APP_TIMELINE_SERVER
+          - RESOURCEMANAGER
+          - SPARK_JOBHISTORYSERVER
+          - METRICS_MONITOR
+        componentgroup_3:
+          - SECONDARY_NAMENODE
+          - HCAT
+          - HIVE_METASTORE
+          - HIVE_SERVER
+          - HIVE_CLIENT
+          - WEBHCAT_SERVER
+          - MYSQL_SERVER
+          - METRICS_MONITOR
+        componentgroup_4:
+          - OOZIE_SERVER
+          - METRICS_MONITOR
+        componentgroup_5:
+          - METRICS_MONITOR
+          - ZOOKEEPER_SERVER
+        componentgroup_6:
+          - METRICS_MONITOR
+          - METRICS_COLLECTOR
+        componentgroup_7:
+          - ZOOKEEPER_CLIENT
+          - TEZ_CLIENT
+          - SPARK_CLIENT
+          - MAPREDUCE2_CLIENT
+          - YARN_CLIENT
+          - HDFS_CLIENT
+          - OOZIE_CLIENT
+          - HIVE_CLIENT
+          - PIG
+          - METRICS_MONITOR
+        componentgroup_8:
+          - NODEMANAGER
+          - DATANODE
+          - METRICS_MONITOR
+      hostgroups:
+      #This section is to map component groups to be deployed on respective host groups
+        - master_1:
+            components:
+              - componentgroup_1
+            hostgroup: master_1
+        - master_2:
+            components:
+              - componentgroup_2
+            hostgroup: master_2
+        - master_3:
+            components:
+              - componentgroup_3
+            hostgroup: master_3
+        - master_4:
+            components:
+              - componentgroup_4
+            hostgroup: master_4
+        - zk_1:
+            components:
+              - componentgroup_5
+            hostgroup: zk_1
+            cardinality: 3
+        - edge_1:
+            components:
+               - componentgroup_6
+            hostgroup: edge_1
+        - edge_3:
+            components:
+              - componentgroup_7
+            hostgroup: edge_3
+        - worker_1:
+            components:
+              - componentgroup_8
+            hostgroup: worker_1
+
+    hdp_test:
+       hostgroup: edge_3
+       jobtracker_host: agent2-ambariagent.example.com
+       namenode_host: agent1-ambariagent.example.com
+       oozie_host: agent4-ambariagent.example.com
+       # By default hdfs and yarn will be exected you can disable by setting to (hdfs: no) and yarn (yarn: no) 
+       oozie: yes
+       spark: yes
+       hive: yes
+       pig: yes
+    kibana:
+      hostgroup: master_3
+      elasticsearch_url: http://master1-ambariserver.example.com:9200/
+      version: 5.5.0
+
+    es_master:
+      hostgroup: edge_1
+      version: 5.5.0
+      # Please use this configuration to specify cluster name and ports. Below "node.data" is true if you want to have master and data node on the same host. 
+      es_config:
+        network.host: _site_
+        cluster.name: "es-cluster"
+        http.port: 9200
+        transport.tcp.port: 9300
+        node.data: true
+        node.master: true
+        bootstrap.memory_lock: false
+      es_heap_size: "1g"
+
+    es_node:
+      hostgroup: es_node
+      # Please use this configuration to specify cluster name and ports.
+      es_config: 
+        network.host: _site_
+        cluster.name: "es-cluster"
+        http.port: 9200
+        transport.tcp.port: 9300
+        node.data: true
+        node.master: false
+        bootstrap.memory_lock: false
+      es_api_port: 9200
+
+      
+cluster2:
+    default:
+      dns_enabled: no
+      java_vendor: oracle
+      
+    httpd:
+      hostgroup: docker
+      version: 2.4.6
+      
+    postgres:
+      hostgroup: postgres
+      version: 9.6
+
+    activemq:
+      hostgroup: activemq
+      version: 5.15.0
+      
+    apache:
+      hostgroup: apache
+      httpd_version: 2.4.6
+      tomcat_version: 7.0.76
+
+    mongodb:
+      hostgroup: mongodb
+      version: 3.4.10
+
+    docker:
+      hostgroup: master_1
+      version: 17.09.0
