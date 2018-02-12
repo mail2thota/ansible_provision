@@ -398,6 +398,13 @@ cluster2:
     httpd:
         hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes mongodb will be installed
         version: httpd version number
+		#Optional configuration for httpd load balancer
+		config:
+			- balancer:
+					uri: mylb1 # loadbalancer name uri eg: mybalancer
+					member:
+						- host1 # load balancer url http://host1:8080/app
+						- host2 # load balancer url http://host2:8080/app
 ```
 
 ## Variable Description for cluster setup
@@ -459,8 +466,12 @@ cluster2:
  cluster1[kibana][elasticsearch_url]|mandatory|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
  cluster1[kibana][version]| mandatory|5.5.0| kibana version number
  cluster1[apache][hostgroup]| mandatory| apache|hostgroup name configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
- cluster1[apache][httpd_version]| mandatory|2.4.6| httpd version number
  cluster1[apache][tomcat_version]| mandatory|7.0.76| tomcat version number
+ cluster1[httpd][hostgroup]| mandatory| httpd|hostgroup name configured in common[hostgroups] to install httpd on this group of hosts apache httpd will be installed
+ cluster1[httpd][version]| mandatory|2.4.6| httpd version number
+ cluster1[httpd][config]| mandatory|balancer1| load balancer configuration
+ cluster1[httpd][config][balancer][uri]| mandatory|mybalancer| uri name for the loadbalancer
+ cluster1[httpd][config][balancer][member]| mandatory|http://host:8080/app| url of the application 
  cluster1[docker][hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker and on this group of hosts docker will be installed
  cluster1[docker][version]| mandatory|17.09.0| docker version number
 

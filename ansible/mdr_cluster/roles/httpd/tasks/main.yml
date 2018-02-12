@@ -10,6 +10,13 @@
     state: installed
   register: result
 
+  #Copy the config template
+- name: Copy Configuration File
+  become: yes
+  template: src=lb.conf.j2 dest=/etc/httpd/conf.d/lb.conf mode=0755 force=yes
+  register: system_change
+  when: lb|yes
+  
 - name:  "{{ inventoryname }}: ensure the httpd service is enable and running"
   service:
     name: httpd

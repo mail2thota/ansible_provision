@@ -225,21 +225,17 @@ cluster1:
       version: 2.4.6
       #Optional configuration for httpd load balancer
       config:
-          balancer1:
+          - balancer:
                   uri: mylb1
                   member:
                        - host1
                        - host2  
-          balancer2:
+          - balancer:
                   uri: mylb2
                   member:
                        - host3
                        - host4 
  
-         
-           
-
-      
     ambari:
       hostgroup: edge_1
       port : 8080
