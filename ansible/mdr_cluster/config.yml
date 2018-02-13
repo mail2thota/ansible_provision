@@ -223,6 +223,7 @@ cluster1:
     httpd:
       hostgroup: master_1
       version: 2.4.6
+      lb: true
       #Optional configuration for httpd load balancer
       config:
           - balancer:
