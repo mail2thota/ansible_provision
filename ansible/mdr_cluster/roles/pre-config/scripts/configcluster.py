@@ -5,29 +5,27 @@ import yaml
 
 import log
 from config_schema import Validator
-from error import MatchInvalid,Invalid
-from error import MultipleInvalid
 
 
-validator = Validator()
 excludeSections = ['foreman','common']
+globalEnvHostGroupMap = {}
 
 globalHostGroupsMaps = {}
 
-def gethosts(groupName):
 
-    hostgroup = commonHostGroupMap[groupName]
-    hosts = []
-    for ip in hostgroup:
-        hosts.append(hostgroup[ip]['fqdn'])
-    return hosts
+def gethosts(groupName):
+	hostgroup = envHostGroupsMap[groupName]
+	hosts = []
+	for host in hostgroup.get('hosts'):
+		hosts.append(host['name'])
+	return hosts
 
 def gethostNameIpMap(groupName):
-    hostgroup = commonHostGroupMap[groupName]
-    data = []
-    for host in hostgroup:
-		data.append({'ip': hostgroup[host].get('ip',''),'name': host})
-    return data
+	hostgroup = envHostGroupsMap[groupName]
+	data = []
+	for host in hostgroup.get('hosts'):
+		data.append({'ip': host.get('ip',''),'name': host.get('name')})
+	return data
 
 def gethostGroupName(serviceName):
 
@@ -39,12 +37,6 @@ def addToEtcHostsList(groupName):
         oshostConfig[host['ip']] = host['name']
 
 
-def getInventoryHostgroupMap():
-	inventoryMap = globalHostGroupsMaps.get(inventoryName)
-	if inventoryMap == None:
-		globalHostGroupsMaps[inventoryName] = []
-		inventoryMap = globalHostGroupsMaps.get(inventoryName)
-	return inventoryMap
 
 def generateHdpHostConfig(hdpHostConfig):
 
@@ -59,12 +51,11 @@ def generateHdpHostConfig(hdpHostConfig):
 	for host_group in hdpHostConfig["hostgroups"]:
 		host_group_name = host_group.keys()[0]
 		host_group_name =  host_group[host_group_name]['hostgroup']
-		getInventoryHostgroupMap().append(host_group_name)
 		for host in gethosts(host_group_name):
 			outfile.write("\n" + '{0}'.format(host))
 		addToEtcHostsList(host_group_name)
 
-    log.log(log.LOG_INFO, "Create ansible hdp host group configuration file : hosts")
+	log.log(log.LOG_INFO, "{0}: Created ansible hdp host group configuration file : hosts".format(clustername))
 
 def generateBluePrint(hdpConfig):
 
@@ -110,13 +101,12 @@ def generateBluePrint(hdpConfig):
 			{"name": "master-1", "cardinality": 1, "hosts": gethosts(gethostGroupName('ambari')), "components": components, "configuration": []})
 
 	yaml.dump(blueprint, outfile, default_flow_style=False, allow_unicode=True)
-	log.log(log.LOG_INFO, "blueprint: " + str(blueprint))
+	log.log(log.LOG_INFO, "{0}: blueprint: {1}".format(clustername,str(blueprint)))
 	return blueprint
 
 
 def generateCommonDefaultAllConfigFile(config):
     filePath = defaultAllFile
-
     with open(filePath, 'r') as stream:
 		try:
 			configdata = yaml.load(stream)
@@ -130,10 +120,11 @@ def generateCommonDefaultAllConfigFile(config):
 
 
 def generateEtcHostFile(config,services):
+
 	osHostsFile = open(etchostsFile, 'w')
 	for host in oshostConfig:
 		osHostsFile.write(host + " " + oshostConfig[host] + "\n")
-	log.log(log.LOG_INFO, 'Generated ip & hostname map file to replace  /etc/hosts in all nodes : host_list')
+	log.log(log.LOG_INFO, '{0}: Generated ip & hostname map file to replace  /etc/hosts in all nodes : host_list'.format(clustername))
 
 def generateAnsibleHostFile(config,services):
 
@@ -150,16 +141,13 @@ def generateAnsibleHostFile(config,services):
 						hostFile.write("\n" + '{0}'.format(host))
 
 					addToEtcHostsList(hostgroup)
-	 log.log(log.LOG_INFO, 'updated ansible hosts file for non hdp components: hosts')
+	 log.log(log.LOG_INFO, '{0}: updated ansible hosts file for non hdp components: hosts'.format(clustername))
 
 def generateAnsibleAllFile(config,services):
 	fileMode = None
 	# Adding the properties to all file
 
 	isAllConfigFileExists = os.path.exists(allConfigFile)
-	inventoryMap = getInventoryHostgroupMap()
-
-
 	if isAllConfigFileExists:
 		fileMode = 'a'
 	else:
@@ -172,7 +160,6 @@ def generateAnsibleAllFile(config,services):
 				for property in config[service]:
 					if property == 'hostgroup':
 						allFile.write("\n" + service + "_hosts: " + str(gethostNameIpMap(globalConfigData[service][property])))
-						inventoryMap.append(globalConfigData[service][property])
 					else:
 						allFile.write("\n" + service + "_" + property + ": " + str(globalConfigData[service][property]))
 	allFile.close()
@@ -182,88 +169,69 @@ def generateHdpConfigration(hdpConfig):
 		generateHdpHostConfig(hdpConfig)
 		generateBluePrint(hdpConfig)
 
-def checkHostGroupNameExists(groupName):
-
-	if groupName not in commonHostGroups:
-		raise Invalid('Hostgroup \'{0}\' doesn\'t exist\'s in {1}'.format(groupName,commonHostGroups))
-
-	if len(commonHostGroupMap[groupName]) == 0:
-		raise Invalid('No hosts mapped to hostgroup \'{0}\' in {1}'.format(groupName,commonHostGroups))
 
 
+def add2GroupsMap(clustername,hostgroupname,envHostMap):
 
-def loadcommonHostgroupInfo(configdata):
-	data = configdata.get('common')
-	try:
-	   validator.common(data)
-	except MultipleInvalid as e:
-		for error in e.errors:
-			log.log(log.LOG_ERROR, "YAML validation Error: message:{0} in {1}".format(error, data.get('common')))
-		sys.exit(1)
+	currentGroups = globalEnvHostGroupMap.get(clustername)
+	if hostgroupname not in currentGroups:
+		currentGroups.append(hostgroupname)
 
-	hostgroups = data.get('hostgroups')
-	for hostgroup in hostgroups:
-		  if hostgroup['name'] not in commonHostGroups:
-			commonHostGroups[hostgroup['name']] = hostgroup
-			commonHostGroupMap[hostgroup['name']] = {}
+    #Check for hostgroup tags sharing between two groups
+	for envName in globalEnvHostGroupMap:
+	  if envName == clustername:
+		  continue
+	  else:
+		  if hostgroupname in globalEnvHostGroupMap[envName]:
+			 log.log(log.LOG_ERROR,"Config Error: Cannot share hostgroup [{0}] between environments {1} and {2}".format(hostgroupname,envName,clustername))
+			 sys.exit(1)
+	#Added to Current Env hostgroup with full details
+	if hostgroupname in envHostGroupsMap:
+		return
+	else:
+		hostgroupInfo = envHostMap.get('hostgroups').get(hostgroupname)
+		if hostgroupInfo is None:
+			hostgroupInfo = envHostMap.get('tags').get(hostgroupname)
+		if hostgroupInfo is not None:
+			envHostGroupsMap[hostgroupname] = hostgroupInfo
 
-	for primary_host in data.get('primary_hosts'):
-		# If Dns enabled check for IP Consistancy if dns_enabled = No
-		if globalConfigData["default"]["dns_enabled"] == False:
-			validator.common_primary_host_default(primary_host)
-			if primary_host['hostgroup'] not in commonHostGroups:
-				raise Invalid('Unknown hostgroup {0} mapped to host {1}'.format(primary_host['hostgroup'], primary_host['name']))
-			else:
-				if primary_host['ip'] in commonHostGroupIpMap:
-					raise Invalid('ip \'{0}\' mapped to two host groups {1} & {2}'.format(primary_host['ip'],commonHostGroupIpMap.get(primary_host['ip']),primary_host['hostgroup']))
-				else:
-					commonHostGroupIpMap[primary_host['ip']] = primary_host['hostgroup']
-				fqdn = primary_host['name'] + '.' + commonHostGroups[primary_host['hostgroup']].get('domain')
-				primary_host['fqdn'] = fqdn
-				commonHostGroupMap[primary_host['hostgroup']][fqdn] = primary_host
-				commonHostGroupIpMap[primary_host.get('ip')] = primary_host['hostgroup']
 
-			# Ignore IP if dns_enabled = Yes
+def loadEnvSpecificHostgroups(configdata,clustername,envHostMap):
+
+	isDnsEnabled = configdata.get('default').get('dns_enabled',False)
+	globalEnvHostGroupMap[clustername] = []
+	for section in configdata:
+		if section in excludeSections or section in ['default']:
+			continue
+		sectionData = configdata[section]
+		hostgroupName = None
+		if section != 'hdp':
+			hostgroupName = sectionData.get('hostgroup')
+			add2GroupsMap(clustername,hostgroupName,envHostMap)
 		else:
-			validator.common_primary_host(primary_host)
-			if primary_host['hostgroup'] not in commonHostGroups:
-				raise Invalid('Unknown hostgroup {0} mapped to host {1}'.format(primary_host['hostgroup'], primary_host['name']))
-			else:
-				primary_host['fqdn'] = primary_host['name'] + '.' + commonHostGroups[primary_host['hostgroup']].get('domain')
-			fqdn = primary_host['name'] + '.' + commonHostGroups[primary_host['hostgroup']].get('domain')
-			primary_host['fqdn'] = fqdn
-			commonHostGroupMap[primary_host['hostgroup']][fqdn] = primary_host
+			hdphostgroups = sectionData.get('hostgroups',{})
+			for hdphostgroup in hdphostgroups:
+				for hdphostgroupInfo in hdphostgroup.values():
+					hostgroupName = hdphostgroupInfo.get('hostgroup')
+					add2GroupsMap(clustername, hostgroupName, envHostMap)
 
 
 def updateConfigData(configData,inventoryName1,path1):
 	global globalConfigData
-	global commonHostGroupIpMap
-	global commonHostGroups
-	global commonHostGroupMap
 	global components
 	global oshostConfig
 	global inventoryName
 	global path
+	global envHostGroupsMap
+	global globalEnvHostGroupMap
+	envHostGroupsMap = {}
 	globalConfigData = configData
 	inventoryName = inventoryName1
 	path = path1
-	commonHostGroups = {}
-	commonHostGroupMap = {}
-	commonHostGroupIpMap = {}
 	components = ['all']
 	oshostConfig= {}
 
-def checkifAnyInvalidHostGroupMap():
 
-	 inventoryMap = getInventoryHostgroupMap()
-	 for hostgroup in inventoryMap:
-		 for section in globalHostGroupsMaps:
-			 if section !=inventoryName :
-				 sectionConfig = globalHostGroupsMaps[section]
-				 if hostgroup in sectionConfig:
-					 log.log(log.LOG_ERROR,'Same hostgroup in common[hostgroups] cannot be mapped in multiple clutster sections')
-					 log.log(log.LOG_ERROR,'common[hostgroups][name] =  [{0}] is used in Sections {1} and {2}: Please re-check'.format(hostgroup,section,inventoryName))
-					 sys.exit(1)
 
 def createInvetoryDirectories():
 	fileSeperator = os.sep
@@ -287,6 +255,9 @@ def createInvetoryDirectories():
 	global ansiblehostsfile
 	global etchostsFile
 	global defaultAllFile
+	global envHostGroupsMap
+	global globalEnvHostGroupMap
+	envHostGroupsMap = {}
 
 
 	allConfigFile = "{0}{1}{2}".format(groupvarsdir,fileSeperator,"all")
@@ -296,17 +267,18 @@ def createInvetoryDirectories():
 	#defaultAllFile = '{0}{1}{2}{3}{4}'.format(path,fileSeperator,'defaults',fileSeperator,'default-all')
 
 
-def main(configdata,inventoryName,path):
-	updateConfigData(configdata,inventoryName,path)
+def main(configdata,clustername1,path,envHostMap):
+	global clustername
+	clustername = clustername1
+	updateConfigData(configdata,clustername,path)
 	createInvetoryDirectories()
-	loadcommonHostgroupInfo(configdata)
-	hdpConfig = configdata.get('hdp',None)
+	loadEnvSpecificHostgroups(configdata, clustername, envHostMap)
+	hdpConfig = configdata.get('hdp')
 	if hdpConfig != None:
 	   generateHdpConfigration(configdata["hdp"])
 	generateCommonDefaultAllConfigFile(configdata)
 	generateAnsibleAllFile(configdata,components)
 	generateAnsibleHostFile(configdata,components)
-	checkifAnyInvalidHostGroupMap()
 	generateEtcHostFile(configdata,components)
 
 

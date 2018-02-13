@@ -4,9 +4,14 @@ import os
 import log
 import validatecluster
 import configcluster
+from config_schema import Validator
+from error import MatchInvalid,Invalid
+from error import MultipleInvalid
 
+
+
+validator = Validator()
 excludeSections =['common','foreman']
-
 
 def getClusters(config):
 
@@ -31,41 +36,12 @@ def getClusterInfo(config,section):
 
     return clusterInfo
 
-# envHostsMap map = {
-#            envname1: {
-#                   hostGroup2Domain: {
-#                           groupName1: domain1,
-#                           groupName2: domain2,
-#                           etc..
-#                   host2HostGroup: {
-#                          hostname: [hostgroup1,hostgroup2..]
-#                          etc..
-#                   hostGroup2Host: {
-#                          groupname1: [hostaname1,hostname2..]
-#                          groupname2: [hostanme1,hostname3,..]
-#                   host2IP  {
-#                           hostname1: ipaddress1,
-#                           hostname2: ipadress2,
-#                           etc..
-#
-#            envname2: { Same structure as above envname1 configuration... }
-#
-
-def createMany2ManyMapping(config):
-    envNames = getClusters(config)
-
-    for envName in envNames:
-        envConfig = config[envName]
-
-
-
-
-
 
 
 def configNewClusters(config,path,validate):
      commonConfig = getCommonConfig(config)
      clusterNames = getClusters(config)
+     envHostMap = createGlobalHostGroupmap(config)
      #Validating Each Section
      if len(clusterNames) == 0:
          log.log(log.LOG_ERROR,'Configuration is empty')
@@ -74,14 +50,14 @@ def configNewClusters(config,path,validate):
          for clusterName in clusterNames:
             log.log(log.LOG_INFO,'Validating config.yml Section@{0}'.format(clusterName))
             clusterData = getClusterInfo(config,clusterName)
-            validatecluster.main(clusterData)
+            validatecluster.main(clusterData,clusterName,envHostMap)
      else:
          log.log(log.LOG_WARN,'Skipping config.yml validation')
      #Creating Config files
      for clusterName in clusterNames:
         log.log(log.LOG_INFO,'Creating config files of section@{0}'.format(clusterName))
         clusterData = getClusterInfo(config,clusterName)
-        configcluster.main(clusterData,clusterName,path)
+        configcluster.main(clusterData,clusterName,path,envHostMap)
 
 def createInventoriesListFile(config,path):
     filePath = "{0}{1}{2}".format(path,os.sep,'inventory_list')
@@ -94,6 +70,93 @@ def createInventoriesListFile(config,path):
             log.log(log.LOG_ERROR, "Unalbe to write the Invetories list file" + exc)
             sys.exit(1)
 
+
+def validatePreRequistives(configdata):
+    commonData = configdata.get('common')
+    try:
+        validator.common(commonData)
+    except MultipleInvalid as e:
+        for error in e.errors:
+            log.log(log.LOG_ERROR, "common validation Error: message:{0} in {1}".format(error, commonData))
+        sys.exit(1)
+
+    hostgroups = commonData.get('hostgroups')
+
+    # Checking host group static data structure
+    for hostgroup in hostgroups:
+        try:
+            validator.common_hostgroup(hostgroup)
+        except MultipleInvalid as e:
+            for error in e.errors:
+                log.log(log.LOG_ERROR,
+                        "Common[hostsgroups] validation Error: message:{0} in {1}".format(error, hostgroup))
+            sys.exit(1)
+        except Invalid as e:
+            log.log(log.LOG_ERROR, "Common[hostgroups] validation Error: message:{0} in {1}".format(e, hostgroup))
+            sys.exit(1)
+
+    # Validating Primary Hosts
+    for primary_host in commonData.get('primary_hosts'):
+        try:
+            validator.common_primary_host(primary_host)
+        except MultipleInvalid as e:
+            for error in e.errors:
+                log.log(log.LOG_ERROR,
+                        "Common[primary_hosts] validation Error: message:{0} in {1}".format(error, primary_host))
+            sys.exit(1)
+        except Invalid as e:
+            log.log(log.LOG_ERROR, "Common[primary_hosts] validation Error: message:{0} in {1}".format(e, primary_host))
+            sys.exit(1)
+
+def createGlobalHostGroupmap(configdata):
+    validatePreRequistives(configdata)
+    global  groupsMap
+    groupsMap = {'hostgroups': {},'tags':{}}
+    hostGroupsMap = groupsMap['hostgroups']
+    commonData = configdata.get('common',{})
+
+    #Map based on Hostgroup
+    for hostgroup in commonData.get('hostgroups',{}):
+        hostgroupName  = hostgroup['name']
+        if hostgroupName not in hostGroupsMap:
+            hostGroupsMap[hostgroupName] = { 'hosts':[],'domain':hostgroup['domain']}
+        else:
+            log.log(log.LOG_ERROR,'Common[hostgroups]: Validation Error Duplicate host group name : {0}'.format(hostgroupName))
+            sys.exit(1)
+
+    #Added to hostgroup and create tag group if doesnt exists and map ip to it
+    tagsHostsGroupMap = groupsMap.get('tags')
+    ipmap = {}
+    hostnamemap = {}
+    for primary_host in commonData['primary_hosts']:
+        hostgroupName = primary_host['hostgroup']
+        name = primary_host['name']
+        ip = primary_host.get('ip')
+        #Check if any ip reuse
+        if (ip not in ipmap) or (ip is not None):
+            ipmap[ip] = name
+        elif ip is not None:
+            log.log(log.LOG_ERROR,"Common[primary_hosts] Config validation Error : {0} is used mapped to two hosts {1} and {2}".format(ip,ipmap[ip],name) )
+            sys.exit(1)
+        #Check of hostname resuse
+        if name not in hostnamemap:
+            hostnamemap[name] = ip
+        else:
+            log.log(log.LOG_ERROR,"Common[primary_hosts] Config validation Error : Duplicate hostname : {0}".format(name))
+            sys.exit(1)
+
+        domain =  hostGroupsMap.get(hostgroupName).get('domain')
+        host = { 'name' :  "{0}.{1}".format(name,domain) , 'ip' : ip,'user':'','pass': ''}
+        hostGroupsMap[hostgroupName]['hosts'].append(host)
+        for tag in primary_host.get('tags',[]):
+             if tag not in tagsHostsGroupMap:
+                 #Create as tag group if doesn't exists
+                 tagsHostsGroupMap[tag] =  { 'hosts': []}
+                 #Append host with ip to tag group
+             taghost = {'name': "{0}.{1}".format(name, domain), 'ip': ip, 'user': '', 'pass': ''}
+             tagsHostsGroupMap[tag]['hosts'].append(taghost)
+
+    return groupsMap
 
 def main():
     config_file = ''
@@ -120,6 +183,7 @@ def main():
         config_file = open(config_file, 'r')
         try:
             config = yaml.load(config_file)
+
             configNewClusters(config,path,validate)
             createInventoriesListFile(config,path)
 
