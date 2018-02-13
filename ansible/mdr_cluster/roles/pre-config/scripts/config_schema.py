@@ -79,6 +79,7 @@ class Validator:
         })
 
         self.component_group = Schema(Unique())
+
         self.host_group= Schema({
             Required('hostgroup', msg='hostgroup doesn\'t exsits'):                                    Any(str, msg='hostgroup name must be a string'),
             Required('components', msg='components doesn\'t exsits'):                               All(list, msg='components doesn\'t match the expected'),
@@ -159,5 +160,6 @@ class Validator:
             Required('hostgroup',msg='docker[hostgroup] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
             Required('version',msg='docker[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='docker version doesn''t match with expected version format( Ex: 17.09.0) but configured value')
         })
+        self.tags = Schema(Unique())
 
 

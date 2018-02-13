@@ -148,7 +148,8 @@ def createGlobalHostGroupmap(configdata):
         domain =  hostGroupsMap.get(hostgroupName).get('domain')
         host = { 'name' :  "{0}.{1}".format(name,domain) , 'ip' : ip,'user':'','pass': ''}
         hostGroupsMap[hostgroupName]['hosts'].append(host)
-        for tag in primary_host.get('tags',[]):
+        tags = list(set(primary_host.get('tags',[])))
+        for tag in tags:
              if tag not in tagsHostsGroupMap:
                  #Create as tag group if doesn't exists
                  tagsHostsGroupMap[tag] =  { 'hosts': []}
