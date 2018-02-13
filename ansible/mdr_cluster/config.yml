@@ -224,7 +224,7 @@ cluster1:
       hostgroup: master_1
       version: 2.4.6
       lb: true
-      #Optional configuration for httpd load balancer
+      #Optional configuration for httpd load balancer; if lb is configured to true
       config:
           - balancer:
                   uri: mylb1
@@ -383,6 +383,7 @@ cluster2:
     httpd:
       hostgroup: docker
       version: 2.4.6
+      lb: false
       
     postgres:
       hostgroup: postgres

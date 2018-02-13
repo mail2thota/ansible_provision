@@ -398,7 +398,8 @@ cluster2:
     httpd:
         hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes mongodb will be installed
         version: httpd version number
-		#Optional configuration for httpd load balancer
+		lb: true/false to genereate loadbalancing configuration from the below 'config' element
+		#Optional configuration for httpd load balancer; if lb is configured to true
 		config:
 			- balancer:
 					uri: mylb1 # loadbalancer name uri eg: mybalancer
@@ -469,6 +470,7 @@ cluster2:
  cluster1[apache][tomcat_version]| mandatory|7.0.76| tomcat version number
  cluster1[httpd][hostgroup]| mandatory| httpd|hostgroup name configured in common[hostgroups] to install httpd on this group of hosts apache httpd will be installed
  cluster1[httpd][version]| mandatory|2.4.6| httpd version number
+ cluster1[httpd][lb]| mandatory|true/false| load balnacer to be created on web server
  cluster1[httpd][config]| mandatory|balancer1| load balancer configuration
  cluster1[httpd][config][balancer][uri]| mandatory|mybalancer| uri name for the loadbalancer
  cluster1[httpd][config][balancer][member]| mandatory|http://host:8080/app| url of the application 
