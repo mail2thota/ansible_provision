@@ -125,9 +125,9 @@ def validateConfigFile(configdata):
                         else:
                           for balancer in httpdconfig:
                                 try:
-                                   validator.httpd_balancer(httpdconfig[balancer])
+									validator.httpd_balancer(balancer['balancer'])
                                 except Invalid as e:
-                                   log.log(log.LOG_ERROR, configService + " : YAML validation Error:{0} in {1}".format(e.error_message,httpdconfig[balancer]))
+                                   log.log(log.LOG_ERROR, "httpd[config]: YAML validation Error:{0} in {1}".format(e.error_message,balancer['balancer']))
                                    sys.exit(1)                                                         
 
 		elif configService == 'ambari':

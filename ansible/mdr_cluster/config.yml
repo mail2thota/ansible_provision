@@ -223,23 +223,20 @@ cluster1:
     httpd:
       hostgroup: master_1
       version: 2.4.6
-      #Optional configuration for httpd load balancer
+      lb: true
+      #Optional configuration for httpd load balancer; if lb is configured to true
       config:
-          balancer1:
+          - balancer:
                   uri: mylb1
                   member:
-                       - host1
-                       - host2  
-          balancer2:
+                       - http://10.11.12.19/
+                       - http://10.11.12.19/  
+          - balancer:
                   uri: mylb2
                   member:
-                       - host3
-                       - host4 
+                       - http://10.11.12.19/
+                       - http://10.11.12.19/ 
  
-         
-           
-
-      
     ambari:
       hostgroup: edge_1
       port : 8080
@@ -386,6 +383,7 @@ cluster2:
     httpd:
       hostgroup: docker
       version: 2.4.6
+      lb: false
       
     postgres:
       hostgroup: postgres
