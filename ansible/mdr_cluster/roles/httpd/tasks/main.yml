@@ -15,7 +15,7 @@
   become: yes
   template: src=lb.conf.j2 dest=/etc/httpd/conf.d/lb.conf mode=0755 force=yes
   register: system_change
-  when: lb|yes
+  when: lb
   
 - name:  "{{ inventoryname }}: ensure the httpd service is enable and running"
   service:
@@ -26,7 +26,7 @@
 
 
 - name : "{{ inventoryname }}: check if httpd server is up"
-  wait_for : host={{ ansible_fqdn }} port=80 delay=20
+  wait_for : host={{ ansible_fqdn }} port=80 delay=10
 
 - name: get the version of httpd
   shell: yum list installed httpd | grep httpd | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
@@ -43,17 +43,3 @@
   shell: "{{ playbook_dir }}/report.sh httpd {{ version.stdout }} http://{{ ansible_fqdn }}:80 {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: result|succeeded
-
-
-- name: run test for httpd server
-  become: True
-  become_user: root
-  script: ./tests/httpd/httpd_test.sh
-  register: httpd_test
-  failed_when: "'Failed' in httpd_test.stdout"
-
-- debug: msg="{{ httpd_test.stdout }}"
-- debug: msg="{{ httpd_test.stderr }}"
-
-
-

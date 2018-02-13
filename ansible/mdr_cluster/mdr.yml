@@ -23,6 +23,8 @@
   become: true
   roles:
     - httpd
+  vars:
+     lb: true    
 
 - hosts: activemq
   become: true
