@@ -174,10 +174,15 @@ common:
           hostgroup: postgres
           ip: 10.11.12.11
           mac: 080027A55547
+          tags:
+              - postgresmongodb
+              - postgresactivemq
         - name: agent10-ambariagent
           hostgroup: activemq
           ip: 10.11.12.12
           mac: 080027D25FEE
+          tags:
+              - postgresactivemq
         - name: agent11-ambariagent
           hostgroup: apache
           ip: 10.11.12.13
@@ -198,6 +203,8 @@ common:
           hostgroup: mongodb
           ip: 10.11.12.17
           mac: 080027A5EAB2
+          tags:
+              - postgresmongdb
         - name: master1-ambariserver
           hostgroup: edge_1
           ip: 10.11.12.24

@@ -4,7 +4,7 @@ import sys
 import yaml
 
 import log
-from config_schema import Validator
+
 
 
 excludeSections = ['foreman','common']

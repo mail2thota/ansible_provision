@@ -367,7 +367,7 @@ def add2GroupsMap(clustername,hostgroupname,envHostMap):
 		  continue
 	  else:
 		  if hostgroupname in globalEnvHostGroupMap[envName]:
-			 log.log(log.LOG_ERROR,"Config Error: Cannot share hostgroup [{0}] between environments {1} and {2}".format(hostgroupname,envName,clustername))
+			 log.log(log.LOG_ERROR,"Not Allowed: sharing hostgroup [{0}] between environments {1} and {2} not allowed".format(hostgroupname,envName,clustername))
 			 sys.exit(1)
 	#Added to Current Env hostgroup with full details
 	if hostgroupname in envHostGroupsMap:
@@ -380,9 +380,7 @@ def add2GroupsMap(clustername,hostgroupname,envHostMap):
 			envHostGroupsMap[hostgroupname] = hostgroupInfo
 
 
-
 def loadEnvSpecificHostgroups(configdata,clustername,envHostMap):
-	isDnsEnabled = configdata.get('default').get('dns_enabled',False)
 	globalEnvHostGroupMap[clustername] = []
 	for section in configdata:
 		if section in excludeSections or section in ['default']:
@@ -398,8 +396,7 @@ def loadEnvSpecificHostgroups(configdata,clustername,envHostMap):
 				for hdphostgroupInfo in hdphostgroup.values():
 					hostgroupName = hdphostgroupInfo.get('hostgroup')
 					add2GroupsMap(clustername, hostgroupName, envHostMap)
-	#print globalEnvHostGroupMap
-	#print envHostGroupsMap
+
 
 
 
@@ -437,3 +434,4 @@ def main(configdata,clustername,envHostMap):
     except yaml.YAMLError as exc:
         log.log(log.LOG_ERROR, exc)
         sys.exit(1)
+    return globalEnvHostGroupMap
