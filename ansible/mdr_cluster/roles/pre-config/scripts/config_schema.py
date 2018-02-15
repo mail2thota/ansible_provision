@@ -142,7 +142,8 @@ class Validator:
         self.httpd = Schema({
             Required('hostgroup',msg='httpd[hostgroup] doesn\t exists'):                                    All(str,msg='hostgroup must be a string'),
             Required('version',msg='httpd[version] doesn\'t exists'):                                                           Match('^[0-9]*.(\.[0-9]*){2}?$',msg='httpd version doesn''t match with expected version format( Ex: 2.4.6) but configured value'),
-            Optional('config'):                                                                             Any(dict)
+			Required('lb',msg='httpd[lb] doesn\t exists'):                                    Any(Boolean(),msg='lb must be a true/false'),
+            Optional('config'):                                                                             Any(list)
         })
         self.httpd_balancer = Schema({
             Required('uri',msg='httpd[config][.] uri doesn\'t exists'):                                      Any(str,msg='uri must be a string'),

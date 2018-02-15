@@ -397,6 +397,14 @@ cluster2:
     httpd:
         hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes mongodb will be installed
         version: httpd version number
+		lb: true/false to genereate loadbalancing configuration from the below 'config' element
+		#Optional configuration for httpd load balancer; if lb is configured to true
+		config:
+			- balancer:
+					uri: mylb1 # loadbalancer name uri eg: mybalancer
+					member:
+						- host1 # load balancer url http://host1:8080/app
+						- host2 # load balancer url http://host2:8080/app
 ```
 
 ## Variable Description for cluster setup
@@ -459,6 +467,12 @@ cluster2:
  cluster1[kibana][version]| mandatory|5.5.0| kibana version number
  cluster1[apache][hostgroup]| mandatory| apache|hostgroup name configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
  cluster1[apache][tomcat_version]| mandatory|7.0.76| tomcat version number
+ cluster1[httpd][hostgroup]| mandatory| httpd|hostgroup name configured in common[hostgroups] to install httpd on this group of hosts apache httpd will be installed
+ cluster1[httpd][version]| mandatory|2.4.6| httpd version number
+ cluster1[httpd][lb]| mandatory|true/false| load balnacer to be created on web server
+ cluster1[httpd][config]| mandatory|balancer1| load balancer configuration
+ cluster1[httpd][config][balancer][uri]| mandatory|mybalancer| uri name for the loadbalancer
+ cluster1[httpd][config][balancer][member]| mandatory|http://host:8080/app| url of the application 
  cluster1[docker][hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker and on this group of hosts docker will be installed
  cluster1[docker][version]| mandatory|17.09.0| docker version number
 
@@ -688,6 +702,7 @@ Software Versions
 | :------------- | :------------- |
 | ActiveMQ       |     5.15       |
 | Ambari         |     2.5.2      |
+| Ansible        |     2.3.1.0    |
 | Apache  Tomcat |     7.0.76     |
 | CentOS         |     7.1        |
 | Elastic Search |     5.5.0      |
@@ -695,11 +710,12 @@ Software Versions
 | HDP            |     2.5 & 2.6  |
 | Java SE        |     1.8        |
 | Kibana         |     5.5.0      |
+| Mongo          |     3.4.10     |
 | MySql          |     5.6.38-2   |
+| Postgres       |     9.6        |
 | Python         |     2.7        |
 | Python-pip     |     8.1.2      |
-| Foreman        |     1.15       |
-| Ansible        |     2.3.1.0    |
+
 
 ## Prerequisite
 ---------------

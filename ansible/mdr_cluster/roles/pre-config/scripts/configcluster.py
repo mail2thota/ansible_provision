@@ -115,8 +115,7 @@ def generateBluePrint(hdpConfig):
 
 
 def generateCommonDefaultAllConfigFile(config):
-    filePath = "{0}/defaults/default-all".format(path)
-
+    filePath = defaultAllFile
     with open(filePath, 'r') as stream:
 		try:
 			configdata = yaml.load(stream)
@@ -293,6 +292,7 @@ def createInvetoryDirectories():
 	ansiblehostsfile ="{0}{1}{2}".format(inventorydir,fileSeperator,'hosts')
 	etchostsFile = '{0}{1}{2}'.format(rolesConfigFilesdir,fileSeperator,'host_list')
 	defaultAllFile = '{0}{1}{2}{3}{4}'.format(path,fileSeperator,'defaults',fileSeperator,'default-all')
+	
 
 
 def main(configdata,inventoryName,path):
