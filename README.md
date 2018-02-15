@@ -288,11 +288,10 @@ common:
       - name: name of the host excluding domain name
         hostgroup: hostgroup name to map this host mentioned in the common[hostgroups] section
         ip: ip adress of the host
-        tags:  # Optional, This allows mapping the single host to multiple groups within a environment, we don't allow sharing tag or hostgroup or hostname in anyways
+        tags:   # Optional, This allows mapping single host to multiple host groups or tags within a environment, we don't allow sharing tags or hostgroups or hostnames between enviroments
            - tag name 1 # Name should be unique from hostgroup names
            - tag name 2
-
-#It launches multiple clusters with different configurations. cluster1 and cluster2 are the names used for the cluster group. We can use any name to cluster in the below configuration it is cluster1, cluster2, etc.
+#It launches multiple clusters with different configurations eg: production, staging, etc. cluster1 and cluster2 are the names used for the cluster group. We can use any name to environment, in the below configuration it is cluster1, cluster2, etc.
 cluster1:
     default:
         dns_enabled: yes or no to update /etc/hosts file if dns server is not available

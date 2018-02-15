@@ -19,7 +19,7 @@ def get(es_url, path):
        r = requests.get(es_url + path)
        return r
     except Exception as e:
-         log.log(log.LOG_ERROR,'Not able to connect to es server@{0} Reason : {1}'.format(es_url,e))
+         log.log(log.LOG_ERROR,'Not able to connect to ES Master Node@{0} Reason : {1}'.format(es_url,e))
          sys.exit(1)
 
 def getesUrl(configData):
