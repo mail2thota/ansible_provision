@@ -58,6 +58,10 @@
     state: absent
     path: "{{ playbook_dir }}/roles_config/"
 
+- name: Install rsync
+  yum:
+    name: rsync
+    state: installed
 
 
 - name: Synchronize inventories

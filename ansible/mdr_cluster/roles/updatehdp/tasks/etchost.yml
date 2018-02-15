@@ -15,9 +15,6 @@
      update_file: "{{ update_file | default(False) }}"
 
 
-- name: "Echo"
-  shell: echo "test {{ dns_enabled }}"
-
 - name: copying etc host file from ambari
   fetch: 
     src: /etc/hosts 

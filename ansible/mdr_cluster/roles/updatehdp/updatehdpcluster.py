@@ -17,24 +17,36 @@ ambari_password = ''
 ambari_user =''
 
 def get(ambari_url, user, password, path):
-    r = requests.get(ambari_url + path, auth=(user, password))
-    return r
-
+    try:
+      r = requests.get(ambari_url + path, auth=(user, password))
+      return r
+    except Exception as e:
+         log.log(log.LOG_ERROR,'Not able to connect to ambari server@{0} Reason : {1}'.format(ambari_url,e))
+         sys.exit(1)
 def post(ambari_url, user, password, path, data):
-    headers = {'X-Requested-By': 'ambari'}
-    r = requests.post(ambari_url + path, data=data, auth=(user, password), headers=headers)
-    return r
-
+    try:
+       headers = {'X-Requested-By': 'ambari'}
+       r = requests.post(ambari_url + path, data=data, auth=(user, password), headers=headers)
+       return r
+    except Exception as e:
+         log.log(log.LOG_ERROR,'Not able to connect to ambari server@{0} Reason : {1}'.format(ambari_url,e))
+         sys.exit(1)
 def delete(ambari_url, user, password, path):
-    headers = {'X-Requested-By': 'ambari'}
-    r = requests.delete(ambari_url + path, auth=(user, password), headers=headers)
-    return r
-
+    try:
+        headers = {'X-Requested-By': 'ambari'}
+        r = requests.delete(ambari_url + path, auth=(user, password), headers=headers)
+        return r
+    except Exception as e:
+         log.log(log.LOG_ERROR,'Not able to connect to ambari server@{0} Reason : {1}'.format(ambari_url,e))
+         sys.exit(1)
 def put(ambari_url, user, password, path, data):
-    headers = {'X-Requested-By': 'ambari'}
-    r = requests.put(ambari_url + path, data=data, auth=(user, password), headers=headers, timeout=1800)
-    return r
-
+    try:
+       headers = {'X-Requested-By': 'ambari'}
+       r = requests.put(ambari_url + path, data=data, auth=(user, password), headers=headers, timeout=1800)
+       return r
+    except Exception as e:
+         log.log(log.LOG_ERROR,'Not able to connect to ambari server@{0} Reason : {1}'.format(ambari_url,e))
+         sys.exit(1)
 def getambariUrl(config): 
 
     return "http://"+str(config['ambari']['host'])+":"+str(config["ambari"]["port"])+"/api/v1/"
@@ -105,8 +117,10 @@ def stopComponent(host,component,configdata):
          request_id = json.loads(r.content)['Requests']['id']
          log.log(log.LOG_INFO,'Waiting for stop response of {0} on {1}'.format(component,hostname))
          status = wait_for_request_complete(getambariUrl(configdata),getCredentials(configdata,'user'),getCredentials(configdata,'password'),configdata.get('hdp').get('clustername'), request_id, 10)
+         if status != 'COMPLETED':
+              log.log(log.LOG_ERROR," Failed to stop {0} on  {1} Reason:".format(component,host.get('name'),status))
+	      sys.exit(1)
      else:
-     
          log.log(log.LOG_ERROR,'Unable to stop {0} on {1} : {2}'.format(component,hostname,r.content))
          sys.exit(1)
 
@@ -192,13 +206,14 @@ def addHosts(configdata):
 		  request_id = json.loads(r.content)['Requests']['id']
 		  log.log(log.LOG_INFO,'Wating for ambari to add {0} to {1}'.format(host['name'], hostgroup))
            	  status = wait_for_request_complete(getambariUrl(configdata),getCredentials(configdata,'user'),getCredentials(configdata,'password'),configdata.get('hdp').get('clustername'), request_id, 10)
-                  if r.status_code == 403:
-                   log.log(log.LOG_ERROR,'ambari: '+json.loads(r.content)['message'])
-                   sys.exit(1)
+                  if status != 'COMPLETED':
+                      log.log(log.LOG_ERROR," Couldn\'t able to add {0} Reason: {1}".format(host.get('name'),status))
                   else:
-                     log.log(log.LOG_INFO,'{0} added to {1}'.format(host['name'],hostgroup))
+                      
+                      log.log(log.LOG_INFO,'{0} added to {1}'.format(host['name'],hostgroup)) 
              else:
                 log.log(log.LOG_ERROR,'Unable to add {0} to {1} : {2}'.format(host['name'],hostgroup,r.content))  
+
 def gethostcomponents(host,configdata):
     path = 'clusters/'+configdata['hdp']['clustername']+'/hosts/'+host
     r = get(getambariUrl(configdata),getCredentials(configdata,'user'), getCredentials(configdata,'password'), path)
