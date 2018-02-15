@@ -176,6 +176,9 @@ def createGlobalHostGroupmap(configdata):
 
         for tag in tags:
              Allgroups.append(tag)
+             if tag in hostGroupsMap:
+                  log.log(log.LOG_ERROR,'Not Allowed: tag and hostgroup name cannot be same: [{0}] '.format(tag))
+                  sys.exit(1)
              if tag not in tagsHostsGroupMap:
                  #Create as tag group if doesn't exists
                  tagsHostsGroupMap[tag] =  { 'hosts': []}

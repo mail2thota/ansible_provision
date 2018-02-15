@@ -74,21 +74,21 @@ def validatePreRequistives(configdata,clustername):
 		else:
 			for balancer in httpdconfig:
 				try:
-					validator.httpd_balancer(httpdconfig[balancer])
+					validator.httpd_balancer(balancer['balancer'])
 				except Invalid as e:
 					log.log(log.LOG_ERROR,"{0} config Error: {1} in {2}".format(clustername,e.error_message,httpdconfig[balancer]))
 					sys.exit(1)
 	except MultipleInvalid as e:
 		for error in e.errors:
-		    log.log(log.LOG_ERROR, "{0} :[httpd] Config Validation Error:{1} in {2}".format(clustername,error,defaultData))
+		    log.log(log.LOG_ERROR, "{0} :[httpd] Config Validation Error:{1} in {2}".format(clustername,error,httpdData))
 		sys.exit(1)
 
 	except MatchInvalid as e:
-		log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,defaultData))
+		log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,httpdData))
 		sys.exit(1)
 
 	except Invalid as e:
-		log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,defaultData))
+		log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,httpdData))
 		sys.exit(1)
 
 
