@@ -93,7 +93,7 @@
   - name: Start the Postgres service
     service:
       name: "{{ postgresql_service_name }}"
-      state: started
+      state: restarted
 
   - name: Enable the Postgres service
     service:
