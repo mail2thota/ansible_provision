@@ -16,6 +16,12 @@
     regexp: '^proxy='
     line: ''
 
+- lineinfile:
+    path: /etc/environment
+    regexp: '(.*?)'
+    line: ''
+    backup: yes
+
 - name: copy centOS repo template
   template:
     src: "CentOS-Base.repo"
