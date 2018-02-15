@@ -288,20 +288,22 @@ common:
       - name: name of the host excluding domain name
         hostgroup: hostgroup name to map this host mentioned in the common[hostgroups] section
         ip: ip adress of the host
-        
-#It launches multiple clusters with different configurations. cluster1 and cluster2 are the names used for the cluster group. We can use any name to cluster in the below configuration it is cluster1, cluster2, etc.
+        tags:   # Optional, This allows mapping single host to multiple host groups or tags within a environment, we don't allow sharing tags or hostgroups or hostnames between enviroments
+           - tag name 1 # Name should be unique from hostgroup names
+           - tag name 2
+#It launches multiple clusters with different configurations eg: production, staging, etc. cluster1 and cluster2 are the names used for the cluster group. We can use any name to environment, in the below configuration it is cluster1, cluster2, etc.
 cluster1:
     default:
         dns_enabled: yes or no to update /etc/hosts file if dns server is not available
         java_vendor: oracle or openjdk,this variable is to install java according to the vendor mentioned,if it is not mentioned then by default it takes openjdk     
-    
+
     ambari:
-        hostgroup: hostgroup mentioned in the above common[hostgroups]
+        hostgroup: hostgroup/tag mentioned in the above common[hostgroups]
         user: ambari username
         password: ambari password
         port : ambari port
         version: ambari version number
-    
+
     hdp:
       blueprint: blueprint name
       blueprint_configuration: blueprint specfic configuration
@@ -324,41 +326,41 @@ cluster1:
             - host group 1:
                 components:
                   - component_group 1
-                hostgroup: configured hostgroup name in the common[hostgroups] and hosts belonging to this group will be added to blueprint
+                hostgroup: configured hostgroup/tag name in the common[hostgroups] and hosts belonging to this group will be added to blueprint
                 configuration: hostgroup specific configuration i.e default is empty or you can skip if you don't have any
                 cardinality: cardinality of the groupi.e default =1  or
             - host group 2:
                 components:
                   - component group 1
                   - component group 2
-                hostgroup: configured hostgroup name in the common[hostgroups]
+                hostgroup: configured hostgroup/tag name in the common[hostgroups]
                 configuration: hostgroup specific configuration
                 cardinality: ardinality of the groupi.e default =1
-    
+
     hdp_test:
-       hostgroup: configured hostgroup name in the common[hostgroups] on that test cases will be executed make sure to all clients are installed on that hosts  
+       hostgroup: configured hostgroup/tag name in the common[hostgroups] on that test cases will be executed make sure to all clients are installed on that hosts  
        jobtracker_host: job tracker  host
        namenode_host: name node host
        oozie_host: oozie server host
-    
+
     postgres:
-       hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes postgres will be installed
+       hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of nodes postgres will be installed
        version: postgres version number
-    
+
     activemq:
-       hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes activemq will be installed
+       hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of nodes activemq will be installed
        version: activemq version number
-    
+
     apache:
-      hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes tomcat server will be installed
+      hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of nodes apache and tomcat server will be installed
       tomcat_version: tomcat version number
-    
+
     docker:
-      hostgroup: configured hostgroup name in the common[hostgroups] on this group of docker registery will be installed
+      hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of docker registery will be installed
       version: docker version number
-    
+
     es_master:
-      hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search master nodes will be installed
+      hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of nodes elastic search master nodes will be installed
       version: elasticsearch version number
       es_config:
         network.host: network address within which es_master cluster should be available(_[networkInterface]_, _local_, _site_, _global_)
@@ -369,9 +371,9 @@ cluster1:
         node.master: determine whether es_master is master or not
         bootstrap.memory_lock: it tries to lock the process address space into RAM, preventing any es_master memory from being swapped out
       es_heap_size: to specify the maximum size of total heap space for es_master
-    
+
     es_node:
-      hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes elastic search worker nodes will be installed
+      hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of nodes elastic search worker nodes will be installed
        es_config:
         network.host: network address within which es_node cluster should be available (_[networkInterface]_, _local_, _site_, _global_)
         cluster.name: es_node cluster name
@@ -381,21 +383,21 @@ cluster1:
         node.master: determine whether es_node is master or not
         bootstrap.memory_lock: it tries to lock the process address space into RAM, preventing any es_node memory from being swapped out
       es_api_port: interaction port of es_node
-    
+
     kibana:
-      hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes kibana will be installed
+      hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of nodes kibana will be installed
       elasticsearch_url: elasticsearch master host adddress to use
       version: kibana version number
-    
+
     mongodb:
-      hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes mongodb will be installed
+      hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of nodes mongodb will be installed
       version: mongodb version number
 cluster2:
     default:
         dns_enabled: yes or no to update /etc/hosts file if dns server is not available
-        java_vendor: oracle or openjdk,this variable is to install java according to the vendor mentioned,if it is not mentioned then by default it takes openjdk 
+        java_vendor: oracle or openjdk,this variable is to install java according to the vendor mentioned,if it is not mentioned then by default it takes openjdk
     httpd:
-        hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes mongodb will be installed
+        hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of nodes mongodb will be installed
         version: httpd version number
 		lb: true/false to genereate loadbalancing configuration from the below 'config' element
 		#Optional configuration for httpd load balancer; if lb is configured to true
@@ -415,10 +417,10 @@ cluster2:
  common[hostgroups]|mandatory| |list of the host groups avaible to use by the Components
  common[hostgroups]|mandatory|[{name: master_1, subnet: subnet1, domain: example.com,  root_pass:as12345678}] |{name: name of the host group,domain: domain name of the group,root_pass: root pass of the hosts belonging to this group}
  common[primaryhosts]|mandatory|| List of hosts mapped to the hosts groups mention in the common[hostsgroups]
- common[primaryhosts]|mandatory|[{name: agent1-ambariagent,hostgroup: master_1,ip: 10.11.12.4}]| {name: hostnmame of the machine,hostgroup: hostgroup name to which it belongs,ip: ip adress of the host }
+ common[primaryhosts]|mandatory|[{name: agent1-ambariagent,hostgroup: master_1,ip: 10.11.12.4,tags: [postgresactivemq,postgresmangodb]}]| {name: hostnmame of the machine,hostgroup: hostgroup name to which it belongs,ip: ip adress of the host,tags: list of tags to assigned to this host }
  cluster1[default][dns_enabled]|mandatory|no| flag to updated the etc hosts if dns server is not available
  cluster1[default][java_vendor]|optional|oracle|Java vendor either openjdk or oracle by default openjdk will be installed
- cluster1[ambari][hostgroup]|mandatory| master1-ambariserver.example.com| host group name mentioned in the common[hostgroups] and it will be installed on the hosts of the group
+ cluster1[ambari][hostgroup]|mandatory| master1-ambariserver.example.com| host group name or tag mentioned in the common[hostgroups] and it will be installed on the hosts of the group
  cluster1[ambari][user]|mandatory| admin| login user name of the ambari interface
  cluster1[ambari][pass]|mandatory| admin| login password of the ambari interface
  cluster1[ambari][version]|mandatory| 2.5.2.0| Ambari version number
@@ -432,18 +434,18 @@ cluster2:
  cluster1[hdp][component_groups][component_group_name][components]|mandatory|hive_components| Array of the components of that group
  cluster1[hdp][host_groups]|mandatory||host groups specification and its configuration mentioned here added to the blue print
  cluster1[hdp][host_group_name][components]|mandatory|hive_components|List of the component groups mentioned in hdp[component_groups] to be added to blue print and for single node it has not effect
- cluster1[hdp][host_groups][host_group_name][hostgroup]|mandatory|master_1| host group configured in common[hostgroups] and hosts will beloning to this group will be added to this host group in blueprint
+ cluster1[hdp][host_groups][host_group_name][hostgroup]|mandatory|master_1| host group or tag configured in common[hostgroups] and hosts will beloning to this group will be added to this host group in blueprint
  cluster1[hdp][host_groups][host_group_name][configuration]|optional|| Configurations mentioned here will be applied to hostgroup specific configuration in the blueprint
  cluster1[hdp][host_groups][hosts_group_name][cardinality]|optional|1| cardinality of the host group to be added in blueprint default is 1
- cluster1[hdp_test][hostgroup]|mandatory|edge_1| hostgroup name configured in common[hostgroups] to run hdp test cases and make sure to have all required clients istalled in that hosts
+ cluster1[hdp_test][hostgroup]|mandatory|edge_1| hostgroup name or tag configured in common[hostgroups] to run hdp test cases and make sure to have all required clients istalled in that hosts
  cluster1[hdp_test][jobtracker_host]|mandatory|agent8-ambariagent.example.com|Job tracker host to be used by test case job
  cluster1[hdp_test][namenode_host]|mandatory|agent1-ambariagent.example.com| Namenode host to be used by test case job
  cluster1[hdp_test][oozie_host]|mandatory|agent10-ambariagent.example.com|oozie server host to be used by test case job
- cluster1[postgres][hostgroup]| mandatory|postgress| hostgroup name configured in common[hostgroups] to install postgres  and on this group of hosts postgres will be installed
+ cluster1[postgres][hostgroup]| mandatory|postgress| hostgroup name or tag configured in common[hostgroups] to install postgres  and on this group of hosts postgres will be installed
  cluster1[postgres][version]| mandatory|9.6| postgres version number
- cluster1[activemq][hostgroup]| mandatory|activemq| hostgroup name configured in common[hostgroups] to install activemq  and on this group of hosts activemq will be installed
+ cluster1[activemq][hostgroup]| mandatory|activemq| hostgroup name or tag configured in common[hostgroups] to install activemq  and on this group of hosts activemq will be installed
  cluster1[activemq][version]| mandatory|5.15.0| activemq version number
- cluster1[es_master][hostgroup]|mandatory|es_master| hostgroup name configured in common[hostgroups] to install elastic search  and on this group of hosts elastic search masters will be installed
+ cluster1[es_master][hostgroup]|mandatory|es_master| hostgroup name or tag configured in common[hostgroups] to install elastic search  and on this group of hosts elastic search masters will be installed
  cluster1[es_master][version]| mandatory|5.5.0| elasticsearch version number
  cluster1[es_master][es_config][network.host]| mandatory|_site_|_[networkInterface]_: Addresses of a network interface, for example _en0_, _local_: Any loopback addresses on the system, for example 127.0.0.1, _site_: Any site-local addresses on the system, for example 192.168.0.1, _global_: Any globally-scoped addresses on the system, for example 8.8.8.8.
  cluster1[es_master][es_config][cluster.name]| mandatory|es-cluster|es_master cluster name
@@ -453,7 +455,7 @@ cluster2:
  cluster1[es_master][es_config][node.master]| mandatory|true|determine whether es_master is master or not
  cluster1[es_master][es_config][bootstrap.memory_lock]| mandatory|false| it tries to lock the process address space into RAM, preventing any es_master memory from being swapped out
  cluster1[es_master][es_heap_size]| mandatory|1g| to specify the maximum size of total heap space for es_master
- cluster1[es_node][hostgroup]| mandatory|es_node| hostgroup name configured in common[hostgroups] to install elastic search worker nodes and on this group of hosts elastic search nodes will be installed
+ cluster1[es_node][hostgroup]| mandatory|es_node| hostgroup name or tag configured in common[hostgroups] to install elastic search worker nodes and on this group of hosts elastic search nodes will be installed
  cluster1[es_node][es_config][network.host]| mandatory|_site_|_[networkInterface]_: Addresses of a network interface, for example _en0_, _local_: Any loopback addresses on the system, for example 127.0.0.1, _site_: Any site-local addresses on the system, for example 192.168.0.1, _global_: Any globally-scoped addresses on the system, for example 8.8.8.8.
  cluster1[es_node][es_config][cluster.name]| mandatory|es-cluster|es_node cluster name
  cluster1[es_node][es_config][http.port]| mandatory|9200| accessing port of es_node
@@ -462,18 +464,18 @@ cluster2:
  cluster1[es_node][es_config][node.master]| mandatory|false|determine whether es_node is master or not
  cluster1[es_node][es_config][bootstrap.memory_lock]| mandatory|false| it tries to lock the process address space into RAM, preventing any es_node memory from being swapped out
  cluster1[es_node][es_api_port]| mandatory|9200| interaction port of es_node
- cluster1[kibana][hostgroup]| mandatory|kibana| hostgroup name configured/availble in common[hostgroups] to install kibana and on this group of hosts kibana will be installed
+ cluster1[kibana][hostgroup]| mandatory|kibana| hostgroup name or tag  configured/availble in common[hostgroups] to install kibana and on this group of hosts kibana will be installed
  cluster1[kibana][elasticsearch_url]|mandatory|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
  cluster1[kibana][version]| mandatory|5.5.0| kibana version number
- cluster1[apache][hostgroup]| mandatory| apache|hostgroup name configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
+ cluster1[apache][hostgroup]| mandatory| apache|hostgroup name or tag configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
  cluster1[apache][tomcat_version]| mandatory|7.0.76| tomcat version number
- cluster1[httpd][hostgroup]| mandatory| httpd|hostgroup name configured in common[hostgroups] to install httpd on this group of hosts apache httpd will be installed
+ cluster1[httpd][hostgroup]| mandatory| httpd|hostgroup name or tag configured in common[hostgroups] to install httpd on this group of hosts apache httpd will be installed
  cluster1[httpd][version]| mandatory|2.4.6| httpd version number
  cluster1[httpd][lb]| mandatory|true/false| load balnacer to be created on web server
  cluster1[httpd][config]| mandatory|balancer1| load balancer configuration
  cluster1[httpd][config][balancer][uri]| mandatory|mybalancer| uri name for the loadbalancer
- cluster1[httpd][config][balancer][member]| mandatory|http://host:8080/app| url of the application 
- cluster1[docker][hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker and on this group of hosts docker will be installed
+ cluster1[httpd][config][balancer][member]| mandatory|http://host:8080/app| url of the application
+ cluster1[docker][hostgroup]|mandatory|docker|hostgroup name or tag configured in common[hostgroups] to install docker and on this group of hosts docker will be installed
  cluster1[docker][version]| mandatory|17.09.0| docker version number
 
 ## Default configuration template for foreman and cluster setup

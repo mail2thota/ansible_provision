@@ -15,8 +15,13 @@ ambari_url = ''
 
 
 def get(ambari_url, user, password, path):
-    r = requests.get(ambari_url + path, auth=(user, password))
-    return r
+    try:
+      r = requests.get(ambari_url + path, auth=(user, password))
+      return r
+    except Exception as e:
+         log.log(log.LOG_ERROR,'Not able to connect to ambari server@{0} Reason : {1}'.format(ambari_url,e))
+         sys.exit(1)
+
 
 def getambariUrl(configData):
 
