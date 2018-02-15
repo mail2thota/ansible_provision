@@ -22,7 +22,7 @@
 - hosts: httpd
   become: true
   roles:
-    - httpd
+    - httpd  
 
 - hosts: activemq
   become: true
