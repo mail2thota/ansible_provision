@@ -350,8 +350,7 @@ cluster1:
        version: activemq version number
     
     apache:
-      hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes apache and tomcat server will be installed
-      httpd_version: httpd version number
+      hostgroup: configured hostgroup name in the common[hostgroups] on this group of nodes tomcat server will be installed
       tomcat_version: tomcat version number
     
     docker:
@@ -459,7 +458,6 @@ cluster2:
  cluster1[kibana][elasticsearch_url]|mandatory|http://master1-ambariserver.example.com:9200 | Elastic search url to be used by the kibana
  cluster1[kibana][version]| mandatory|5.5.0| kibana version number
  cluster1[apache][hostgroup]| mandatory| apache|hostgroup name configured in common[hostgroups] to install apache and tomcat and on this group of hosts tomcat and apache will be installed
- cluster1[apache][httpd_version]| mandatory|2.4.6| httpd version number
  cluster1[apache][tomcat_version]| mandatory|7.0.76| tomcat version number
  cluster1[docker][hostgroup]|mandatory|docker|hostgroup name configured in common[hostgroups] to install docker and on this group of hosts docker will be installed
  cluster1[docker][version]| mandatory|17.09.0| docker version number

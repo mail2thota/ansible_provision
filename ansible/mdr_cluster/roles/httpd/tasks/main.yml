@@ -19,7 +19,7 @@
 
 
 - name : "{{ inventoryname }}: check if httpd server is up"
-  wait_for : host={{ ansible_fqdn }} port=80 delay=20
+  wait_for : host={{ ansible_fqdn }} port=80 
 
 - name: get the version of httpd
   shell: yum list installed httpd | grep httpd | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
@@ -38,15 +38,7 @@
   when: result|succeeded
 
 
-- name: run test for httpd server
-  become: True
-  become_user: root
-  script: ./tests/httpd/httpd_test.sh
-  register: httpd_test
-  failed_when: "'Failed' in httpd_test.stdout"
 
-- debug: msg="{{ httpd_test.stdout }}"
-- debug: msg="{{ httpd_test.stderr }}"
 
 
 

@@ -9,7 +9,6 @@
     name: "{{ item }}"
     state: installed
   with_items:
-    - httpd-{{ apache_httpd_version }}
     - tomcat-{{ apache_tomcat_version }}
     - tomcat-admin-webapps-{{ apache_tomcat_version }} 
     - tomcat-docs-webapp-{{ apache_tomcat_version }} 
@@ -24,35 +23,8 @@
     enabled: yes
   become: true
 
-- name: ensure the httpd service is enable and running
-  service:
-    name: httpd
-    state: restarted
-    enabled: yes
-  become: true
-
 - name : check if tomcat server is up
-  wait_for : host={{ ansible_fqdn }} port=8080 delay=20
-
-- name : check if httpd server is up
-  wait_for : host={{ ansible_fqdn }} port=80 delay=20
-
-- name: get the version of httpd
-  shell: yum list installed httpd | grep httpd | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
-  register: version
-  changed_when: False
-  args:
-    warn: no
-
-- name: locating httpd
-  shell: whereis httpd | tr " " %
-  register: path
-  
-- name: generate httpd report
-  shell: "{{ playbook_dir }}/report.sh httpd {{ version.stdout }} http://{{ ansible_fqdn }}:80 {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
-  delegate_to: localhost
-  when: result|succeeded
-
+  wait_for : host={{ ansible_fqdn }} port=8080
 
 - name: get the version of tomcat
   shell: yum list installed tomcat | grep tomcat | awk '{print $2}' | cut -d'-' -f1 | cut -d':' -f2
@@ -69,16 +41,6 @@
   shell: "{{ playbook_dir }}/report.sh tomcat {{ version.stdout }} http://{{ ansible_fqdn }}:8080 {{ path.stdout }} {{ ansible_fqdn }} success {{ inventoryname }}"
   delegate_to: localhost
   when: result|succeeded
-
-- name: run test for httpd server
-  become: True
-  become_user: root
-  script: ./tests/httpd/httpd_test.sh
-  register: httpd_test
-  failed_when: "'Failed' in httpd_test.stdout"
-
-- debug: msg="{{ httpd_test.stdout }}"
-- debug: msg="{{ httpd_test.stderr }}"
 
 
 - name: run test for tomcat server
