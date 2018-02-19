@@ -208,7 +208,7 @@ do
             ;;
         "${option5}")
             echo  "${bold}${green}Selected ${option5}${reset}"
-            passwordNodes
+            passwordAccess
             init
             updateelasticsearch
             break
