@@ -6,7 +6,7 @@
 ---
 # tasks file for ambari_master
 
-- name: setting default values for hdp tests exection
+- name: setting required values for template
   set_fact:
     mysql_repo_url: "{{ default_repo_site }}/mysql"
     hdp_repo_url: "{{ default_repo_site }}/HDP/HDP-{{ hdp_stack_version }}/centos7"

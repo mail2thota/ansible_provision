@@ -1,0 +1,14 @@
+{% for config in httpd_balancer_config %}
+<Proxy balancer://{{ config.balancer.uri }} >
+{% for member in config.balancer.member %}
+BalancerMember {{ member }}
+{% endfor %}
+  ProxySet lbmethod=byrequests
+</Proxy>
+
+<Location /balancer-manager>
+  SetHandler balancer-manager
+</Location>
+ProxyPass /balancer-manager !
+ProxyPass / balancer://{{ config.balancer.uri }}/
+{% endfor %}

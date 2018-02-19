@@ -36,6 +36,7 @@ class Validator:
             Required('default',msg='default doesn\'t exists'): Any(dict),
             Required('common',msg='common doesn\'t exists'): Any(dict),
             Required('httpd',msg='httpd doesn\'t exists'): Any(dict),
+            Optional('httpd_balancer'): Any(dict),
             Optional('ambari'): All(dict),
             Optional('hdp'): All(dict),
             Optional('hdp_test'): All(dict),

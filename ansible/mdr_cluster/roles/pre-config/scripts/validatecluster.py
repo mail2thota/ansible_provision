@@ -91,6 +91,35 @@ def validatePreRequistives(configdata,clustername):
 		log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,httpdData))
 		sys.exit(1)
 
+        #Validate httpd_balancer data
+	httpdbalancerData = configdata.get('httpd_balancer')
+        if httpdbalancerData is not None:
+       	  try:
+                validator.httpd(httpdbalancerData)
+                httpdconfig = httpdbalancerData.get('config')
+                if httpdconfig == None:
+                        log.log(log.LOG_INFO, '{0} : assuming httpd without any configuration'.format(clustername))
+                else:
+                        for balancer in httpdconfig:
+                                try:
+                                        validator.httpd_balancer(balancer['balancer'])
+                                except Invalid as e:
+                                        log.log(log.LOG_ERROR,"{0} config Error: {1} in {2}".format(clustername,e.error_message,httpdconfig[balancer]))
+                                        sys.exit(1)
+          except MultipleInvalid as e:
+                for error in e.errors:
+                    log.log(log.LOG_ERROR, "{0} :[httpd] Config Validation Error:{1} in {2}".format(clustername,error,httpdbalancerData))
+                sys.exit(1)
+
+          except MatchInvalid as e:
+                log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,httpdbalancerData))
+                sys.exit(1)
+
+          except Invalid as e:
+                log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,httpdbalancerData))
+                sys.exit(1)
+
+
 
 	#Validate ambari data
 	ambariData = configdata.get('ambari')

@@ -24,6 +24,11 @@
   roles:
     - httpd  
 
+- hosts: httpd_balancer
+  become: true
+  roles:
+    - httpd_balancer
+
 - hosts: activemq
   become: true
   roles:
