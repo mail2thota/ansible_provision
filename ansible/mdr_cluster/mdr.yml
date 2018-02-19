@@ -379,7 +379,7 @@
          failed_when: "'Failed' in remove_httpd_info.stdout"
    
 
-- hosts: httpd
+- hosts: httpd[0]
   become: true
   tasks:
    - block:
