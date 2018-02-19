@@ -4,6 +4,24 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
+- blockinfile: |
+    dest=~/.bashrc backup=yes
+    content="unset http_proxy
+        unset https_proxy
+        unset HTTP_PROXY
+        unset HTTPS_PROXY"
+
+- lineinfile:
+    path: /etc/yum.conf
+    regexp: '^proxy='
+    line: ''
+
+- lineinfile:
+    path: /etc/environment
+    regexp: '(.*?)'
+    line: ''
+    backup: yes
+
 - name: copy centOS repo template
   template:
     src: "CentOS-Base.repo"

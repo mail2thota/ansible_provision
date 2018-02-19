@@ -57,3 +57,10 @@ else
 	echo "HDFS test is Failed"
 
 fi
+
+sudo -u hdfs hdfs dfs -test -d /wordcount
+if [ $? == 0 ]; then
+    sudo -u hdfs hdfs dfs -rm -r -f /wordcount
+fi
+
+

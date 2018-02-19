@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS ${hiveconf:DB_NAME} CASCADE;
 create schema ${hiveconf:DB_NAME};
 show schemas;
 use ${hiveconf:DB_NAME};
