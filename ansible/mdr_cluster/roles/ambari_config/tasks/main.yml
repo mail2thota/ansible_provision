@@ -5,11 +5,13 @@
 #
 ---
 - include_vars: "{{playbook_dir}}/roles_config/{{inventoryname}}/{{ hdp_cluster_type }}.yml"
+  when: hdp_cluster_type is defined
 
 - name: install python-requests
   yum:
     name: python-requests
     state: installed
+  when: hdp_cluster_type is defined
   
 - name: deploy cluster with ambari; http://{{ ambari_hosts[0]['name'] }}:{{ ambari_port }}
   ambari_cluster_state:
@@ -25,6 +27,6 @@
     wait_for_complete: True
     blueprint_var: "{{ blueprint }}"
     use_local_repository: "{{ use_local_repository }}"
-
+  when: hdp_stack_version is defined
 
 

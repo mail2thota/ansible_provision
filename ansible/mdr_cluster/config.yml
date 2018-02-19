@@ -229,6 +229,11 @@ cluster1:
       java_vendor: oracle
       
     httpd:
+      hostgroup: master_3
+      version: 2.4.6
+      lb: false
+
+    httpd_balancer:
       hostgroup: master_1
       version: 2.4.6
       lb: true

@@ -1,0 +1,20 @@
+#
+# Software Copyright BAE Systems plc 2017. All Rights Reserved.
+# BAE SYSTEMS, DETICA are trademarks of BAE Systems
+# plc and may be registered in certain jurisdictions.
+#
+---
+# tasks file for ambari_master
+
+- name: setting required values for template
+  set_fact:
+    mysql_repo_url: "{{ default_repo_site }}/mysql"
+    hdp_repo_url: "{{ default_repo_site }}/HDP/HDP-{{ hdp_stack_version }}/centos7"
+    hdp_utils_repo_url: "{{ default_repo_site }}/HDP/HDP-UTILS-{{ hdp_utils_version }}"
+- name: copy HDP repo template
+  template:
+    src: "repoinfo.xml.yml"
+    dest: "/var/lib/ambari-server/resources/stacks/HDP/{{ hdp_stack }}/repos/repoinfo.xml"
+  when: use_local_repository
+
+

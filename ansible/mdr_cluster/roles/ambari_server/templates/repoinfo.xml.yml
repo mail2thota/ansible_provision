@@ -5,13 +5,13 @@
 <reposinfo>
   <os family="{{ hdp_os_type }}">
     <repo>
-      <baseurl>{{ local_hdp_repository_url }}</baseurl>
+      <baseurl>{{ hdp_repo_url }}</baseurl>
       <repoid>HDP-{{ hdp_stack_version }}</repoid>
       <reponame>HDP</reponame>
       <unique>true</unique>
     </repo>
     <repo>
-      <baseurl>{{ local_hdp_utils_repository_url }}</baseurl>
+      <baseurl>{{ hdp_utils_repo_url }}</baseurl>
       <repoid>HDP-UTILS-{{ hdp_utils_version }}</repoid>
       <reponame>HDP-UTILS</reponame>
       <unique>false</unique>
