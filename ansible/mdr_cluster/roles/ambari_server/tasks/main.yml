@@ -65,11 +65,8 @@
   register: ambari_server_setup
   failed_when: "(ambari_server_setup.stderr is defined and ambari_server_setup.stderr != '') or 'FATAL' in ambari_server_setup.stdout"
 
-- name: copy HDP repo template
-  template:
-    src: "repoinfo.xml.yml"
-    dest: "/var/lib/ambari-server/resources/stacks/HDP/{{ hdp_stack }}/repos/repoinfo.xml"
-  when: use_local_repository
+- include: repo.yml
+  when: hdp_stack_version is defined
 
 - name: start ambari server
   service:
