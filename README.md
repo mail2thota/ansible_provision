@@ -353,7 +353,6 @@ cluster1:
 
     apache:
       hostgroup: configured hostgroup/tag name in the common[hostgroups] on this group of nodes apache and tomcat server will be installed
-      httpd_version: httpd version number
       tomcat_version: tomcat version number
 
     docker:

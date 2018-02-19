@@ -101,6 +101,14 @@
          .service_status{
          color: #57EF93;
          }
+         .service_error_text{
+         color: red;
+         font-weight: bold;
+         font-family: Helvetica, Arial, sans-serif;
+         }
+         .service_error{
+         margin-left:10px;
+         }
          .service_properties{
          margin-left:10000000px;
          }
@@ -159,53 +167,60 @@
          });
          app.config(function($locationProvider) {
          $locationProvider.html5Mode({
-      		enabled: true,
-      		requireBase: false
-    	  });
-	 });
+         enabled: true,
+         requireBase: false
+         });
+         });
          app.controller('overallReport', function($scope, $http ,$location) {
          var cluster_name=$location.search()['cluster_name'];
          $scope.cluster_name=cluster_name;
          $http.get(cluster_name+"_overall_report.json").then(function (response) {
                $scope.service_reports = response.data.reports;
+               $scope.error = response.data.error;
            });
          });
       </script>
    </head>
    <body bgcolor=white>
       <div ng-app="report" ng-controller="overallReport">
-      <div class="top"><span class="main_header">MDR Service Information</span><span class="sub_header">{{ cluster_name | uppercase }} overall software installation report</span><span class="logo_header"><img src="bae_logo.png"  height="50" width="250" /></span></div>
-      <div class="middle"   style="background-color:white;padding:1px;display:table;width:100%" >
-         <table  class="info_table1"  style="min-width: 100px;" >
-            <tr>
-               <th style="min-width: 100px;" align="center" class="table_header">SERVICE</th>
-               <th style="min-width: 70px;" align="center" class="table_header">VERSION</th>
-               <th style="min-width: 330px;" align="center" class="table_header">URL</th>
-               <th style="min-width: 355px;" align="left" class="table_header">PATH</th>
-               <th style="min-width: 372px;" align="center" class="table_header">HOST</th>
-            </tr>
-            <table ng-repeat="service_report in service_reports" class="info_table2"  style="min-width: 80px;"  >
+         <div class="top"><span class="main_header">MDR Service Information</span><span class="sub_header">{{ cluster_name | uppercase }} overall software installation report</span><span class="logo_header"><img src="bae_logo.png"  height="50" width="250" /></span></div>
+         <div class="middle"   style="background-color:white;padding:1px;display:table;width:100%" >
+            <div class="service_error" ng-hide="!error">
+               <img style="vertical-align:middle" height="60" width="60" src="error.jpg">
+               <span class="service_error_text" >{{ error }}</span>
+            </div>
+            <table  class="info_table1"  style="min-width: 100px;" >
                <tr>
-                  <td  style="width: 100px;" align="center" class="service_header">{{ service_report.service }}</td>
-                  <td   style="width: 70px;" align="center" class="service_header">{{ service_report.version }}</td>
-                  <td  style="width: 330px;" align="center" class="service_header">
-                     <p ng-bind-html="service_report.url | parseUrl"></p>
-                  </td>
-                  <td   style="width: 355px;" align="left" class="service_header">
-                     <pre>{{ service_report.path | trim | break }}</pre>
-                  </td>
-                  <td  style="width: 370px;"  align="left" class="service_properties">
-                     <table ng-repeat="service_report_properties in service_report.properties" class="info_table3" style="min-width: 100px;"  >
-                        <tr>
-                           <td   style="width: 350px;height: 36px" align="center" class="service_data">{{ service_report_properties.host }}</td>
-                         </tr>
-                     </table>
-                  </td>
+                  <th style="min-width: 100px;" align="center" class="table_header">SERVICE</th>
+                  <th style="min-width: 70px;" align="center" class="table_header">VERSION</th>
+                  <th style="min-width: 330px;" align="center" class="table_header">URL</th>
+                  <th style="min-width: 355px;" align="left" class="table_header">PATH</th>
+                  <th style="min-width: 372px;" align="center" class="table_header">HOST</th>
+                  <th style="min-width: 80px;" align="left" class="table_header">STATUS</th>
                </tr>
+               <table ng-repeat="service_report in service_reports" class="info_table2"  style="min-width: 80px;"  >
+                  <tr>
+                     <td  style="width: 100px;" align="center" class="service_header">{{ service_report.service }}</td>
+                     <td   style="width: 70px;" align="center" class="service_header">{{ service_report.version }}</td>
+                     <td  style="width: 330px;" align="center" class="service_header">
+                        <p ng-bind-html="service_report.url | parseUrl"></p>
+                     </td>
+                     <td   style="width: 355px;" align="left" class="service_header">
+                        <pre>{{ service_report.path | trim | break }}</pre>
+                     </td>
+                     <td  style="width: 452px;"  align="left" class="service_properties">
+                        <table ng-repeat="service_report_properties in service_report.properties" class="info_table3" style="min-width: 100px;"  >
+                           <tr>
+                              <td   style="width: 350px;height: 36px" align="center" class="service_data">{{ service_report_properties.host }}</td>
+                              <td   style="width: 80px;height: 36px" align="center" class="service_status"><span class="status">{{ service_report_properties.status | uppercase }}</span></td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </table>
             </table>
-         </table>
-         <div class="copyright"> Copyright &copy; 2017 BAE Systems. All rights reserved </div>
-      </div>
+            <div class="copyright"> Copyright &copy; 2017 BAE Systems. All rights reserved </div>
+         </div>
       </div>
    </body>
 </html>

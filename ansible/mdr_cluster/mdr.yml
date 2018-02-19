@@ -4,16 +4,47 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- hosts: localhost
+- hosts: localhost,all
   become: true
-  roles:
-    - init
-
+  tasks:
+   - block:
+      - include_role:
+          name: init
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute init role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute init role in {{ ansible_fqdn }}"
+        register: init_info
+        failed_when: "'Failed' in init_info.stdout"
+      
+  
+    
 - hosts: all
   become: true
-  roles:
-    - init
-    - mdr_common
+  tasks:
+   - block:
+     - include_role:
+          name: mdr_common
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute mdr_common role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute mdr_common role in {{ ansible_fqdn }}"
+        register: mdr_common_info
+        failed_when: "'Failed' in mdr_common_info.stdout"
   tags:
     - ambari-prereqs
     - hdp-install
@@ -21,8 +52,22 @@
 
 - hosts: httpd
   become: true
-  roles:
-    - httpd  
+  tasks:
+   - block:
+      - include_role:
+          name: httpd
+     rescue:
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute httpd role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute httpd role in {{ ansible_fqdn }}"
+        register: httpd_info
+        failed_when: "'Failed' in httpd_info.stdout"
+  
 
 - hosts: httpd_balancer
   become: true
@@ -31,28 +76,107 @@
 
 - hosts: activemq
   become: true
-  roles:
-    - role:  activemq
+  tasks:
+   - block:
+      - include_role:
+          name: activemq
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute activemq role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute activemq role in {{ ansible_fqdn }}"
+        register: activemq_info
+        failed_when: "'Failed' in activemq_info.stdout"
+  
 
 - hosts: docker
   become: true
-  roles:
-    - role: docker
+  tasks:
+   - block:
+      - include_role:
+          name: docker
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute docker role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute docker role in {{ ansible_fqdn }}"
+        register: docker_info
+        failed_when: "'Failed' in docker_info.stdout"
+  
 
 - hosts: apache
   become: true
-  roles:
-    - apache
-    - python-pip
+  tasks:
+   - block:
+      - include_role:
+          name: apache
+      - include_role:
+          name: python-pip
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute apache or python-pip role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute apache or python-pip role in {{ ansible_fqdn }}"
+        register: apache_info
+        failed_when: "'Failed' in apache_info.stdout"
+  
 
 - hosts: postgres
   become: true
-  roles:
-    - role: postgresql
+  tasks:
+   - block:
+      - include_role:
+          name: postgresql
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute postgresql role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute postgresql role in {{ ansible_fqdn }}"
+        register: postgresql_info
+        failed_when: "'Failed' in postgresql_info.stdout"
     
 - hosts: es_master
-  roles:
-    - role: elasticsearch
+  tasks:
+   - block:
+      - include_role:
+          name: elasticsearch
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute elasticsearch role for master in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute elasticsearch role for master in {{ ansible_fqdn }}"
+        register: elasticsearch_info
+        failed_when: "'Failed' in elasticsearch_info.stdout"
   vars:
     es_type: master
     es_scripts: false
@@ -61,8 +185,23 @@
     ansible_user: ansible
 
 - hosts: es_node
-  roles:
-    - role: elasticsearch
+  tasks:
+   - block:
+      - include_role:
+          name: elasticsearch
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute elasticsearch role for node in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute elasticsearch role for node in {{ ansible_fqdn }}"
+        register: elasticsearch_info
+        failed_when: "'Failed' in elasticsearch_info.stdout"
   vars:
     es_type: data
     es_scripts: false
@@ -72,26 +211,87 @@
 
 - hosts: kibana
   become: true
-  roles:
-    - role: kibana
+  tasks:
+   - block:
+      - include_role:
+          name: kibana
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute kibana role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute kibana role in {{ ansible_fqdn }}"
+        register: kibana_info
+        failed_when: "'Failed' in kibana_info.stdout"
+  
 
 - hosts: mongodb
   become: true
-  roles:
-    - role:  mongodb
+  tasks:
+   - block:
+      - include_role:
+          name: mongodb
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute mongodb role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute mongodb role in {{ ansible_fqdn }}"
+        register: mongodb_info
+        failed_when: "'Failed' in mongodb_info.stdout"
 
 - hosts: ambari
   become: true
-  roles:
-    - role: ambari_server
+  tasks:
+   - block:
+      - include_role:
+          name: ambari_server
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute ambari_server role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute ambari_server role in {{ ansible_fqdn }}"
+        register: ambari_server_info
+        failed_when: "'Failed' in ambari_server_info.stdout"
   tags:
     - ambari-server
     - hdp-install
 
 - hosts: hdp
   become: true
-  roles:
-    - role: ambari_agent
+  tasks:
+   - block:
+      - include_role:
+          name: ambari_agent
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute ambari_agent role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute ambari_agent role in {{ ansible_fqdn }}"
+        register: ambari_agent_info
+        failed_when: "'Failed' in ambari_agent_info.stdout"
   tags:
     - ambari-agent
     - hdp-install
@@ -100,24 +300,103 @@
 
 - hosts: ambari
   become: true
-  roles:
-    - role: ambari_config
+  tasks:
+   - block:
+      - include_role:
+          name: ambari_config
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute ambari_config role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute ambari_config role in {{ ansible_fqdn }}"
+        register: ambari_config_info
+        failed_when: "'Failed' in ambari_config_info.stdout"
   tags:
     - hdp-deploy
 
 - hosts: hdp_test
   become: true
-  roles:
-    - role:  hdp_test
+  tasks:
+   - block:
+      - include_role:
+          name: hdp_test
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute hdp_test role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute hdp_test role in {{ ansible_fqdn }}"
+        register: hdp_test_info
+        failed_when: "'Failed' in hdp_test_info.stdout"
+  
 
 - hosts: localhost,all
   become: true
-  roles:
-    - role: cleanup
-
-
+  tasks:
+   - block:
+      - include_role:
+          name: cleanup
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute cleanup role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute cleanup role in {{ ansible_fqdn }}"
+        register: cleanup_info
+        failed_when: "'Failed' in cleanup_info.stdout"
+      
+- hosts: localhost,all
+  tasks:
+   - block:
+      - yum:
+          name: httpd-{{ httpd_version}}
+          state: absent
+        when: "'httpd' not in group_names"
+     rescue:
+       - shell: sed -i '0,/{/s//{"error":"Failed to remove httpd in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+       - shell: echo {{ inventoryname }} | tr " " %
+         register: format_inventoryname
+       - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+         delegate_to: localhost
+       - shell: echo "Failed to remove httpd in {{ ansible_fqdn }}"
+         register: remove_httpd_info
+         failed_when: "'Failed' in remove_httpd_info.stdout"
+   
 
 - hosts: httpd
   become: true
-  roles:
-    - overall_report
+  tasks:
+   - block:
+      - include_role:
+          name: overall_report
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+     rescue:
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute overall_report role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute overall_report role in {{ ansible_fqdn }}"
+        register: overall_report_info
+        failed_when: "'Failed' in overall_report_info.stdout"
+      
+
