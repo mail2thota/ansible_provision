@@ -175,8 +175,8 @@
       - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
         delegate_to: localhost
       - shell: echo "Failed to execute elasticsearch role for master in {{ ansible_fqdn }}"
-        register: elasticsearch_info
-        failed_when: "'Failed' in elasticsearch_info.stdout"
+        register: elasticsearch_master_info
+        failed_when: "'Failed' in elasticsearch_master_info.stdout"
   vars:
     es_type: master
     es_scripts: false
@@ -200,8 +200,8 @@
       - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
         delegate_to: localhost
       - shell: echo "Failed to execute elasticsearch role for node in {{ ansible_fqdn }}"
-        register: elasticsearch_info
-        failed_when: "'Failed' in elasticsearch_info.stdout"
+        register: elasticsearch_node_info
+        failed_when: "'Failed' in elasticsearch_node_info.stdout"
   vars:
     es_type: data
     es_scripts: false
