@@ -71,8 +71,21 @@
 
 - hosts: httpd_balancer
   become: true
-  roles:
-    - httpd_balancer
+  tasks:
+   - block:
+      - include_role:
+          name: httpd_balancer
+     rescue:
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute httpd_balancer role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute httpd_balancer role in {{ ansible_fqdn }}"
+        register: httpd_balancer_info
+        failed_when: "'Failed' in httpd_balancer_info.stdout"
 
 - hosts: activemq
   become: true
