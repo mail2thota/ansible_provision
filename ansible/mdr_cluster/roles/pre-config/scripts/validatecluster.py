@@ -29,95 +29,95 @@ def checkHostGroupValidity(clustername,hostgroupName,dns_enabled):
 		for host in hostinfo:
 			#Check for ip if dns  not enabled
 			if host['ip'] is None:
-                                    log.log(log.LOG_ERROR,"{0}: Config validation Error: ip adress required for the host [{1}]".format(clustername,host['name']))
-                                    sys.exit(1)
+						log.log(log.LOG_ERROR,"{0}: Config validation Error: ip adress required for the host [{1}]".format(clustername,host['name']))
+						sys.exit(1)
 
 
 
 
 
 
-    def validatePreRequistives(configdata,clustername):
+def validatePreRequistives(configdata,clustername):
 
-            #Validate  mandatory top level sections such as httpd & default
-            try:
-                    validator.config(configdata)
-            except MultipleInvalid as e:
-                    for error in e.errors:
-                            log.log(log.LOG_ERROR,'{0}  Config validation Error message:{1}'.format(clustername,error))
-                    sys.exit(1)
-            #Check default section for dns_enabled flag
-            defaultData  = configdata.get('default',{})
-            try:
-                    validator.default(defaultData)
+	#Validate  mandatory top level sections such as httpd & default
+	try:
+			validator.config(configdata)
+	except MultipleInvalid as e:
+			for error in e.errors:
+					log.log(log.LOG_ERROR,'{0}  Config validation Error message:{1}'.format(clustername,error))
+			sys.exit(1)
+	#Check default section for dns_enabled flag
+	defaultData  = configdata.get('default',{})
+	try:
+			validator.default(defaultData)
 
-            except MultipleInvalid as e:
-                    for error in e.errors:
-                        log.log(log.LOG_ERROR, "{0} :[default] Config Validation Error:{1} in {2}".format(clustername,error,defaultData))
-                    sys.exit(1)
+	except MultipleInvalid as e:
+			for error in e.errors:
+				log.log(log.LOG_ERROR, "{0} :[default] Config Validation Error:{1} in {2}".format(clustername,error,defaultData))
+			sys.exit(1)
 
-            except MatchInvalid as e:
-                    log.log(log.LOG_ERROR, "{0} : [default] Config Validation Error:{1} in {2}".format(clustername,e,defaultData))
-                    sys.exit(1)
+	except MatchInvalid as e:
+			log.log(log.LOG_ERROR, "{0} : [default] Config Validation Error:{1} in {2}".format(clustername,e,defaultData))
+			sys.exit(1)
 
-            except Invalid as e:
-                    log.log(log.LOG_ERROR, "{0} : [default] Config Validation Error:{1} in {2}".format(clustername,e,defaultData))
-                    sys.exit(1)
+	except Invalid as e:
+			log.log(log.LOG_ERROR, "{0} : [default] Config Validation Error:{1} in {2}".format(clustername,e,defaultData))
+			sys.exit(1)
 
-            #Validate httpd data
-            httpdData = configdata.get('httpd')
-            try:
-                    validator.httpd(httpdData)
-                    httpdconfig = httpdData.get('config')
-                    if httpdconfig == None:
-                            log.log(log.LOG_INFO, '{0} : assuming httpd without any configuration'.format(clustername))
-                    else:
-                            for balancer in httpdconfig:
-                                    try:
-                                            validator.httpd_balancer(balancer['balancer'])
-                                    except Invalid as e:
-                                            log.log(log.LOG_ERROR,"{0} config Error: {1} in {2}".format(clustername,e.error_message,httpdconfig[balancer]))
-                                            sys.exit(1)
-            except MultipleInvalid as e:
-                    for error in e.errors:
-                        log.log(log.LOG_ERROR, "{0} :[httpd] Config Validation Error:{1} in {2}".format(clustername,error,httpdData))
-                    sys.exit(1)
+	#Validate httpd data
+	httpdData = configdata.get('httpd')
+	try:
+			validator.httpd(httpdData)
+			httpdconfig = httpdData.get('config')
+			if httpdconfig == None:
+					log.log(log.LOG_INFO, '{0} : assuming httpd without any configuration'.format(clustername))
+			else:
+					for balancer in httpdconfig:
+							try:
+									validator.httpd_balancer(balancer['balancer'])
+							except Invalid as e:
+									log.log(log.LOG_ERROR,"{0} config Error: {1} in {2}".format(clustername,e.error_message,httpdconfig[balancer]))
+									sys.exit(1)
+	except MultipleInvalid as e:
+			for error in e.errors:
+				log.log(log.LOG_ERROR, "{0} :[httpd] Config Validation Error:{1} in {2}".format(clustername,error,httpdData))
+			sys.exit(1)
 
-            except MatchInvalid as e:
-                    log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,httpdData))
-                    sys.exit(1)
+	except MatchInvalid as e:
+			log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,httpdData))
+			sys.exit(1)
 
-            except Invalid as e:
-                    log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,httpdData))
-                    sys.exit(1)
+	except Invalid as e:
+			log.log(log.LOG_ERROR, "{0} : [httpd] Config Validation Error:{1} in {2}".format(clustername,e,httpdData))
+			sys.exit(1)
 
-            #Validate httpd_balancer data
-            httpdbalancerData = configdata.get('httpd_balancer')
-            if httpdbalancerData is not None:
-              try:
-                    validator.httpd(httpdbalancerData)
-                    httpdconfig = httpdbalancerData.get('config')
-                    if httpdconfig == None:
-                            log.log(log.LOG_INFO, '{0} : assuming httpd without any configuration'.format(clustername))
-                    else:
-                            for balancer in httpdconfig:
-                                    try:
-                                            validator.httpd_balancer(balancer['balancer'])
-                                    except Invalid as e:
-                                            log.log(log.LOG_ERROR,"{0} config Error: {1} in {2}".format(clustername,e.error_message,httpdconfig[balancer]))
-                                            sys.exit(1)
-              except MultipleInvalid as e:
-                    for error in e.errors:
-                        log.log(log.LOG_ERROR, "{0} :[httpd_balancer] Config Validation Error:{1} in {2}".format(clustername,error,httpdbalancerData))
-                    sys.exit(1)
+	#Validate httpd_balancer data
+	httpdbalancerData = configdata.get('httpd_balancer')
+	if httpdbalancerData is not None:
+	  try:
+			validator.httpd(httpdbalancerData)
+			httpdconfig = httpdbalancerData.get('config')
+			if httpdconfig == None:
+					log.log(log.LOG_INFO, '{0} : assuming httpd without any configuration'.format(clustername))
+			else:
+					for balancer in httpdconfig:
+							try:
+									validator.httpd_balancer(balancer['balancer'])
+							except Invalid as e:
+									log.log(log.LOG_ERROR,"{0} config Error: {1} in {2}".format(clustername,e.error_message,httpdconfig[balancer]))
+									sys.exit(1)
+	  except MultipleInvalid as e:
+			for error in e.errors:
+				log.log(log.LOG_ERROR, "{0} :[httpd_balancer] Config Validation Error:{1} in {2}".format(clustername,error,httpdbalancerData))
+			sys.exit(1)
 
-              except MatchInvalid as e:
-                    log.log(log.LOG_ERROR, "{0} : [httpd_balancer] Config Validation Error:{1} in {2}".format(clustername,e,httpdbalancerData))
-                    sys.exit(1)
+	  except MatchInvalid as e:
+			log.log(log.LOG_ERROR, "{0} : [httpd_balancer] Config Validation Error:{1} in {2}".format(clustername,e,httpdbalancerData))
+			sys.exit(1)
 
-              except Invalid as e:
-                    log.log(log.LOG_ERROR, "{0} : [httpd_balancer] Config Validation Error:{1} in {2}".format(clustername,e,httpdbalancerData))
-                sys.exit(1)
+	  except Invalid as e:
+			log.log(log.LOG_ERROR, "{0} : [httpd_balancer] Config Validation Error:{1} in {2}".format(clustername,e,httpdbalancerData))
+			sys.exit(1)
 
 
 
