@@ -11,13 +11,16 @@ if [[ $repo_url =~ $regex ]]
 then
    if [ -w /etc/yum.conf ]; then
        sed -i "/^proxy=.*/d" /etc/yum.conf
-       unset http_proxy
-       unset https_proxy
-       unset no_proxy
-       unset HTTP_PROXY
-       unset HTTPS_PROXY
-       unset NO_PROXY
-   fi 
+       export http_proxy=""
+       export https_proxy=""
+       export no_proxy=""
+       export HTTP_PROXY=""
+       export HTTPS_PROXY=""
+       export NO_PROXY=""
+  fi
+   systemctl stop firewalld.service
+   systemctl disable firewalld.service
+   setenforce 0
    export repo_url
    echo "${bold}${green}Repository url is set as ${repo_url}${reset}"
 else
