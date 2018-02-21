@@ -4,7 +4,29 @@
 # plc and may be registered in certain jurisdictions.
 #
 ---
-- hosts: localhost,all
+- hosts: localhost
+  become: true
+  tasks:
+   - block:
+      - include_role:
+          name: init
+     rescue:
+      - include_role:
+          name: httpd
+      - include_role:
+          name: overall_report
+      - shell: sed -i '0,/{/s//{"error":"Failed to execute init role in {{ ansible_fqdn }}",/' /var/www/html/{{ inventoryname }}_overall_report.json
+      - shell: echo {{ inventoryname }} | tr " " %
+        register: format_inventoryname_local
+      - shell: "{{ playbook_dir }}/browse_report.sh {{ ansible_fqdn }} {{ format_inventoryname_local.stdout }}"
+        delegate_to: localhost
+      - shell: echo "Failed to execute init role in {{ ansible_fqdn }}"
+        register: init_info_local
+        failed_when: "'Failed' in init_info_local.stdout"
+
+
+
+- hosts: all
   become: true
   tasks:
    - block:
@@ -24,7 +46,6 @@
         register: init_info
         failed_when: "'Failed' in init_info.stdout"
       
-  
     
 - hosts: all
   become: true
