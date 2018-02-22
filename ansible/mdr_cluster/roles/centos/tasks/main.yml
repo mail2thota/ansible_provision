@@ -16,11 +16,11 @@
     regexp: '^proxy='
     line: ''
 
-- lineinfile:
-    path: /etc/environment
-    regexp: '(.*?)'
-    line: ''
-    backup: yes
+- name: backup /etc/environment
+  shell: cp -f  /etc/environment /etc/env_backup
+
+- name: cleanup /etc/environment
+  shell: echo "" > /etc/environment
 
 - name: copy centOS repo template
   template:

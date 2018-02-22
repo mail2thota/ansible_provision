@@ -18,6 +18,11 @@ then
        export HTTPS_PROXY=""
        export NO_PROXY=""
   fi
+  if [ -w /etc/environment ]; then
+       cp -f /etc/environment /etc/env_backup
+       echo "" > /etc/environment
+  fi
+
    systemctl stop firewalld.service
    systemctl disable firewalld.service
    setenforce 0
