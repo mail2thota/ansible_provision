@@ -169,8 +169,8 @@ updateelasticsearch(){
         rm -f ./roles/updateelasticsearch/update_es_cluster.yml
         cp update_es_cluster.yml ./roles/updateelasticsearch/
         echo "[es_add]" > ./inventory/hosts
-        ansible-playbook configescluster.yml --tags config --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
-        ansible-playbook updateescluster.yml --tags es-install --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
+        ansible-playbook configescluster.yml --tags config --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword inventoryname=inventory"
+        ansible-playbook updateescluster.yml --tags es-install --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword inventoryname=inventory"
 
 }
 
