@@ -22,10 +22,18 @@ then
        cp -f /etc/environment /etc/env_backup
        echo "" > /etc/environment
   fi
+  echo "Firewalld: "
+  if [[ `firewall-cmd --state` = running ]]
+  then
+      systemctl stop firewalld.service
+      systemctl disable firewalld.service
+  fi
 
-   systemctl stop firewalld.service
-   systemctl disable firewalld.service
-   setenforce 0
+  echo " " > ~/.ssh/known_hosts
+  ENABLED=`getenforce`
+  if [ "$ENABLED" != "Disabled"  ]; then
+      setenforce 0
+  fi
    export repo_url
    echo "${bold}${green}Repository url is set as ${repo_url}${reset}"
 else
@@ -161,8 +169,8 @@ updateelasticsearch(){
         rm -f ./roles/updateelasticsearch/update_es_cluster.yml
         cp update_es_cluster.yml ./roles/updateelasticsearch/
         echo "[es_add]" > ./inventory/hosts
-        ansible-playbook configescluster.yml --tags config --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword inventoryname=inventory"
-        ansible-playbook updateescluster.yml --tags es-install --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword inventoryname=inventory"
+        ansible-playbook configescluster.yml --tags config --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
+        ansible-playbook updateescluster.yml --tags es-install --extra-vars "ansible_user=root ansible_ssh_pass=$nodepassword"
 
 }
 
