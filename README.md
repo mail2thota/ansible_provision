@@ -161,7 +161,7 @@ User is allowed to modify as they need according to requirement to do provisiong
 
 ## Complete YAML System Default Template for foreman
 ----------------------------------------------------
-It is restricted for user making changes on system.yml file below, but it is configurable and allow to be modified as per user need. before provisioning You may find it in /mdr_platform_bare_metal/ansible/mdr_cluster/fmconfig/system.yml.j2.
+It is restricted for user making changes on system.yml.j2 file below, but it is configurable and allow to be modified as per user need. There are two templates provided, CentOS7 and RedHat7 you may switch it by rename the file name as system.yml.j2 but CentOS7 will be used as default. Before proceed provisioning you may find those files in /mdr_platform_bare_metal/ansible/mdr_cluster/fmconfig/.
 
     foreman:
 
