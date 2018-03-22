@@ -119,6 +119,7 @@ class Validator:
             Required('hostgroup'):                      Any(str,msg='assigned hostgroup name'),
             Required('ip'):                             Match("^(?:(?:^|\.)(?:2(?:5[0-5]|[0-4]\d)|1?\d?\d)){4}$",msg='provide valid ipv4'), 
             Required('mac'):                            Match("^[a-fA-F0-9:]{17}|[a-fA-F0-9]{12}$",msg='provide valid mac address'),
+            Optional('tags'):                           Any(list,msg='required list of tags')
         })
 
         self.secondary_hosts = Schema({

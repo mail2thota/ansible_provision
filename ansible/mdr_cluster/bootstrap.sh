@@ -29,7 +29,12 @@ then
       systemctl disable firewalld.service
   fi
 
-  echo " " > ~/.ssh/known_hosts
+  if [ -w ~/.ssh/known_hosts ]
+  then
+      echo "removing  ~/.ssh/known_hosts"
+      echo " " > ~/.ssh/known_hosts
+  fi
+
   ENABLED=`getenforce`
   if [ "$ENABLED" != "Disabled"  ]; then
       setenforce 0
