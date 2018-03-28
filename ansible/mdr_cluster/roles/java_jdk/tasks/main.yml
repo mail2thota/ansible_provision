@@ -25,7 +25,7 @@
   when: default_java_vendor is defined and default_java_vendor == "oracle"
  
 - name: get the version of oracle jdk
-  shell: yum list installed | grep jdk1.8.0 | awk '{print $2}'  | cut -d'-' -f1 | cut -d':' -f2
+  shell: yum list installed | grep jdk1.8 | awk '{print $2}'  | cut -d'-' -f1 | cut -d':' -f2
   register: oracle_version
   changed_when: False
   args:
