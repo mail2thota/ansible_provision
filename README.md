@@ -233,7 +233,7 @@ It is restricted for user making changes on system.yml.j2 file below, but it is 
 | Add/Remove Elasticsearch Data nodes | adding new data nodes and removing pre-existing data nodes from and to elastic search cluster|
 | Quit | Terminate the process|
 
-## Disk partition logic while foreman provisioning
+## Disk partition logic for foreman provisioning
 --------------------------------------------------
     Disk partition logic and configuration can be modified as below:
 
@@ -273,6 +273,19 @@ It is restricted for user making changes on system.yml.j2 file below, but it is 
             root_size=281138
 
 
+			
+			
+			
+## Configuration for setup pip local repository
+------------------------------------------------
+    - check out /mdr_platform_bare_metal/pip_repository
+    - ensure you are in root user
+	- extract file pypi.tar.gz(tar -xvzf pypi.tar.gz) in somewhere
+	- execute file "start_pypi.sh", pypi-server and prerequisite will be installed
+	- create directory for all of python packages(ex: ~/packages)
+	- run pypi-server by command: nohup pypi-server -p 8008 -P . -a . ~/packages/ &
+	- check ip running on localhost:8008,127.0.0.1:8008
+			
 ## Configuration for cluster setup
 ---------------------------------
 
